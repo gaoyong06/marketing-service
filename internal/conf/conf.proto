@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package marketing.conf;
+
+option go_package = "github.com/gaoyong06/middleground/marketing-service/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+// Bootstrap u542fu52a8u914du7f6e
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  Client client = 3;
+}
+
+// Server u670du52a1u914du7f6e
+message Server {
+  message HTTP {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  message GRPC {
+    string network = 1;
+    string addr = 2;
+    google.protobuf.Duration timeout = 3;
+  }
+  HTTP http = 1;
+  GRPC grpc = 2;
+}
+
+// Data u6570u636eu914du7f6e
+message Data {
+  message Database {
+    string driver = 1;
+    string source = 2;
+    int32 max_idle_conns = 3;
+    int32 max_open_conns = 4;
+    google.protobuf.Duration conn_max_lifetime = 5;
+  }
+  message Redis {
+    string network = 1;
+    string addr = 2;
+    string password = 3;
+    int32 db = 4;
+    google.protobuf.Duration dial_timeout = 5;
+    google.protobuf.Duration read_timeout = 6;
+    google.protobuf.Duration write_timeout = 7;
+    int32 pool_size = 8;
+    int32 min_idle_conns = 9;
+  }
+  Database database = 1;
+  Redis redis = 2;
+}
+
+// Client u5ba2u6237u7aefu914du7f6e
+message Client {
+  message GRPC {
+    string target = 1;
+    google.protobuf.Duration timeout = 2;
+  }
+  GRPC tenant = 1; // u79dfu6237u670du52a1u5ba2u6237u7aef
+}
