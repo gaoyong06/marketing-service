@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package base;
+
+option go_package = "marketing-service/api/base";
+
+// u5206u9875u8bf7u6c42
+message PageRequest {
+  int32 page = 1;        // u9875u7801uff0cu4ece1u5f00u59cb
+  int32 page_size = 2;   // u6bcfu9875u6570u91cf
+  string sort_by = 3;    // u6392u5e8fu5b57u6bb5
+  bool sort_desc = 4;    // u662fu5426u964du5e8fu6392u5217
+}
+
+// u5206u9875u54cdu5e94
+message PageResponse {
+  int32 total = 1;        // u603bu6570u91cf
+  int32 page = 2;         // u5f53u524du9875u7801
+  int32 page_size = 3;    // u6bcfu9875u6570u91cf
+  int32 total_pages = 4;  // u603bu9875u6570
+}

@@ -1,0 +1,310 @@
+syntax = "proto3";
+
+package platform.marketing_service.v1;
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "base/error.proto";
+import "base/pagination.proto";
+
+option go_package = "marketing-service/api/marketing_service/v1;v1";
+
+// MarketingService 营销服务API
+service Marketing {
+  // CreateCampaign 创建营销活动
+  rpc CreateCampaign(CreateCampaignRequest) returns (CreateCampaignReply) {
+    option (google.api.http) = {
+      post: "/v1/campaigns"
+      body: "*"
+    };
+  }
+
+  // GetCampaign 获取营销活动
+  rpc GetCampaign(GetCampaignRequest) returns (GetCampaignReply) {
+    option (google.api.http) = {
+      get: "/v1/campaigns/{campaign_id}"
+    };
+  }
+
+  // ListCampaigns 列出营销活动
+  rpc ListCampaigns(ListCampaignsRequest) returns (ListCampaignsReply) {
+    option (google.api.http) = {
+      get: "/v1/campaigns"
+    };
+  }
+
+  // UpdateCampaign 更新营销活动
+  rpc UpdateCampaign(UpdateCampaignRequest) returns (UpdateCampaignReply) {
+    option (google.api.http) = {
+      put: "/v1/campaigns/{campaign_id}"
+      body: "*"
+    };
+  }
+
+  // DeleteCampaign 删除营销活动
+  rpc DeleteCampaign(DeleteCampaignRequest) returns (DeleteCampaignReply) {
+    option (google.api.http) = {
+      delete: "/v1/campaigns/{campaign_id}"
+    };
+  }
+
+  // GenerateRedeemCodes 生成兑换码
+  rpc GenerateRedeemCodes(GenerateRedeemCodesRequest) returns (GenerateRedeemCodesReply) {
+    option (google.api.http) = {
+      post: "/v1/campaigns/{campaign_id}/redeem-codes"
+      body: "*"
+    };
+  }
+
+  // RedeemCode 兑换码核销
+  rpc RedeemCode(RedeemCodeRequest) returns (RedeemCodeReply) {
+    option (google.api.http) = {
+      post: "/v1/redeem"
+      body: "*"
+    };
+  }
+
+  // AssignRedeemCode 分配兑换码
+  rpc AssignRedeemCode(AssignRedeemCodeRequest) returns (AssignRedeemCodeReply) {
+    option (google.api.http) = {
+      post: "/v1/redeem-codes/{code}/assign"
+      body: "*"
+    };
+  }
+
+  // ListRedeemCodes 列出兑换码
+  rpc ListRedeemCodes(ListRedeemCodesRequest) returns (ListRedeemCodesReply) {
+    option (google.api.http) = {
+      get: "/v1/redeem-codes"
+    };
+  }
+
+  // GetRedeemCode 获取兑换码
+  rpc GetRedeemCode(GetRedeemCodeRequest) returns (GetRedeemCodeReply) {
+    option (google.api.http) = {
+      get: "/v1/redeem-codes/{code}"
+    };
+  }
+}
+
+// Campaign 营销活动
+message Campaign {
+  string campaign_id = 1;        // 活动ID
+  string campaign_name = 2;       // 活动名称
+  string tenant_id = 3;           // 所属租户
+  string product_code = 4;        // 适用产品线
+  string campaign_type = 5;       // 活动类型
+  string start_time = 6;          // 开始时间
+  string end_time = 7;            // 结束时间
+  float total_budget = 8;         // 总预算
+  map<string, string> rule_config = 9; // 规则配置
+  int32 status = 10;              // 状态：0-未开始 1-进行中 2-已结束 3-手动终止
+  string created_by = 11;         // 创建人
+  string created_at = 12;         // 创建时间
+  string updated_at = 13;         // 更新时间
+}
+
+// RedeemCode 兑换码
+message RedeemCode {
+  int64 redeem_code_id = 1;       // 主键ID
+  string code = 2;                // 兑换码
+  string campaign_id = 3;         // 关联活动ID
+  string tenant_id = 4;           // 所属租户
+  string product_code = 5;        // 适用产品线
+  string code_type = 6;           // 码类型：DISCOUNT-折扣码 COUPON-优惠码 GIFT-礼品码
+  int64 user_id = 7;              // 分配用户ID
+  int32 status = 8;               // 状态：0-未分配 1-已分配 2-已核销 3-已失效
+  float value_amount = 9;         // 面额（金额类）
+  float value_percent = 10;       // 折扣比例（百分比类）
+  map<string, string> reward_items = 11; // 奖励物品（实物类）
+  google.protobuf.Timestamp valid_from = 12;     // 生效时间
+  google.protobuf.Timestamp valid_until = 13;    // 过期时间
+  google.protobuf.Timestamp redemption_at = 14;  // 核销时间
+  string redeem_channel = 15;                    // 核销渠道
+  google.protobuf.Timestamp created_at = 16;     // 创建时间
+  google.protobuf.Timestamp updated_at = 17;     // 更新时间
+}
+
+// CodeBatch 兑换码批次
+message CodeBatch {
+  string batch_id = 1;            // 批次ID
+  string campaign_id = 2;         // 关联活动ID
+  string tenant_id = 3;           // 所属租户
+  string generate_type = 4;       // 生成方式：MANUAL-手动 AUTO-自动 IMPORT-导入
+  int32 total_count = 5;          // 总数量
+  int32 used_count = 6;           // 已使用数量
+  string operator = 7;            // 操作人
+  map<string, string> generate_rule = 8; // 生成规则
+  string created_at = 9;          // 创建时间
+}
+
+// RedemptionRecord 兑换记录
+message RedemptionRecord {
+  int64 record_id = 1;            // 记录ID
+  int64 redeem_code_id = 2;       // 兑换码ID
+  string code = 3;                // 兑换码值
+  int64 user_id = 4;              // 用户ID
+  string tenant_id = 5;           // 所属租户
+  string campaign_id = 6;         // 关联活动ID
+  string product_code = 7;        // 产品线
+  string redeem_channel = 8;      // 核销渠道
+  string redeem_time = 9;         // 核销时间
+  string device_info = 10;        // 设备信息
+  string ip_address = 11;         // IP地址
+  string location = 12;           // 地理位置
+  string order_id = 13;           // 关联订单ID
+  map<string, string> reward_detail = 14; // 奖励详情
+}
+
+// CreateCampaignRequest 创建营销活动请求
+message CreateCampaignRequest {
+  string campaign_name = 1 [(validate.rules).string = {min_len: 1, max_len: 64}]; // 活动名称
+  string tenant_id = 2 [(validate.rules).string.min_len = 1];                      // 所属租户
+  string product_code = 3 [(validate.rules).string.min_len = 1];                   // 适用产品线
+  string campaign_type = 4 [(validate.rules).string.min_len = 1];                  // 活动类型
+  string start_time = 5 [(validate.rules).string.min_len = 1];                     // 开始时间
+  string end_time = 6 [(validate.rules).string.min_len = 1];                       // 结束时间
+  float total_budget = 7;                                                           // 总预算
+  map<string, string> rule_config = 8;                                              // 规则配置
+  string created_by = 9;                                                            // 创建人
+}
+
+// CreateCampaignReply 创建营销活动响应
+message CreateCampaignReply {
+  Campaign campaign = 1; // 活动信息
+}
+
+// GetCampaignRequest 获取营销活动请求
+message GetCampaignRequest {
+  string campaign_id = 1 [(validate.rules).string.min_len = 1]; // 活动ID
+}
+
+// GetCampaignReply 获取营销活动响应
+message GetCampaignReply {
+  Campaign campaign = 1; // 活动信息
+}
+
+// ListCampaignsRequest 列出营销活动请求
+message ListCampaignsRequest {
+  string tenant_id = 1;     // 所属租户
+  string product_code = 2;  // 适用产品线
+  string campaign_type = 3; // 活动类型
+  int32 status = 4;         // 状态
+  int32 page_size = 5;      // 页大小
+  int32 page_num = 6;       // 页码
+}
+
+// ListCampaignsReply 列出营销活动响应
+message ListCampaignsReply {
+  repeated Campaign campaigns = 1; // 活动列表
+  int32 total = 2;                 // 总数
+}
+
+// UpdateCampaignRequest 更新营销活动请求
+message UpdateCampaignRequest {
+  string campaign_id = 1 [(validate.rules).string.min_len = 1];                    // 活动ID
+  string campaign_name = 2 [(validate.rules).string = {min_len: 1, max_len: 64}];   // 活动名称
+  string start_time = 3;                                                             // 开始时间
+  string end_time = 4;                                                               // 结束时间
+  float total_budget = 5;                                                            // 总预算
+  map<string, string> rule_config = 6;                                               // 规则配置
+  int32 status = 7;                                                                  // 状态
+}
+
+// UpdateCampaignReply 更新营销活动响应
+message UpdateCampaignReply {
+  Campaign campaign = 1; // 活动信息
+}
+
+// DeleteCampaignRequest 删除营销活动请求
+message DeleteCampaignRequest {
+  string campaign_id = 1 [(validate.rules).string.min_len = 1]; // 活动ID
+}
+
+// DeleteCampaignReply 删除营销活动响应
+message DeleteCampaignReply {
+  bool success = 1; // 是否成功
+}
+
+// GenerateRedeemCodesRequest 生成兑换码请求
+message GenerateRedeemCodesRequest {
+  string campaign_id = 1 [(validate.rules).string.min_len = 1];                  // 活动ID
+  string code_type = 2 [(validate.rules).string.min_len = 1];                     // 码类型
+  int32 count = 3 [(validate.rules).int32.gt = 0];                                // 生成数量
+  string generate_type = 4 [(validate.rules).string.min_len = 1];                 // 生成方式
+  map<string, string> generate_rule = 5;                                           // 生成规则
+  float value_amount = 6;                                                          // 面额
+  float value_percent = 7;                                                         // 折扣比例
+  map<string, string> reward_items = 8;                                            // 奖励物品
+  string expire_time = 9;                                                          // 过期时间
+  string operator = 10;                                                            // 操作人
+}
+
+// GenerateRedeemCodesReply 生成兑换码响应
+message GenerateRedeemCodesReply {
+  string batch_id = 1;            // 批次ID
+  int32 total_count = 2;          // 总数量
+  repeated string sample_codes = 3; // 样例码（最多10个）
+}
+
+// RedeemCodeRequest 兑换码核销请求
+message RedeemCodeRequest {
+  string code = 1 [(validate.rules).string.min_len = 1];        // 兑换码
+  int64 user_id = 2 [(validate.rules).int64.gt = 0];            // 用户ID
+  string product_code = 3 [(validate.rules).string.min_len = 1]; // 产品线
+  string redeem_channel = 4;                                     // 核销渠道
+  string device_info = 5;                                        // 设备信息
+  string ip_address = 6;                                         // IP地址
+  string location = 7;                                           // 地理位置
+  string order_id = 8;                                           // 关联订单ID
+}
+
+// RedeemCodeReply 兑换码核销响应
+message RedeemCodeReply {
+  bool success = 1;                             // 是否成功
+  string message = 2;                           // 消息
+  map<string, string> reward_detail = 3;        // 奖励详情
+  RedeemCode code_info = 4;                     // 兑换码信息
+}
+
+// AssignRedeemCodeRequest 分配兑换码请求
+message AssignRedeemCodeRequest {
+  string code = 1 [(validate.rules).string.min_len = 1]; // 兑换码
+  int64 user_id = 2 [(validate.rules).int64.gt = 0];     // 用户ID
+}
+
+// AssignRedeemCodeReply 分配兑换码响应
+message AssignRedeemCodeReply {
+  bool success = 1;      // 是否成功
+  string message = 2;    // 消息
+  RedeemCode code_info = 3; // 兑换码信息
+}
+
+// ListRedeemCodesRequest 列出兑换码请求
+message ListRedeemCodesRequest {
+  string campaign_id = 1;  // 活动ID
+  string tenant_id = 2;    // 所属租户
+  string product_code = 3; // 适用产品线
+  string code_type = 4;    // 码类型
+  int32 status = 5;        // 状态
+  int64 user_id = 6;       // 用户ID
+  int32 page_size = 7;     // 页大小
+  int32 page_num = 8;      // 页码
+}
+
+// ListRedeemCodesReply 列出兑换码响应
+message ListRedeemCodesReply {
+  repeated RedeemCode codes = 1; // 兑换码列表
+  int32 total = 2;               // 总数
+}
+
+// GetRedeemCodeRequest 获取兑换码请求
+message GetRedeemCodeRequest {
+  string code = 1 [(validate.rules).string.min_len = 1]; // 兑换码
+}
+
+// GetRedeemCodeReply 获取兑换码响应
+message GetRedeemCodeReply {
+  RedeemCode code = 1; // 兑换码信息
+}

@@ -5,26 +5,26 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/gaoyong06/middleground/marketing-service/internal/biz"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
+	"marketing-service/internal/biz"
 )
 
 // CampaignModel 营销活动模型
 type CampaignModel struct {
-	ID              int64      `gorm:"primaryKey;autoIncrement"`
-	CampaignID      string     `gorm:"type:varchar(32);uniqueIndex;not null"`
-	TenantID        string     `gorm:"type:varchar(32);index;not null"`
-	CampaignName    string     `gorm:"type:varchar(128);not null"`
-	CampaignType    string     `gorm:"type:varchar(32);not null"`
-	Status          int32      `gorm:"type:tinyint;not null;default:1"`
-	StartTime       time.Time  `gorm:"type:datetime;not null"`
-	EndTime         time.Time  `gorm:"type:datetime;not null"`
-	Rules           string     `gorm:"type:text"`
-	Description     string     `gorm:"type:varchar(512)"`
-	CreatedAt       time.Time  `gorm:"type:datetime;not null"`
-	UpdatedAt       time.Time  `gorm:"type:datetime;not null"`
-	DeletedAt       *time.Time `gorm:"index"`
+	ID           int64      `gorm:"primaryKey;autoIncrement"`
+	CampaignID   string     `gorm:"type:varchar(32);uniqueIndex;not null"`
+	TenantID     string     `gorm:"type:varchar(32);index;not null"`
+	CampaignName string     `gorm:"type:varchar(128);not null"`
+	CampaignType string     `gorm:"type:varchar(32);not null"`
+	Status       int32      `gorm:"type:tinyint;not null;default:1"`
+	StartTime    time.Time  `gorm:"type:datetime;not null"`
+	EndTime      time.Time  `gorm:"type:datetime;not null"`
+	Rules        string     `gorm:"type:text"`
+	Description  string     `gorm:"type:varchar(512)"`
+	CreatedAt    time.Time  `gorm:"type:datetime;not null"`
+	UpdatedAt    time.Time  `gorm:"type:datetime;not null"`
+	DeletedAt    *time.Time `gorm:"index"`
 }
 
 // TableName 设置表名
@@ -232,17 +232,17 @@ func (r *campaignRepo) List(ctx context.Context, tenantID, productCode, campaign
 	if tenantID != "" {
 		db = db.Where("tenant_id = ?", tenantID)
 	}
-	
+
 	// 应用产品代码过滤
 	if productCode != "" {
 		db = db.Where("product_code = ?", productCode)
 	}
-	
+
 	// 应用活动类型过滤
 	if campaignType != "" {
 		db = db.Where("campaign_type = ?", campaignType)
 	}
-	
+
 	// 应用状态过滤
 	if status >= 0 {
 		db = db.Where("status = ?", status)
@@ -256,7 +256,7 @@ func (r *campaignRepo) List(ctx context.Context, tenantID, productCode, campaign
 	// 计算分页参数
 	offset := int((pageNum - 1) * pageSize)
 	limit := int(pageSize)
-	
+
 	// 获取分页数据
 	if err := db.Offset(offset).Limit(limit).Order("created_at DESC").Find(&models).Error; err != nil {
 		return nil, 0, err

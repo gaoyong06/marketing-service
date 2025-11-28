@@ -1,12 +1,12 @@
 package server
 
 import (
-	pb "github.com/gaoyong06/middleground/proto-repo/gen/go/platform/marketing_service/v1"
-	"github.com/gaoyong06/middleground/marketing-service/internal/conf"
-	"github.com/gaoyong06/middleground/marketing-service/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	pb "marketing-service/api/marketing_service/v1"
+	"marketing-service/internal/conf"
+	"marketing-service/internal/service"
 )
 
 // NewGRPCServer new a gRPC server.
@@ -26,6 +26,6 @@ func NewGRPCServer(c *conf.Server, marketingSvc *service.MarketingService, logge
 		opts = append(opts, grpc.Timeout(c.Grpc.Timeout.AsDuration()))
 	}
 	srv := grpc.NewServer(opts...)
-	pb.RegisterMarketingServiceServer(srv, marketingSvc)
+	pb.RegisterMarketingServer(srv, marketingSvc)
 	return srv
 }

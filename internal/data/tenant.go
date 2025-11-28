@@ -9,8 +9,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	"github.com/gaoyong06/middleground/marketing-service/internal/biz"
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/biz"
 )
 
 // TenantModel 租户模型（本地缓存模型，非主数据源）

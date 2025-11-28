@@ -6,17 +6,17 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gaoyong06/middleground/marketing-service/internal/biz"
-	v1 "github.com/gaoyong06/middleground/proto-repo/gen/go/platform/marketing_service/v1"
 	"github.com/go-kratos/kratos/v2/log"
 	grpccodes "google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	v1 "marketing-service/api/marketing_service/v1"
+	"marketing-service/internal/biz"
 )
 
 // MarketingService is a marketing service.
 type MarketingService struct {
-	v1.UnimplementedMarketingServiceServer
+	v1.UnimplementedMarketingServer
 
 	campaignUc   *biz.CampaignUsecase
 	redeemCodeUc *biz.RedeemCodeUsecase

@@ -4,14 +4,14 @@
 package main
 
 import (
-	"github.com/gaoyong06/middleground/marketing-service/internal/biz"
-	"github.com/gaoyong06/middleground/marketing-service/internal/conf"
-	"github.com/gaoyong06/middleground/marketing-service/internal/data"
-	"github.com/gaoyong06/middleground/marketing-service/internal/server"
-	"github.com/gaoyong06/middleground/marketing-service/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
+	"marketing-service/internal/biz"
+	"marketing-service/internal/conf"
+	"marketing-service/internal/data"
+	"marketing-service/internal/server"
+	"marketing-service/internal/service"
 )
 
 // wireApp init kratos application.

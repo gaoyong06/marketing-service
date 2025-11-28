@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package marketing.conf;
 
-option go_package = "github.com/gaoyong06/middleground/marketing-service/internal/conf;conf";
+option go_package = "marketing-service/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
 

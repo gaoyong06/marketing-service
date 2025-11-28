@@ -4,7 +4,6 @@ import (
 	"context"
 	"time"
 
-	"github.com/gaoyong06/middleground/marketing-service/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
@@ -12,6 +11,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+	"marketing-service/internal/conf"
 )
 
 // ProviderSet is data providers.

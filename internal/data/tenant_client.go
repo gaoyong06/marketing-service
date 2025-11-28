@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gaoyong06/middleground/marketing-service/internal/biz"
-	"github.com/gaoyong06/middleground/marketing-service/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/biz"
+	"marketing-service/internal/conf"
 )
 
 // TenantServiceClient is a client for the tenant service.
@@ -29,7 +29,7 @@ func (c *TenantServiceClient) GetTenant(ctx context.Context, tenantID string) (*
 	// TODO: Implement actual gRPC client call to tenant service
 	// For now, we'll return a mock tenant
 	c.log.Infof("Getting tenant %s from tenant service", tenantID)
-	
+
 	// Mock tenant data
 	tenantType := biz.TenantTypePlatform
 	if len(tenantID) > 3 {
@@ -41,19 +41,19 @@ func (c *TenantServiceClient) GetTenant(ctx context.Context, tenantID string) (*
 			tenantType = biz.TenantTypeEnterprise
 		}
 	}
-	
+
 	return &biz.Tenant{
-		TenantID:      tenantID,
-		TenantName:    fmt.Sprintf("Tenant %s", tenantID),
-		TenantType:    tenantType,
-		Status:        1, // Active
-		QuotaConfig:   map[string]interface{}{
-			"campaign": 100,
+		TenantID:   tenantID,
+		TenantName: fmt.Sprintf("Tenant %s", tenantID),
+		TenantType: tenantType,
+		Status:     1, // Active
+		QuotaConfig: map[string]interface{}{
+			"campaign":    100,
 			"redeem_code": 10000,
-			"batch": 50,
+			"batch":       50,
 		},
-		CreatedAt:     time.Now().Add(-24 * time.Hour),
-		UpdatedAt:     time.Now(),
+		CreatedAt: time.Now().Add(-24 * time.Hour),
+		UpdatedAt: time.Now(),
 	}, nil
 }
 
@@ -62,7 +62,7 @@ func (c *TenantServiceClient) CheckQuota(ctx context.Context, tenantID, quotaTyp
 	// TODO: Implement actual gRPC client call to tenant service
 	// For now, we'll return a mock result
 	c.log.Infof("Checking quota for tenant %s, quota type %s, count %d", tenantID, quotaType, count)
-	
+
 	// Mock quota check
 	var limit int32
 	switch quotaType {
@@ -75,11 +75,11 @@ func (c *TenantServiceClient) CheckQuota(ctx context.Context, tenantID, quotaTyp
 	default:
 		limit = 1000
 	}
-	
+
 	// Simulate a random current usage between 0 and 70% of the limit
 	currentUsage := int32(float64(limit) * 0.7)
 	remaining := limit - currentUsage
-	
+
 	return count <= remaining, nil
 }
 

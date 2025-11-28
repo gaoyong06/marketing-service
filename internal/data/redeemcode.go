@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/gaoyong06/middleground/marketing-service/internal/biz"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"marketing-service/internal/biz"
 )
 
 // RedeemCodeModel 兑换码模型
@@ -62,27 +62,27 @@ func (CodeBatchModel) TableName() string {
 
 // RedemptionRecordModel 兑换记录模型
 type RedemptionRecordModel struct {
-	ID            string     `gorm:"primaryKey;type:varchar(32)"`
+	ID             string     `gorm:"primaryKey;type:varchar(32)"`
 	RedemptionID   string     `gorm:"type:varchar(32);uniqueIndex;not null"`
 	RedeemCodeID   int64      `gorm:"type:bigint;index;not null"`
-	Code          string     `gorm:"type:varchar(32);index;not null"`
-	CampaignID    string     `gorm:"type:varchar(32);index;not null"`
-	TenantID      string     `gorm:"type:varchar(32);index;not null"`
-	UserID        string     `gorm:"type:varchar(32);index;not null"`
+	Code           string     `gorm:"type:varchar(32);index;not null"`
+	CampaignID     string     `gorm:"type:varchar(32);index;not null"`
+	TenantID       string     `gorm:"type:varchar(32);index;not null"`
+	UserID         string     `gorm:"type:varchar(32);index;not null"`
 	RedemptionType string     `gorm:"type:varchar(16);not null"`
 	RedemptionAt   time.Time  `gorm:"type:datetime;not null"`
 	RedemptionIP   string     `gorm:"type:varchar(32)"`
 	RedemptionEnv  string     `gorm:"type:varchar(16)"`
-	RedeemChannel string     `gorm:"type:varchar(32)"`
-	DeviceInfo    string     `gorm:"type:text"`
-	IPAddress     string     `gorm:"type:varchar(64)"`
-	Location      string     `gorm:"type:varchar(255)"`
-	OrderID       string     `gorm:"type:varchar(64)"`
-	RewardDetail  string     `gorm:"type:text"`
-	Metadata      string     `gorm:"type:text"`
-	CreatedAt     time.Time  `gorm:"type:datetime;not null"`
-	UpdatedAt     time.Time  `gorm:"type:datetime;not null"`
-	DeletedAt     *time.Time `gorm:"index"`
+	RedeemChannel  string     `gorm:"type:varchar(32)"`
+	DeviceInfo     string     `gorm:"type:text"`
+	IPAddress      string     `gorm:"type:varchar(64)"`
+	Location       string     `gorm:"type:varchar(255)"`
+	OrderID        string     `gorm:"type:varchar(64)"`
+	RewardDetail   string     `gorm:"type:text"`
+	Metadata       string     `gorm:"type:text"`
+	CreatedAt      time.Time  `gorm:"type:datetime;not null"`
+	UpdatedAt      time.Time  `gorm:"type:datetime;not null"`
+	DeletedAt      *time.Time `gorm:"index"`
 }
 
 // TableName 设置表名
@@ -160,22 +160,22 @@ func (r *redeemCodeRepo) RedeemCode(ctx context.Context, code string, userID int
 	// 创建兑换记录
 	redemptionID := uuid.New().String()
 	redemptionRecord := RedemptionRecordModel{
-		ID:            uuid.New().String(),
+		ID:             uuid.New().String(),
 		RedemptionID:   redemptionID,
 		RedeemCodeID:   model.ID,
-		Code:          code,
-		CampaignID:    model.CampaignID,
-		TenantID:      model.TenantID,
-		UserID:        fmt.Sprintf("%d", userID),
+		Code:           code,
+		CampaignID:     model.CampaignID,
+		TenantID:       model.TenantID,
+		UserID:         fmt.Sprintf("%d", userID),
 		RedemptionType: "NORMAL",
-		RedeemChannel: redeemChannel,
-		DeviceInfo:    deviceInfo,
-		IPAddress:     ipAddress,
-		Location:      location,
-		OrderID:       orderID,
-		RedemptionAt:  now,
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		RedeemChannel:  redeemChannel,
+		DeviceInfo:     deviceInfo,
+		IPAddress:      ipAddress,
+		Location:       location,
+		OrderID:        orderID,
+		RedemptionAt:   now,
+		CreatedAt:      now,
+		UpdatedAt:      now,
 	}
 
 	result = tx.Create(&redemptionRecord)
@@ -192,16 +192,16 @@ func (r *redeemCodeRepo) RedeemCode(ctx context.Context, code string, userID int
 	// 构建返回的领域模型
 	redeemCode := &biz.RedeemCode{
 		RedeemCodeID: model.ID,
-		Code:        model.Code,
-		CampaignID:  model.CampaignID,
-		BatchID:     model.BatchID,
-		TenantID:    model.TenantID,
-		Status:      model.Status,
-		ValidFrom:   model.ValidFrom,
-		ValidUntil:  model.ValidUntil,
-		Metadata:    metadata,
-		CreatedAt:   model.CreatedAt,
-		UpdatedAt:   model.UpdatedAt,
+		Code:         model.Code,
+		CampaignID:   model.CampaignID,
+		BatchID:      model.BatchID,
+		TenantID:     model.TenantID,
+		Status:       model.Status,
+		ValidFrom:    model.ValidFrom,
+		ValidUntil:   model.ValidUntil,
+		Metadata:     metadata,
+		CreatedAt:    model.CreatedAt,
+		UpdatedAt:    model.UpdatedAt,
 		RedemptionAt: model.RedemptionAt,
 	}
 
@@ -211,23 +211,23 @@ func (r *redeemCodeRepo) RedeemCode(ctx context.Context, code string, userID int
 		r.log.WithContext(ctx).Errorf("Failed to parse record ID: %v", err)
 		recordID = 0 // 使用默认值
 	}
-	
+
 	// 将 RedeemCodeID 转换为 int64
 	redeemCodeID := redemptionRecord.RedeemCodeID
-	
+
 	record := &biz.RedemptionRecord{
 		RecordID:      recordID,
 		RedeemCodeID:  redeemCodeID,
-		Code:         redemptionRecord.Code,
-		UserID:       userID,
-		TenantID:     redemptionRecord.TenantID,
-		CampaignID:   redemptionRecord.CampaignID,
+		Code:          redemptionRecord.Code,
+		UserID:        userID,
+		TenantID:      redemptionRecord.TenantID,
+		CampaignID:    redemptionRecord.CampaignID,
 		RedeemChannel: redemptionRecord.RedeemChannel,
-		RedemptionAt: redemptionRecord.RedemptionAt,
-		DeviceInfo:   redemptionRecord.DeviceInfo,
-		IPAddress:    redemptionRecord.IPAddress,
-		Location:     redemptionRecord.Location,
-		OrderID:      redemptionRecord.OrderID,
+		RedemptionAt:  redemptionRecord.RedemptionAt,
+		DeviceInfo:    redemptionRecord.DeviceInfo,
+		IPAddress:     redemptionRecord.IPAddress,
+		Location:      redemptionRecord.Location,
+		OrderID:       redemptionRecord.OrderID,
 	}
 
 	return redeemCode, record, nil
@@ -283,17 +283,17 @@ func (r *redeemCodeRepo) GetCode(ctx context.Context, codeStr string) (*biz.Rede
 	// 转换为领域模型
 	return &biz.RedeemCode{
 		RedeemCodeID: model.ID,
-		Code:        model.Code,
-		CampaignID:  model.CampaignID,
-		TenantID:    model.TenantID,
-		BatchID:     model.BatchID,
-		Status:      model.Status,
-		ValidFrom:   model.ValidFrom,
-		ValidUntil:  model.ValidUntil,
-		Metadata:    metadata,
+		Code:         model.Code,
+		CampaignID:   model.CampaignID,
+		TenantID:     model.TenantID,
+		BatchID:      model.BatchID,
+		Status:       model.Status,
+		ValidFrom:    model.ValidFrom,
+		ValidUntil:   model.ValidUntil,
+		Metadata:     metadata,
 		RedemptionAt: model.RedemptionAt,
-		CreatedAt:   model.CreatedAt,
-		UpdatedAt:   model.UpdatedAt,
+		CreatedAt:    model.CreatedAt,
+		UpdatedAt:    model.UpdatedAt,
 	}, nil
 }
 
@@ -313,17 +313,17 @@ func (r *redeemCodeRepo) UpdateCode(ctx context.Context, code *biz.RedeemCode) (
 
 	// 更新兑换码
 	model := &RedeemCodeModel{
-		ID:          code.RedeemCodeID,
-		Code:        code.Code,
-		CampaignID:  code.CampaignID,
-		TenantID:    code.TenantID,
-		BatchID:     code.BatchID,
-		Status:      code.Status,
-		ValidFrom:   code.ValidFrom,
-		ValidUntil:  code.ValidUntil,
-		Metadata:    metadataStr,
+		ID:           code.RedeemCodeID,
+		Code:         code.Code,
+		CampaignID:   code.CampaignID,
+		TenantID:     code.TenantID,
+		BatchID:      code.BatchID,
+		Status:       code.Status,
+		ValidFrom:    code.ValidFrom,
+		ValidUntil:   code.ValidUntil,
+		Metadata:     metadataStr,
 		RedemptionAt: code.RedemptionAt,
-		UpdatedAt:   time.Now(),
+		UpdatedAt:    time.Now(),
 	}
 
 	result := r.data.db.Save(model)
@@ -540,13 +540,13 @@ func (r *redeemCodeRepo) GetRedemptionRecords(ctx context.Context, codeID string
 		records = append(records, &biz.RedemptionRecord{
 			RecordID:      recordID,
 			RedeemCodeID:  model.RedeemCodeID,
-			Code:         model.Code,
-			UserID:       userID,
-			TenantID:     model.TenantID,
-			CampaignID:   model.CampaignID,
+			Code:          model.Code,
+			UserID:        userID,
+			TenantID:      model.TenantID,
+			CampaignID:    model.CampaignID,
 			RedeemChannel: model.RedeemChannel,
-			RedemptionAt: model.RedemptionAt,
-			RewardDetail: rewardDetail,
+			RedemptionAt:  model.RedemptionAt,
+			RewardDetail:  rewardDetail,
 		})
 	}
 
@@ -761,18 +761,18 @@ func (r *redeemCodeRepo) ListCodes(ctx context.Context, campaignID, tenantID, pr
 	if status >= 0 {
 		db = db.Where("status = ?", status)
 	}
-	
+
 	// 处理产品代码和码类型，这些可能存储在元数据中
 	if productCode != "" {
 		// 假设 productCode 存储在 metadata 字段中
 		db = db.Where("metadata LIKE ?", "%\"productCode\":\"%"+productCode+"%\"")
 	}
-	
+
 	if codeType != "" {
 		// 假设 codeType 存储在 metadata 字段中
 		db = db.Where("metadata LIKE ?", "%\"codeType\":\"%"+codeType+"%\"")
 	}
-	
+
 	if userID > 0 {
 		// 假设 userID 存储在 metadata 字段中
 		userIDStr := fmt.Sprintf("%d", userID)

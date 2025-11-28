@@ -633,7 +633,7 @@ const file_internal_conf_conf_proto_rawDesc = "" +
 	"\x06tenant\x18\x01 \x01(\v2\x1b.marketing.conf.Client.GRPCR\x06tenant\x1aS\n" +
 	"\x04GRPC\x12\x16\n" +
 	"\x06target\x18\x01 \x01(\tR\x06target\x123\n" +
-	"\atimeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\atimeoutBHZFgithub.com/gaoyong06/middleground/marketing-service/internal/conf;confb\x06proto3"
+	"\atimeout\x18\x02 \x01(\v2\x19.google.protobuf.DurationR\atimeoutBHZFmarketing-service/internal/conf;confb\x06proto3"
 
 var (
 	file_internal_conf_conf_proto_rawDescOnce sync.Once

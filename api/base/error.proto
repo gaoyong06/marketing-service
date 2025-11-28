@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package base;
+
+option go_package = "marketing-service/api/base";
+
+// 标准错误响应
+message Error {
+  int32 code = 1;        // 错误码
+  string message = 2;    // 错误消息
+  string details = 3;    // 详细信息
+}
