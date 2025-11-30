@@ -75,7 +75,7 @@ func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCam
 	if req.CampaignType == "" {
 		return nil, errors.New("campaign_type is required")
 	}
-	
+
 	// 解析时间
 	var startTime, endTime time.Time
 	var err error
@@ -97,7 +97,7 @@ func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCam
 	} else {
 		endTime = time.Now().AddDate(1, 0, 0) // 默认一年后
 	}
-	
+
 	// 验证时间逻辑
 	if endTime.Before(startTime) {
 		return nil, errors.New("end_time must be after start_time")
@@ -556,7 +556,7 @@ func (s *MarketingService) CreateReward(ctx context.Context, req *v1.CreateRewar
 	if req.RewardType == "" {
 		return nil, errors.New("reward_type is required")
 	}
-	
+
 	// 确保 content_config 不为空（数据库要求 NOT NULL）
 	contentConfig := req.ContentConfig
 	if contentConfig == "" {
@@ -735,7 +735,7 @@ func (s *MarketingService) CreateTask(ctx context.Context, req *v1.CreateTaskReq
 	if req.TaskType == "" {
 		return nil, errors.New("task_type is required")
 	}
-	
+
 	var startTime, endTime time.Time
 	var err error
 
@@ -756,7 +756,7 @@ func (s *MarketingService) CreateTask(ctx context.Context, req *v1.CreateTaskReq
 	} else {
 		endTime = time.Now().AddDate(1, 0, 0) // 默认一年后
 	}
-	
+
 	// 验证时间逻辑
 	if endTime.Before(startTime) {
 		return nil, errors.New("end_time must be after start_time")
@@ -767,7 +767,7 @@ func (s *MarketingService) CreateTask(ctx context.Context, req *v1.CreateTaskReq
 	if conditionConfig == "" {
 		conditionConfig = "{}" // 默认空 JSON 对象
 	}
-	
+
 	task := &biz.Task{
 		TenantID:        req.TenantId,
 		AppID:           req.ProductCode,

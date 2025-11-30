@@ -187,6 +187,7 @@ func (s *TaskTriggerService) checkCondition(_ context.Context, task *Task, event
 
 	var conditionConfig map[string]interface{}
 	if err := json.Unmarshal([]byte(task.ConditionConfig), &conditionConfig); err != nil {
+		s.log.Warnf("failed to unmarshal condition config for task %s: %v", task.ID, err)
 		return false, "", err
 	}
 
@@ -198,6 +199,10 @@ func (s *TaskTriggerService) checkCondition(_ context.Context, task *Task, event
 
 	// 从事件数据中获取进度值
 	progressValue := s.getProgressValue(event, conditionType)
+
+	// 添加调试日志
+	s.log.Debugf("checkCondition: task=%s, conditionType=%s, operator=%s, value=%f, progressValue=%f, eventData=%v",
+		task.ID, conditionType, operator, value, progressValue, event.EventData)
 
 	// 检查条件
 	completed := false
@@ -213,6 +218,8 @@ func (s *TaskTriggerService) checkCondition(_ context.Context, task *Task, event
 	case "<":
 		completed = progressValue < value
 	}
+
+	s.log.Debugf("checkCondition result: task=%s, completed=%v", task.ID, completed)
 
 	// 构建进度数据
 	progressData := map[string]interface{}{
@@ -232,9 +239,10 @@ func (s *TaskTriggerService) getProgressValue(event *TaskEvent, conditionType st
 	if event.EventData != nil {
 		val, ok := event.EventData[conditionType]
 		if !ok {
+			s.log.Debugf("getProgressValue: conditionType %s not found in eventData: %v", conditionType, event.EventData)
 			return 0
 		}
-		
+
 		// 支持多种类型：float64, int, string
 		switch v := val.(type) {
 		case float64:
@@ -247,10 +255,13 @@ func (s *TaskTriggerService) getProgressValue(event *TaskEvent, conditionType st
 			// 尝试将字符串转换为数字
 			var f float64
 			if _, err := fmt.Sscanf(v, "%f", &f); err == nil {
+				s.log.Debugf("getProgressValue: converted string %s to float64 %f", v, f)
 				return f
 			}
+			s.log.Warnf("getProgressValue: failed to convert string %s to float64", v)
 			return 0
 		default:
+			s.log.Warnf("getProgressValue: unsupported type %T for value %v", v, v)
 			return 0
 		}
 	}

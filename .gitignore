@@ -35,3 +35,4 @@ dist
 /logs
 data/GeoIP2-City.mmdb
 reports
+test-reports
