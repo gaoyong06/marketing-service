@@ -12,7 +12,7 @@ data:
     source: root:@tcp(127.0.0.1:3306)/marketing_service?charset=utf8mb4&parseTime=True&loc=Local
     max_idle_conns: 10
     max_open_conns: 100
-    conn_max_lifetime: 1h
+    conn_max_lifetime: "3600s"
   redis:
     addr: 127.0.0.1:6379
     password: ""
