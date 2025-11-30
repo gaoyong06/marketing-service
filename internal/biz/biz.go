@@ -1,12 +1,20 @@
 package biz
 
-import (
-	"github.com/google/wire"
-)
+import "github.com/google/wire"
 
 // ProviderSet is biz providers.
 var ProviderSet = wire.NewSet(
-	NewCampaignUsecase,
-	NewRedeemCodeUsecase,
-	NewCodeGenerator,
+	NewCampaignUseCase,
+	NewRewardUseCase,
+	NewRewardGrantUseCase,
+	NewTaskUseCase,
+	NewAudienceUseCase,
+	NewRedeemCodeUseCase,
+	NewInventoryReservationUseCase,
+	NewTaskCompletionLogUseCase,
+	NewCampaignTaskUseCase,
+	NewValidatorService,
+	NewGeneratorService,
+	NewDistributorService,
+	NewTaskTriggerService,
 )

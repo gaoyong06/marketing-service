@@ -1,15 +1,15 @@
 server:
   http:
-    addr: 0.0.0.0:8001
+    addr: 0.0.0.0:8105
     timeout: 1s
   grpc:
-    addr: 0.0.0.0:9001
+    addr: 0.0.0.0:9105
     timeout: 1s
 
 data:
   database:
     driver: mysql
-    source: root:password@tcp(127.0.0.1:3306)/marketing_service?charset=utf8mb4&parseTime=True&loc=Local
+    source: root:@tcp(127.0.0.1:3306)/marketing_service?charset=utf8mb4&parseTime=True&loc=Local
     max_idle_conns: 10
     max_open_conns: 100
     conn_max_lifetime: 1h
@@ -24,6 +24,6 @@ data:
     min_idle_conns: 10
 
 client:
-  tenant:
+  tenant_service:
     target: 127.0.0.1:9000
     timeout: 1s

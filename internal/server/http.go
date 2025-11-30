@@ -1,51 +1,44 @@
 package server
 
 import (
+	"marketing-service/conf"
+
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/recovery"
-	"github.com/go-kratos/kratos/v2/transport/http"
-	pb "marketing-service/api/marketing_service/v1"
-	"marketing-service/internal/conf"
+	kratoshttp "github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+
+	v1 "marketing-service/api/marketing_service/v1"
 	"marketing-service/internal/service"
 )
 
-// NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, marketingSvc *service.MarketingService, logger log.Logger) *http.Server {
-	var opts = []http.ServerOption{
-		http.Middleware(
-			recovery.Recovery(),
-		),
+// NewHTTPServer 创建 HTTP 服务器
+func NewHTTPServer(s *conf.Server, marketing *service.MarketingService, logger log.Logger) *kratoshttp.Server {
+	var opts []kratoshttp.ServerOption
+	if s != nil && s.Http != nil {
+		if s.Http.Addr != "" {
+			opts = append(opts, kratoshttp.Address(s.Http.Addr))
+		}
+		if s.Http.Timeout != nil {
+			opts = append(opts, kratoshttp.Timeout(s.Http.Timeout.AsDuration()))
+		}
 	}
-	if c.Http.Network != "" {
-		opts = append(opts, http.Network(c.Http.Network))
-	}
-	if c.Http.Addr != "" {
-		opts = append(opts, http.Address(c.Http.Addr))
-	}
-	if c.Http.Timeout != nil && c.Http.Timeout.AsDuration() > 0 {
-		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
-	}
-	srv := http.NewServer(opts...)
 
-	// 注册服务器
-	pb.RegisterMarketingHTTPServer(srv, marketingSvc)
+	srv := kratoshttp.NewServer(opts...)
+	v1.RegisterMarketingHTTPServer(srv, marketing)
 
-	// 添加健康检查路由
-	router := srv.Route("/")
-	router.GET("/health", func(ctx http.Context) error {
-		return ctx.JSON(200, map[string]string{
-			"status":  "ok",
-			"service": "marketing-service",
-			"version": "v1",
-		})
+	// 注册 Prometheus metrics 端点
+	srv.Route("/").GET("/metrics", func(ctx kratoshttp.Context) error {
+		promhttp.Handler().ServeHTTP(ctx.Response(), ctx.Request())
+		return nil
 	})
 
-	// 添加指标路由
-	router.GET("/metrics", func(ctx http.Context) error {
+	// 注册健康检查端点
+	srv.Route("/").GET("/health", func(ctx kratoshttp.Context) error {
 		return ctx.JSON(200, map[string]interface{}{
-			"status": "ok",
-			"uptime": "up",
+			"status":  "UP",
+			"service": "marketing-service",
 		})
 	})
+
 	return srv
 }

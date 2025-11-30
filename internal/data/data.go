@@ -4,14 +4,14 @@ import (
 	"context"
 	"time"
 
+	"marketing-service/conf"
+
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-redis/redis/v8"
 	"github.com/google/wire"
+	"github.com/redis/go-redis/v9"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"gorm.io/gorm/schema"
-	"marketing-service/internal/conf"
 )
 
 // ProviderSet is data providers.
@@ -19,126 +19,129 @@ var ProviderSet = wire.NewSet(
 	NewData,
 	NewDB,
 	NewRedis,
+	NewCacheService,
 	NewCampaignRepo,
+	NewRewardRepo,
+	NewRewardGrantRepo,
+	NewTaskRepo,
+	NewAudienceRepo,
 	NewRedeemCodeRepo,
-	NewTenantRepo,
-	NewTenantServiceClient,
+	NewInventoryReservationRepo,
+	NewTaskCompletionLogRepo,
+	NewCampaignTaskRepo,
 )
 
-// Data ..
+// Data .
 type Data struct {
-	db    *gorm.DB
-	redis *redis.Client
-}
-
-// GormWriter 自定义 GORM 日志写入器
-type GormWriter struct {
-	helper *log.Helper
-}
-
-// Printf 实现 logger.Writer 接口
-func (w *GormWriter) Printf(format string, args ...interface{}) {
-	w.helper.Infof(format, args...)
-}
-
-// NewDB creates a new database connection.
-func NewDB(conf *conf.Data, l log.Logger) *gorm.DB {
-	logHelper := log.NewHelper(l)
-
-	// 创建 GORM 日志配置
-	writer := &GormWriter{helper: logHelper}
-	gormLogger := logger.New(
-		writer,
-		logger.Config{
-			SlowThreshold:             time.Second,
-			LogLevel:                  logger.Info,
-			IgnoreRecordNotFoundError: true,
-			Colorful:                  false,
-		},
-	)
-
-	db, err := gorm.Open(mysql.Open(conf.Database.Source), &gorm.Config{
-		Logger: gormLogger,
-		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true, // 使用单数表名
-		},
-	})
-
-	if err != nil {
-		logHelper.Fatalf("failed opening connection to mysql: %v", err)
-	}
-
-	// 设置连接池参数
-	sqlDB, err := db.DB()
-	if err != nil {
-		logHelper.Fatalf("failed to get database: %v", err)
-	}
-
-	// 设置最大连接数
-	sqlDB.SetMaxOpenConns(int(conf.Database.MaxOpenConns))
-	// 设置最大空闲连接数
-	sqlDB.SetMaxIdleConns(int(conf.Database.MaxIdleConns))
-	// 设置连接最大生命周期
-	sqlDB.SetConnMaxLifetime(conf.Database.ConnMaxLifetime.AsDuration())
-
-	logHelper.Info("mysql connected")
-
-	return db
-}
-
-// NewRedis creates a new redis client.
-func NewRedis(conf *conf.Data, l log.Logger) *redis.Client {
-	logHelper := log.NewHelper(l)
-
-	client := redis.NewClient(&redis.Options{
-		Addr:         conf.Redis.Addr,
-		Password:     conf.Redis.Password,
-		DB:           int(conf.Redis.Db),
-		DialTimeout:  conf.Redis.DialTimeout.AsDuration(),
-		ReadTimeout:  conf.Redis.ReadTimeout.AsDuration(),
-		WriteTimeout: conf.Redis.WriteTimeout.AsDuration(),
-		PoolSize:     int(conf.Redis.PoolSize),
-		MinIdleConns: int(conf.Redis.MinIdleConns),
-	})
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
-	defer cancel()
-
-	_, err := client.Ping(ctx).Result()
-	if err != nil {
-		logHelper.Fatalf("failed to connect redis: %v", err)
-	}
-
-	logHelper.Info("redis connected")
-	return client
+	db  *gorm.DB
+	rdb *redis.Client
+	log *log.Helper
 }
 
 // NewData .
-func NewData(db *gorm.DB, redis *redis.Client, l log.Logger) (*Data, func(), error) {
-	logHelper := log.NewHelper(l)
-	logHelper.Info("creating data resources")
+func NewData(db *gorm.DB, rdb *redis.Client, logger log.Logger) (*Data, func(), error) {
+	l := log.NewHelper(log.With(logger, "module", "data"))
 
-	d := &Data{
-		db:    db,
-		redis: redis,
+	cleanup := func() {
+		l.Info("closing the data resources")
+		if sqlDB, err := db.DB(); err == nil {
+			sqlDB.Close()
+		}
+		if rdb != nil {
+			rdb.Close()
+		}
 	}
 
-	return d, func() {
-		logHelper.Info("closing data resources")
-		if redis != nil {
-			if err := redis.Close(); err != nil {
-				logHelper.Errorf("redis close error: %v", err)
-			}
-		}
-		if db != nil {
-			sqlDB, err := db.DB()
-			if err != nil {
-				logHelper.Errorf("db connection error: %v", err)
-				return
-			}
-			if err := sqlDB.Close(); err != nil {
-				logHelper.Errorf("db close error: %v", err)
-			}
-		}
-	}, nil
+	return &Data{
+		db:  db,
+		rdb: rdb,
+		log: l,
+	}, cleanup, nil
+}
+
+// NewDB .
+func NewDB(c *conf.Data, logger log.Logger) *gorm.DB {
+	l := log.NewHelper(log.With(logger, "module", "data/db"))
+
+	db, err := gorm.Open(mysql.Open(c.Database.Source), &gorm.Config{
+		Logger: NewGormLogger(l),
+	})
+	if err != nil {
+		l.Fatalf("failed to connect database: %v", err)
+	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		l.Fatalf("failed to get database instance: %v", err)
+	}
+
+	// 设置连接池
+	sqlDB.SetMaxIdleConns(int(c.Database.MaxIdleConns))
+	sqlDB.SetMaxOpenConns(int(c.Database.MaxOpenConns))
+	sqlDB.SetConnMaxLifetime(c.Database.ConnMaxLifetime.AsDuration())
+
+	l.Info("database connected successfully")
+	return db
+}
+
+// NewRedis .
+func NewRedis(c *conf.Data, logger log.Logger) *redis.Client {
+	l := log.NewHelper(log.With(logger, "module", "data/redis"))
+
+	rdb := redis.NewClient(&redis.Options{
+		Addr:         c.Redis.Addr,
+		Password:     c.Redis.Password,
+		DB:           int(c.Redis.Db),
+		DialTimeout:  c.Redis.DialTimeout.AsDuration(),
+		ReadTimeout:  c.Redis.ReadTimeout.AsDuration(),
+		WriteTimeout: c.Redis.WriteTimeout.AsDuration(),
+		PoolSize:     int(c.Redis.PoolSize),
+		MinIdleConns: int(c.Redis.MinIdleConns),
+	})
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := rdb.Ping(ctx).Err(); err != nil {
+		l.Fatalf("failed to connect redis: %v", err)
+	}
+
+	l.Info("redis connected successfully")
+	return rdb
+}
+
+// GormLogger 适配器
+type GormLogger struct {
+	*log.Helper
+}
+
+// NewGormLogger 创建 GORM Logger 适配器
+func NewGormLogger(helper *log.Helper) logger.Interface {
+	return &GormLogger{Helper: helper}
+}
+
+func (l *GormLogger) LogMode(level logger.LogLevel) logger.Interface {
+	return l
+}
+
+func (l *GormLogger) Info(ctx context.Context, msg string, data ...interface{}) {
+	l.Helper.Infof(msg, data...)
+}
+
+func (l *GormLogger) Warn(ctx context.Context, msg string, data ...interface{}) {
+	l.Helper.Warnf(msg, data...)
+}
+
+func (l *GormLogger) Error(ctx context.Context, msg string, data ...interface{}) {
+	l.Helper.Errorf(msg, data...)
+}
+
+func (l *GormLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql string, rowsAffected int64), err error) {
+	elapsed := time.Since(begin)
+	sql, rows := fc()
+	if err != nil {
+		l.Helper.Errorf("sql error: %v, elapsed: %v, sql: %s, rows: %d", err, elapsed, sql, rows)
+	} else {
+		l.Helper.Debugf("sql trace: elapsed: %v, sql: %s, rows: %d", elapsed, sql, rows)
+	}
 }

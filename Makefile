@@ -4,11 +4,12 @@
 
 SERVICE_NAME=marketing-service
 SERVICE_DISPLAY_NAME=Marketing Service
-HTTP_PORT=8001
-GRPC_PORT=9001
-API_PROTO_DIR=
-API_PROTO_PATH=
-TEST_CONFIG=
+HTTP_PORT=8105
+GRPC_PORT=9105
+API_PROTO_DIR=api/marketing_service/v1
+API_PROTO_PATH=api/marketing_service/v1/marketing.proto
+WIRE_DIRS=cmd/marketing-service
+TEST_CONFIG=test/api/api-test-config.yaml
 
 DEVOPS_TOOLS_DIR := $(shell cd .. && pwd)/devops-tools
 include $(DEVOPS_TOOLS_DIR)/Makefile.common

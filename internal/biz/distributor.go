@@ -1,0 +1,208 @@
+package biz
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/go-kratos/kratos/v2/log"
+)
+
+// Distributor 发放器接口
+type Distributor interface {
+	Distribute(ctx context.Context, req *DistributionRequest) error
+}
+
+// DistributionRequest 发放请求
+type DistributionRequest struct {
+	GrantID    string
+	RewardID   string
+	RewardType string
+	UserID     int64
+	Content    string                 // 奖励内容（JSON）
+	Config     map[string]interface{} // 发放器配置
+}
+
+// DistributorService 发放器服务
+type DistributorService struct {
+	distributors map[string]Distributor
+	log          *log.Helper
+}
+
+// NewDistributorService 创建发放器服务
+func NewDistributorService(logger log.Logger) *DistributorService {
+	ds := &DistributorService{
+		distributors: make(map[string]Distributor),
+		log:          log.NewHelper(logger),
+	}
+
+	// 注册内置发放器
+	ds.Register("AUTO", NewAutoDistributor())
+	ds.Register("WEBHOOK", NewWebhookDistributor())
+	ds.Register("EMAIL", NewEmailDistributor())
+	ds.Register("SMS", NewSMSDistributor())
+
+	return ds
+}
+
+// Register 注册发放器
+func (ds *DistributorService) Register(distributorType string, distributor Distributor) {
+	ds.distributors[distributorType] = distributor
+}
+
+// Distribute 执行发放
+func (ds *DistributorService) Distribute(ctx context.Context, req *DistributionRequest) error {
+	if req.Config == nil {
+		// 无配置，使用自动发放
+		distributor := ds.distributors["AUTO"]
+		if distributor == nil {
+			return fmt.Errorf("auto distributor not found")
+		}
+		return distributor.Distribute(ctx, req)
+	}
+
+	distributorType, ok := req.Config["type"].(string)
+	if !ok {
+		distributorType = "AUTO" // 默认自动发放
+	}
+
+	distributor, exists := ds.distributors[distributorType]
+	if !exists {
+		ds.log.Warnf("unknown distributor type: %s, using auto", distributorType)
+		distributor = ds.distributors["AUTO"]
+		if distributor == nil {
+			return fmt.Errorf("distributor not found: %s", distributorType)
+		}
+	}
+
+	return distributor.Distribute(ctx, req)
+}
+
+// ========== 内置发放器实现 ==========
+
+// AutoDistributor 自动发放器
+type AutoDistributor struct {
+	log *log.Helper
+}
+
+// NewAutoDistributor 创建自动发放器
+func NewAutoDistributor() Distributor {
+	return &AutoDistributor{}
+}
+
+// Distribute 自动发放（直接完成，无需额外操作）
+func (d *AutoDistributor) Distribute(ctx context.Context, req *DistributionRequest) error {
+	// 自动发放器不需要额外操作，奖励已经记录在 RewardGrant 中
+	// 实际使用时，可以通过消息队列或事件总线通知其他系统
+	return nil
+}
+
+// WebhookDistributor Webhook 发放器
+type WebhookDistributor struct {
+	httpClient *http.Client
+	log        *log.Helper
+}
+
+// NewWebhookDistributor 创建 Webhook 发放器
+func NewWebhookDistributor() Distributor {
+	return &WebhookDistributor{
+		httpClient: &http.Client{
+			Timeout: 10 * time.Second,
+		},
+	}
+}
+
+// Distribute 通过 Webhook 发放
+func (d *WebhookDistributor) Distribute(ctx context.Context, req *DistributionRequest) error {
+	webhookURL, ok := req.Config["webhook_url"].(string)
+	if !ok || webhookURL == "" {
+		return fmt.Errorf("webhook_url not configured")
+	}
+
+	// 构建请求体
+	payload := map[string]interface{}{
+		"grant_id":    req.GrantID,
+		"reward_id":   req.RewardID,
+		"reward_type": req.RewardType,
+		"user_id":     req.UserID,
+		"content":     req.Content,
+	}
+
+	payloadJSON, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	// 发送 HTTP 请求
+	httpReq, err := http.NewRequestWithContext(ctx, "POST", webhookURL, bytes.NewReader(payloadJSON))
+	if err != nil {
+		return err
+	}
+	httpReq.Header.Set("Content-Type", "application/json")
+	httpReq.Body = http.NoBody // TODO: 设置请求体
+
+	resp, err := d.httpClient.Do(httpReq)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("webhook request failed with status: %d", resp.StatusCode)
+	}
+
+	return nil
+}
+
+// EmailDistributor 邮件发放器
+type EmailDistributor struct {
+	log *log.Helper
+}
+
+// NewEmailDistributor 创建邮件发放器
+func NewEmailDistributor() Distributor {
+	return &EmailDistributor{}
+}
+
+// Distribute 通过邮件发放
+func (d *EmailDistributor) Distribute(ctx context.Context, req *DistributionRequest) error {
+	// TODO: 实现邮件发送逻辑
+	// 需要集成邮件服务（如 SMTP、SendGrid 等）
+	d.log.Infof("sending reward via email to user %d", req.UserID)
+	return nil
+}
+
+// SMSDistributor 短信发放器
+type SMSDistributor struct {
+	log *log.Helper
+}
+
+// NewSMSDistributor 创建短信发放器
+func NewSMSDistributor() Distributor {
+	return &SMSDistributor{}
+}
+
+// Distribute 通过短信发放
+func (d *SMSDistributor) Distribute(ctx context.Context, req *DistributionRequest) error {
+	// TODO: 实现短信发送逻辑
+	// 需要集成短信服务（如阿里云、腾讯云等）
+	d.log.Infof("sending reward via SMS to user %d", req.UserID)
+	return nil
+}
+
+// ParseDistributorConfig 解析发放器配置
+func ParseDistributorConfig(configJSON string) (map[string]interface{}, error) {
+	if configJSON == "" {
+		return nil, nil
+	}
+
+	var config map[string]interface{}
+	if err := json.Unmarshal([]byte(configJSON), &config); err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
