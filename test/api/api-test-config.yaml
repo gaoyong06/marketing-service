@@ -1,6 +1,9 @@
 # Marketing Service API 测试配置
 # 参考 passport-service 的测试配置格式
 
+# API 规范文件路径
+spec: ./openapi.yaml
+
 # API 基础 URL
 base_url: http://localhost:8105
 # 请求超时时间（秒）
@@ -27,7 +30,7 @@ variables:
   # 测试数据
   test_tenant_id: "tenant1"
   test_product_code: "app1"
-  test_user_id: 123
+  test_user_id: "123"
   test_campaign_name: "测试营销活动"
   test_reward_name: "测试奖励"
   test_task_name: "测试任务"
@@ -76,7 +79,7 @@ scenarios:
       - name: 创建Campaign
         endpoint: /v1/campaigns
         method: POST
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           campaign_name: "{{.test_campaign_name}}"
@@ -87,10 +90,10 @@ scenarios:
         assert:
           status: 200
           body:
-            $.campaign.campaign_id: "!null"
-            $.campaign.campaign_name: "{{.test_campaign_name}}"
+            $.campaign.campaignId: "!null"
+            $.campaign.campaignName: "{{.test_campaign_name}}"
         extract:
-          campaignId: $.campaign.campaign_id
+          campaignId: $.campaign.campaignId
 
   # 4. Campaign 查询正常流程
   - name: 04-Campaign查询正常流程
@@ -103,7 +106,7 @@ scenarios:
         assert:
           status: 200
           body:
-            $.campaign.campaign_id: "{{.campaignId}}"
+            $.campaign.campaignId: "{{.campaignId}}"
 
   # 5. Campaign 列表查询
   - name: 05-Campaign列表查询
@@ -131,7 +134,7 @@ scenarios:
       - name: 创建Reward
         endpoint: /v1/rewards
         method: POST
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           reward_type: "COUPON"
@@ -142,10 +145,10 @@ scenarios:
         assert:
           status: 200
           body:
-            $.reward.reward_id: "!null"
+            $.reward.rewardId: "!null"
             $.reward.name: "{{.test_reward_name}}"
         extract:
-          rewardId: $.reward.reward_id
+          rewardId: $.reward.rewardId
 
   # 7. Reward 查询正常流程
   - name: 07-Reward查询正常流程
@@ -158,7 +161,7 @@ scenarios:
         assert:
           status: 200
           body:
-            $.reward.reward_id: "{{.rewardId}}"
+            $.reward.rewardId: "{{.rewardId}}"
 
   # ==================== Task 功能测试 ====================
   
@@ -169,7 +172,7 @@ scenarios:
       - name: 创建Task
         endpoint: /v1/tasks
         method: POST
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           name: "{{.test_task_name}}"
@@ -185,10 +188,10 @@ scenarios:
         assert:
           status: 200
           body:
-            $.task.task_id: "!null"
+            $.task.taskId: "!null"
             $.task.name: "{{.test_task_name}}"
         extract:
-          taskId: $.task.task_id
+          taskId: $.task.taskId
 
   # 9. Task 触发事件
   - name: 09-Task触发事件
@@ -198,15 +201,15 @@ scenarios:
         endpoint: /v1/tasks/trigger
         method: POST
         dependencies: [创建Task, 创建Campaign]
-        request_body:
+        body:
           event_type: "USER_REGISTER"
-          user_id: {{.test_user_id}}
+          user_id: "{{.test_user_id}}"
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           campaign_id: "{{.campaignId}}"
           campaign_name: "{{.test_campaign_name}}"
           event_data:
-            count: 1
+            count: "1"
         assert:
           status: 200
           body:
@@ -222,17 +225,17 @@ scenarios:
         endpoint: /v1/campaigns/{{.campaignId}}/redeem-codes
         method: POST
         dependencies: [创建Campaign, 创建Reward]
-        request_body:
+        body:
           reward_id: "{{.rewardId}}"
           count: 10
           expire_time: "2024-12-31T23:59:59Z"
         assert:
           status: 200
           body:
-            $.batch_id: "!null"
+            $.batchId: "!null"
             $.total: 10
         extract:
-          batchId: $.batch_id
+          batchId: $.batchId
           sampleCode: $.sample_codes[0]
 
   # 11. 兑换码核销
@@ -243,10 +246,10 @@ scenarios:
         endpoint: /v1/redeem
         method: POST
         dependencies: [生成兑换码]
-        request_body:
+        body:
           code: "{{.sampleCode}}"
           product_code: "{{.test_product_code}}"
-          user_id: {{.test_user_id}}
+          user_id: "{{.test_user_id}}"
         assert:
           status: 200
           body:
@@ -261,7 +264,7 @@ scenarios:
       - name: 创建Campaign-空名称
         endpoint: /v1/campaigns
         method: POST
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           campaign_name: ""
@@ -274,7 +277,7 @@ scenarios:
       - name: 创建Campaign-无效时间
         endpoint: /v1/campaigns
         method: POST
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           campaign_name: "测试活动"
@@ -304,18 +307,18 @@ scenarios:
         endpoint: /v1/inventory/reserve
         method: POST
         dependencies: [创建Reward]
-        request_body:
+        body:
           resource_id: "{{.rewardId}}"
           campaign_id: "{{.campaignId}}"
-          user_id: {{.test_user_id}}
+          user_id: "{{.test_user_id}}"
           quantity: 1
           expire_minutes: 30
         assert:
           status: 200
           body:
-            $.reservation.reservation_id: "!null"
+            $.reservation.reservationId: "!null"
         extract:
-          reservationId: $.reservation.reservation_id
+          reservationId: $.reservation.reservationId
 
   # 15. 库存确认
   - name: 15-库存确认
@@ -362,7 +365,7 @@ scenarios:
         assert:
           status: 200
           body:
-            $.task_id: "{{.taskId}}"
+            $.taskId: "{{.taskId}}"
             $.total_completions: ">=0"
             $.unique_users: ">=0"
 
@@ -377,7 +380,7 @@ scenarios:
       - name: 创建活动-任务触发流程
         endpoint: /v1/campaigns
         method: POST
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           campaign_name: "测试活动-任务触发"
@@ -388,16 +391,16 @@ scenarios:
         assert:
           status: 200
           body:
-            $.campaign.campaign_id: "!null"
+            $.campaign.campaignId: "!null"
         extract:
-          taskTriggerCampaignId: $.campaign.campaign_id
+          taskTriggerCampaignId: $.campaign.campaignId
 
       # 步骤2: 创建奖励
       - name: 创建奖励-任务触发流程
         endpoint: /v1/rewards
         method: POST
         dependencies: [创建活动-任务触发流程]
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           reward_type: "COUPON"
@@ -408,16 +411,16 @@ scenarios:
         assert:
           status: 200
           body:
-            $.reward.reward_id: "!null"
+            $.reward.rewardId: "!null"
         extract:
-          taskTriggerRewardId: $.reward.reward_id
+          taskTriggerRewardId: $.reward.rewardId
 
       # 步骤3: 创建任务
       - name: 创建任务-任务触发流程
         endpoint: /v1/tasks
         method: POST
         dependencies: [创建奖励-任务触发流程]
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           name: "新用户注册任务"
@@ -432,24 +435,24 @@ scenarios:
         assert:
           status: 200
           body:
-            $.task.task_id: "!null"
+            $.task.taskId: "!null"
         extract:
-          taskTriggerTaskId: $.task.task_id
+          taskTriggerTaskId: $.task.taskId
 
       # 步骤4: 触发任务事件
       - name: 触发任务事件-完整流程
         endpoint: /v1/tasks/trigger
         method: POST
         dependencies: [创建任务-任务触发流程, 创建活动-任务触发流程]
-        request_body:
+        body:
           event_type: "USER_REGISTER"
-          user_id: {{.test_user_id}}
+          user_id: "{{.test_user_id}}"
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           campaign_id: "{{.taskTriggerCampaignId}}"
           campaign_name: "测试活动-任务触发"
           event_data:
-            count: 1
+            count: "1"
         assert:
           status: 200
           body:
@@ -463,19 +466,19 @@ scenarios:
         query_params:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
-          user_id: {{.test_user_id}}
+          user_id: "{{.test_user_id}}"
           page_size: 10
           page_num: 1
         assert:
           status: 200
           body:
             $.grants: "!null"
-            $.grants[0].reward_id: "{{.taskTriggerRewardId}}"
-            $.grants[0].user_id: {{.test_user_id}}
+            $.grants[0].rewardId: "{{.taskTriggerRewardId}}"
+            $.grants[0].userId: "{{.test_user_id}}"
             $.grants[0].status: "DISTRIBUTED"
-            $.grants[0].content_snapshot: "!null"
+            $.grants[0].contentSnapshot: "!null"
         extract:
-          grantId: $.grants[0].grant_id
+          grantId: $.grants[0].grantId
 
       # 步骤6: 验证任务完成日志
       - name: 验证任务完成日志
@@ -486,16 +489,16 @@ scenarios:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           task_id: "{{.taskTriggerTaskId}}"
-          user_id: {{.test_user_id}}
+          user_id: "{{.test_user_id}}"
           page_size: 10
           page_num: 1
         assert:
           status: 200
           body:
             $.logs: "!null"
-            $.logs[0].task_id: "{{.taskTriggerTaskId}}"
-            $.logs[0].user_id: {{.test_user_id}}
-            $.logs[0].grant_id: "!null"
+            $.logs[0].taskId: "{{.taskTriggerTaskId}}"
+            $.logs[0].userId: "{{.test_user_id}}"
+            $.logs[0].grantId: "!null"
 
   # 19. 奖励生成流程测试
   - name: 19-奖励生成流程
@@ -505,7 +508,7 @@ scenarios:
       - name: 创建兑换码奖励
         endpoint: /v1/rewards
         method: POST
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           reward_type: "REDEEM_CODE"
@@ -517,17 +520,17 @@ scenarios:
         assert:
           status: 200
           body:
-            $.reward.reward_id: "!null"
-            $.reward.reward_type: "REDEEM_CODE"
+            $.reward.rewardId: "!null"
+            $.reward.rewardType: "REDEEM_CODE"
         extract:
-          redeemCodeRewardId: $.reward.reward_id
+          redeemCodeRewardId: $.reward.rewardId
 
       # 步骤2: 通过触发任务事件来测试奖励生成（间接测试生成器）
       - name: 创建任务关联兑换码奖励
         endpoint: /v1/tasks
         method: POST
         dependencies: [创建兑换码奖励]
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           name: "兑换码任务"
@@ -542,22 +545,22 @@ scenarios:
         assert:
           status: 200
           body:
-            $.task.task_id: "!null"
+            $.task.taskId: "!null"
         extract:
-          redeemCodeTaskId: $.task.task_id
+          redeemCodeTaskId: $.task.taskId
 
       # 步骤3: 触发任务事件，验证奖励生成
       - name: 触发任务事件-奖励生成
         endpoint: /v1/tasks/trigger
         method: POST
         dependencies: [创建任务关联兑换码奖励]
-        request_body:
+        body:
           event_type: "USER_SIGN_IN"
           user_id: 456
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           event_data:
-            count: 1
+            count: "1"
         assert:
           status: 200
           body:
@@ -578,10 +581,9 @@ scenarios:
           status: 200
           body:
             $.grants: "!null"
-            $.grants[0].reward_id: "{{.redeemCodeRewardId}}"
-            $.grants[0].content_snapshot: "!null"
+            $.grants[0].rewardId: "{{.redeemCodeRewardId}}"
             # 验证生成的内容是有效的 JSON（包含 code 字段）
-            $.grants[0].content_snapshot: "contains:code"
+            $.grants[0].contentSnapshot: "contains:code"
 
   # ==================== 任务触发服务单元测试场景 ====================
   # 这些测试场景来自 internal/biz/task_trigger_test.go
@@ -594,7 +596,7 @@ scenarios:
       - name: 创建活动-邀请任务
         endpoint: /v1/campaigns
         method: POST
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           campaign_name: "邀请任务活动"
@@ -605,16 +607,16 @@ scenarios:
         assert:
           status: 200
           body:
-            $.campaign.campaign_id: "!null"
+            $.campaign.campaignId: "!null"
         extract:
-          inviteTaskCampaignId: $.campaign.campaign_id
+          inviteTaskCampaignId: $.campaign.campaignId
 
       # 步骤2: 创建奖励
       - name: 创建奖励-邀请任务
         endpoint: /v1/rewards
         method: POST
         dependencies: [创建活动-邀请任务]
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           reward_type: "COUPON"
@@ -625,16 +627,16 @@ scenarios:
         assert:
           status: 200
           body:
-            $.reward.reward_id: "!null"
+            $.reward.rewardId: "!null"
         extract:
-          inviteTaskRewardId: $.reward.reward_id
+          inviteTaskRewardId: $.reward.rewardId
 
       # 步骤3: 创建邀请任务
       - name: 创建邀请任务
         endpoint: /v1/tasks
         method: POST
         dependencies: [创建奖励-邀请任务]
-        request_body:
+        body:
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           name: "邀请新用户"
@@ -649,22 +651,22 @@ scenarios:
         assert:
           status: 200
           body:
-            $.task.task_id: "!null"
+            $.task.taskId: "!null"
         extract:
-          inviteTaskId: $.task.task_id
+          inviteTaskId: $.task.taskId
 
       # 步骤4: 触发邀请任务事件
       - name: 触发邀请任务事件
         endpoint: /v1/tasks/trigger
         method: POST
         dependencies: [创建邀请任务]
-        request_body:
+        body:
           event_type: "USER_REGISTER"
           user_id: 123
           tenant_id: "{{.test_tenant_id}}"
           product_code: "{{.test_product_code}}"
           event_data:
-            invite_count: 1
+            invite_count: "1"
         assert:
           status: 200
           body:
@@ -686,8 +688,8 @@ scenarios:
           status: 200
           body:
             $.logs: "!null"
-            $.logs[0].task_id: "{{.inviteTaskId}}"
-            $.logs[0].user_id: 123
+            $.logs[0].taskId: "{{.inviteTaskId}}"
+            $.logs[0].userId: 123
 
       # 步骤6: 验证奖励发放记录
       - name: 验证邀请任务奖励发放
@@ -704,6 +706,6 @@ scenarios:
           status: 200
           body:
             $.grants: "!null"
-            $.grants[0].reward_id: "{{.inviteTaskRewardId}}"
+            $.grants[0].rewardId: "{{.inviteTaskRewardId}}"
             $.grants[0].status: "DISTRIBUTED"
 

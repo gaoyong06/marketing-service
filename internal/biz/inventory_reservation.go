@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/uuid"
 )
 
 // InventoryReservation 库存预占领域对象
@@ -49,7 +48,7 @@ func NewInventoryReservationUseCase(repo InventoryReservationRepo, logger log.Lo
 // Reserve 预占库存
 func (uc *InventoryReservationUseCase) Reserve(ctx context.Context, ir *InventoryReservation) (*InventoryReservation, error) {
 	if ir.ReservationID == "" {
-		ir.ReservationID = uuid.New().String()
+		ir.ReservationID = GenerateShortID()
 	}
 	if ir.Status == "" {
 		ir.Status = "PENDING"
@@ -83,4 +82,3 @@ func (uc *InventoryReservationUseCase) CleanupExpired(ctx context.Context) (int6
 func (uc *InventoryReservationUseCase) List(ctx context.Context, resourceID, campaignID string, userID int64, status string, page, pageSize int) ([]*InventoryReservation, int64, error) {
 	return uc.repo.List(ctx, resourceID, campaignID, userID, status, page, pageSize)
 }
-

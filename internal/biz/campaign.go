@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/uuid"
 )
 
 // Campaign is a Campaign domain object.
@@ -49,7 +48,7 @@ func NewCampaignUseCase(repo CampaignRepo, logger log.Logger) *CampaignUseCase {
 // Create creates a Campaign, and returns the new Campaign.
 func (uc *CampaignUseCase) Create(ctx context.Context, c *Campaign) (*Campaign, error) {
 	if c.ID == "" {
-		c.ID = uuid.New().String()
+		c.ID = GenerateShortID()
 	}
 	if c.Status == "" {
 		c.Status = "ACTIVE"

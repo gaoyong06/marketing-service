@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/apache/rocketmq-client-go/v2"
@@ -229,8 +230,28 @@ func (s *TaskTriggerService) getProgressValue(event *TaskEvent, conditionType st
 	// 根据条件类型从事件数据中获取值
 	// 这里简化处理，实际应该根据不同的条件类型实现
 	if event.EventData != nil {
-		if val, ok := event.EventData[conditionType].(float64); ok {
-			return val
+		val, ok := event.EventData[conditionType]
+		if !ok {
+			return 0
+		}
+		
+		// 支持多种类型：float64, int, string
+		switch v := val.(type) {
+		case float64:
+			return v
+		case int:
+			return float64(v)
+		case int64:
+			return float64(v)
+		case string:
+			// 尝试将字符串转换为数字
+			var f float64
+			if _, err := fmt.Sscanf(v, "%f", &f); err == nil {
+				return f
+			}
+			return 0
+		default:
+			return 0
 		}
 	}
 	return 0

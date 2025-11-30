@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/uuid"
 )
 
 // Task 任务领域对象
@@ -56,7 +55,7 @@ func NewTaskUseCase(repo TaskRepo, logger log.Logger) *TaskUseCase {
 // Create 创建任务
 func (uc *TaskUseCase) Create(ctx context.Context, t *Task) (*Task, error) {
 	if t.ID == "" {
-		t.ID = uuid.New().String()
+		t.ID = GenerateShortID()
 	}
 	if t.Status == "" {
 		t.Status = "ACTIVE"
@@ -96,4 +95,3 @@ func (uc *TaskUseCase) ListActive(ctx context.Context, tenantID, appID string) (
 func (uc *TaskUseCase) Delete(ctx context.Context, id string) error {
 	return uc.repo.Delete(ctx, id)
 }
-

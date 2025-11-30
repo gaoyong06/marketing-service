@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/uuid"
 )
 
 // Reward 奖励领域对象
@@ -55,7 +54,7 @@ func NewRewardUseCase(repo RewardRepo, logger log.Logger) *RewardUseCase {
 // Create 创建奖励
 func (uc *RewardUseCase) Create(ctx context.Context, r *Reward) (*Reward, error) {
 	if r.ID == "" {
-		r.ID = uuid.New().String()
+		r.ID = GenerateShortID()
 	}
 	if r.Status == "" {
 		r.Status = "ACTIVE"
@@ -89,4 +88,3 @@ func (uc *RewardUseCase) List(ctx context.Context, tenantID, appID string, page,
 func (uc *RewardUseCase) Delete(ctx context.Context, id string) error {
 	return uc.repo.Delete(ctx, id)
 }
-

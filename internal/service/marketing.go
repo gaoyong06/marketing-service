@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -60,14 +62,45 @@ func NewMarketingService(
 
 // CreateCampaign 创建营销活动
 func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCampaignRequest) (*v1.CreateCampaignReply, error) {
-	// 解析时间
-	startTime, err := time.Parse(time.RFC3339, req.StartTime)
-	if err != nil {
-		return nil, err
+	// 验证必填字段
+	if req.CampaignName == "" {
+		return nil, errors.New("campaign_name is required")
 	}
-	endTime, err := time.Parse(time.RFC3339, req.EndTime)
-	if err != nil {
-		return nil, err
+	if req.TenantId == "" {
+		return nil, errors.New("tenant_id is required")
+	}
+	if req.ProductCode == "" {
+		return nil, errors.New("product_code is required")
+	}
+	if req.CampaignType == "" {
+		return nil, errors.New("campaign_type is required")
+	}
+	
+	// 解析时间
+	var startTime, endTime time.Time
+	var err error
+
+	if req.StartTime != "" {
+		startTime, err = time.Parse(time.RFC3339, req.StartTime)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_time format: %w", err)
+		}
+	} else {
+		startTime = time.Now()
+	}
+
+	if req.EndTime != "" {
+		endTime, err = time.Parse(time.RFC3339, req.EndTime)
+		if err != nil {
+			return nil, fmt.Errorf("invalid end_time format: %w", err)
+		}
+	} else {
+		endTime = time.Now().AddDate(1, 0, 0) // 默认一年后
+	}
+	
+	// 验证时间逻辑
+	if endTime.Before(startTime) {
+		return nil, errors.New("end_time must be after start_time")
 	}
 
 	campaign := &biz.Campaign{
@@ -510,12 +543,32 @@ func getInt64Value(values ...*int64) int64 {
 
 // CreateReward 创建奖励
 func (s *MarketingService) CreateReward(ctx context.Context, req *v1.CreateRewardRequest) (*v1.CreateRewardReply, error) {
+	// 验证必填字段
+	if req.Name == "" {
+		return nil, errors.New("name is required")
+	}
+	if req.TenantId == "" {
+		return nil, errors.New("tenant_id is required")
+	}
+	if req.ProductCode == "" {
+		return nil, errors.New("product_code is required")
+	}
+	if req.RewardType == "" {
+		return nil, errors.New("reward_type is required")
+	}
+	
+	// 确保 content_config 不为空（数据库要求 NOT NULL）
+	contentConfig := req.ContentConfig
+	if contentConfig == "" {
+		contentConfig = "{}" // 默认空 JSON 对象
+	}
+
 	reward := &biz.Reward{
 		TenantID:          req.TenantId,
 		AppID:             req.ProductCode,
 		RewardType:        req.RewardType,
 		Name:              req.Name,
-		ContentConfig:     req.ContentConfig,
+		ContentConfig:     contentConfig,
 		GeneratorConfig:   req.GeneratorConfig,
 		DistributorConfig: req.DistributorConfig,
 		ValidatorConfig:   req.ValidatorConfig,
@@ -669,22 +722,59 @@ func (s *MarketingService) toProtoReward(r *biz.Reward) *v1.Reward {
 
 // CreateTask 创建任务
 func (s *MarketingService) CreateTask(ctx context.Context, req *v1.CreateTaskRequest) (*v1.CreateTaskReply, error) {
-	startTime, err := time.Parse(time.RFC3339, req.StartTime)
-	if err != nil {
-		return nil, err
+	// 验证必填字段
+	if req.Name == "" {
+		return nil, errors.New("name is required")
 	}
-	endTime, err := time.Parse(time.RFC3339, req.EndTime)
-	if err != nil {
-		return nil, err
+	if req.TenantId == "" {
+		return nil, errors.New("tenant_id is required")
+	}
+	if req.ProductCode == "" {
+		return nil, errors.New("product_code is required")
+	}
+	if req.TaskType == "" {
+		return nil, errors.New("task_type is required")
+	}
+	
+	var startTime, endTime time.Time
+	var err error
+
+	if req.StartTime != "" {
+		startTime, err = time.Parse(time.RFC3339, req.StartTime)
+		if err != nil {
+			return nil, fmt.Errorf("invalid start_time format: %w", err)
+		}
+	} else {
+		startTime = time.Now()
 	}
 
+	if req.EndTime != "" {
+		endTime, err = time.Parse(time.RFC3339, req.EndTime)
+		if err != nil {
+			return nil, fmt.Errorf("invalid end_time format: %w", err)
+		}
+	} else {
+		endTime = time.Now().AddDate(1, 0, 0) // 默认一年后
+	}
+	
+	// 验证时间逻辑
+	if endTime.Before(startTime) {
+		return nil, errors.New("end_time must be after start_time")
+	}
+
+	// 确保 condition_config 不为空（数据库要求 NOT NULL）
+	conditionConfig := req.ConditionConfig
+	if conditionConfig == "" {
+		conditionConfig = "{}" // 默认空 JSON 对象
+	}
+	
 	task := &biz.Task{
 		TenantID:        req.TenantId,
 		AppID:           req.ProductCode,
 		Name:            req.Name,
 		TaskType:        req.TaskType,
 		TriggerConfig:   req.TriggerConfig,
-		ConditionConfig: req.ConditionConfig,
+		ConditionConfig: conditionConfig,
 		RewardID:        req.RewardId,
 		StartTime:       startTime,
 		EndTime:         endTime,

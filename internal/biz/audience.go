@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/uuid"
 )
 
 // Audience 受众领域对象
@@ -49,7 +48,7 @@ func NewAudienceUseCase(repo AudienceRepo, logger log.Logger) *AudienceUseCase {
 // Create 创建受众
 func (uc *AudienceUseCase) Create(ctx context.Context, a *Audience) (*Audience, error) {
 	if a.ID == "" {
-		a.ID = uuid.New().String()
+		a.ID = GenerateShortID()
 	}
 	if a.Status == "" {
 		a.Status = "ACTIVE"
@@ -79,4 +78,3 @@ func (uc *AudienceUseCase) List(ctx context.Context, tenantID, appID string, pag
 func (uc *AudienceUseCase) Delete(ctx context.Context, id string) error {
 	return uc.repo.Delete(ctx, id)
 }
-

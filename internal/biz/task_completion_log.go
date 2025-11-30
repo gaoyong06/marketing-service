@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/uuid"
 )
 
 // TaskCompletionLog 任务完成记录领域对象
@@ -32,8 +31,8 @@ type TaskCompletionLogRepo interface {
 	FindByID(context.Context, string) (*TaskCompletionLog, error)
 	List(context.Context, string, string, string, string, int64, int, int) ([]*TaskCompletionLog, int64, error)
 	CountByTaskAndUser(context.Context, string, int64) (int64, error)
-	CountByTask(context.Context, string, string) (int64, error)              // 统计任务总完成次数
-	CountUniqueUsersByTask(context.Context, string, string) (int64, error)   // 统计任务的唯一用户数
+	CountByTask(context.Context, string, string) (int64, error)            // 统计任务总完成次数
+	CountUniqueUsersByTask(context.Context, string, string) (int64, error) // 统计任务的唯一用户数
 }
 
 // TaskCompletionLogUseCase 任务完成记录用例
@@ -53,7 +52,7 @@ func NewTaskCompletionLogUseCase(repo TaskCompletionLogRepo, logger log.Logger) 
 // Create 创建任务完成记录
 func (uc *TaskCompletionLogUseCase) Create(ctx context.Context, log *TaskCompletionLog) (*TaskCompletionLog, error) {
 	if log.CompletionID == "" {
-		log.CompletionID = uuid.New().String()
+		log.CompletionID = GenerateShortID()
 	}
 	if log.CompletedAt.IsZero() {
 		log.CompletedAt = time.Now()
@@ -87,4 +86,3 @@ func (uc *TaskCompletionLogUseCase) CountByTask(ctx context.Context, taskID, cam
 func (uc *TaskCompletionLogUseCase) CountUniqueUsersByTask(ctx context.Context, taskID, campaignID string) (int64, error) {
 	return uc.repo.CountUniqueUsersByTask(ctx, taskID, campaignID)
 }
-

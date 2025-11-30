@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/uuid"
 )
 
 // RewardGrant 奖励发放领域对象
@@ -62,7 +61,7 @@ func NewRewardGrantUseCase(repo RewardGrantRepo, logger log.Logger) *RewardGrant
 // Create 创建奖励发放记录
 func (uc *RewardGrantUseCase) Create(ctx context.Context, grant *RewardGrant) (*RewardGrant, error) {
 	if grant.GrantID == "" {
-		grant.GrantID = uuid.New().String()
+		grant.GrantID = GenerateShortID()
 	}
 	if grant.Status == "" {
 		grant.Status = "PENDING"
@@ -108,7 +107,7 @@ func (uc *RewardGrantUseCase) BatchCreate(ctx context.Context, grants []*RewardG
 	now := time.Now()
 	for _, grant := range grants {
 		if grant.GrantID == "" {
-			grant.GrantID = uuid.New().String()
+			grant.GrantID = GenerateShortID()
 		}
 		if grant.Status == "" {
 			grant.Status = "GENERATED"
