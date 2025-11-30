@@ -22,6 +22,13 @@ data:
     write_timeout: 0.2s
     pool_size: 100
     min_idle_conns: 10
+  rocketmq:
+    name_servers:
+      - "127.0.0.1:9876"
+    group_name: "marketing-producer-group"
+    retry_times: 2
+    send_timeout: 3s
+    enabled: false  # 设置为 true 启用 RocketMQ
 
 client:
   tenant_service:

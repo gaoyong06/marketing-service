@@ -30,13 +30,14 @@ func wireApp(confServer *conf.Server, confData *conf.Data, client *conf.Client, 
 	if err != nil {
 		return nil, nil, err
 	}
-	campaignRepo := data.NewCampaignRepo(dataData, logger)
+	cacheService := data.NewCacheService(redisClient, logger)
+	campaignRepo := data.NewCampaignRepo(dataData, cacheService, logger)
 	campaignUseCase := biz.NewCampaignUseCase(campaignRepo, logger)
-	rewardRepo := data.NewRewardRepo(dataData, logger)
+	rewardRepo := data.NewRewardRepo(dataData, cacheService, logger)
 	rewardUseCase := biz.NewRewardUseCase(rewardRepo, logger)
 	rewardGrantRepo := data.NewRewardGrantRepo(dataData, logger)
 	rewardGrantUseCase := biz.NewRewardGrantUseCase(rewardGrantRepo, logger)
-	taskRepo := data.NewTaskRepo(dataData, logger)
+	taskRepo := data.NewTaskRepo(dataData, cacheService, logger)
 	taskUseCase := biz.NewTaskUseCase(taskRepo, logger)
 	audienceRepo := data.NewAudienceRepo(dataData, logger)
 	audienceUseCase := biz.NewAudienceUseCase(audienceRepo, logger)
@@ -46,15 +47,24 @@ func wireApp(confServer *conf.Server, confData *conf.Data, client *conf.Client, 
 	inventoryReservationUseCase := biz.NewInventoryReservationUseCase(inventoryReservationRepo, logger)
 	taskCompletionLogRepo := data.NewTaskCompletionLogRepo(dataData, logger)
 	taskCompletionLogUseCase := biz.NewTaskCompletionLogUseCase(taskCompletionLogRepo, logger)
-	validatorService := biz.NewValidatorService(logger)
+	campaignTaskRepo := data.NewCampaignTaskRepo(dataData, logger)
+	campaignTaskUseCase := biz.NewCampaignTaskUseCase(campaignTaskRepo, logger)
+	audienceMatcherService := biz.NewAudienceMatcherService(audienceRepo, logger)
+	validatorService := biz.NewValidatorService(audienceMatcherService, logger)
 	generatorService := biz.NewGeneratorService(logger)
 	distributorService := biz.NewDistributorService(logger)
-	taskTriggerService := biz.NewTaskTriggerService(taskUseCase, taskCompletionLogUseCase, rewardGrantUseCase, rewardUseCase, inventoryReservationUseCase, validatorService, generatorService, distributorService, logger)
-	marketingService := service.NewMarketingService(campaignUseCase, rewardUseCase, rewardGrantUseCase, taskUseCase, audienceUseCase, redeemCodeUseCase, inventoryReservationUseCase, taskCompletionLogUseCase, taskTriggerService, logger)
+	producer, cleanup2, err := data.NewRocketMQProducer(confData, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	taskTriggerService := biz.NewTaskTriggerService(taskUseCase, taskCompletionLogUseCase, rewardGrantUseCase, rewardUseCase, campaignUseCase, inventoryReservationUseCase, validatorService, generatorService, distributorService, producer, logger)
+	marketingService := service.NewMarketingService(campaignUseCase, rewardUseCase, rewardGrantUseCase, taskUseCase, audienceUseCase, redeemCodeUseCase, inventoryReservationUseCase, taskCompletionLogUseCase, campaignTaskUseCase, taskTriggerService, logger)
 	httpServer := server.NewHTTPServer(confServer, marketingService, logger)
 	grpcServer := server.NewGRPCServer(confServer, marketingService, logger)
 	app := newApp(logger, httpServer, grpcServer)
 	return app, func() {
+		cleanup2()
 		cleanup()
 	}, nil
 }

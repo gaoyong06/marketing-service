@@ -8,7 +8,7 @@ HTTP_PORT=8105
 GRPC_PORT=9105
 API_PROTO_DIR=api/marketing_service/v1
 API_PROTO_PATH=api/marketing_service/v1/marketing.proto
-WIRE_DIRS=cmd/marketing-service
+WIRE_DIRS=cmd/server
 TEST_CONFIG=test/api/api-test-config.yaml
 
 DEVOPS_TOOLS_DIR := $(shell cd .. && pwd)/devops-tools

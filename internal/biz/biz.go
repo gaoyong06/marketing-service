@@ -13,8 +13,10 @@ var ProviderSet = wire.NewSet(
 	NewInventoryReservationUseCase,
 	NewTaskCompletionLogUseCase,
 	NewCampaignTaskUseCase,
-	NewValidatorService,
 	NewGeneratorService,
 	NewDistributorService,
-	NewTaskTriggerService,
+	// 注意：以下服务需要特殊依赖，在 wire.go 中手动构建
+	// NewAudienceMatcherService, // 需要 AudienceRepo
+	// NewValidatorService,        // 需要 AudienceMatcherService
+	// NewTaskTriggerService,     // 需要所有依赖（包括 RocketMQ Producer，可为 nil）
 )

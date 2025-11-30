@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/apache/rocketmq-client-go/v2"
+	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
@@ -14,10 +16,12 @@ type TaskTriggerService struct {
 	tcluc       *TaskCompletionLogUseCase
 	guc         *RewardGrantUseCase
 	ruc         *RewardUseCase
+	cuc         *CampaignUseCase
 	iruc        *InventoryReservationUseCase
 	validator   *ValidatorService
 	generator   *GeneratorService
 	distributor *DistributorService
+	rmqProducer rocketmq.Producer // 直接使用 RocketMQ Producer
 	log         *log.Helper
 }
 
@@ -27,10 +31,12 @@ func NewTaskTriggerService(
 	tcluc *TaskCompletionLogUseCase,
 	guc *RewardGrantUseCase,
 	ruc *RewardUseCase,
+	cuc *CampaignUseCase,
 	iruc *InventoryReservationUseCase,
 	validator *ValidatorService,
 	generator *GeneratorService,
 	distributor *DistributorService,
+	rmqProducer rocketmq.Producer, // 直接使用 RocketMQ Producer，可为 nil
 	logger log.Logger,
 ) *TaskTriggerService {
 	return &TaskTriggerService{
@@ -38,10 +44,12 @@ func NewTaskTriggerService(
 		tcluc:       tcluc,
 		guc:         guc,
 		ruc:         ruc,
+		cuc:         cuc,
 		iruc:        iruc,
 		validator:   validator,
 		generator:   generator,
 		distributor: distributor,
+		rmqProducer: rmqProducer,
 		log:         log.NewHelper(logger),
 	}
 }
@@ -111,6 +119,37 @@ func (s *TaskTriggerService) TriggerEvent(ctx context.Context, event *TaskEvent)
 				// 不返回错误，记录日志即可
 			}
 		}
+
+		// 5. 发布任务完成事件到 RocketMQ（异步处理）
+		if s.rmqProducer != nil {
+			eventMessage := &TaskEventMessage{
+				EventType:    event.EventType,
+				UserID:       event.UserID,
+				TenantID:     event.TenantID,
+				AppID:        event.AppID,
+				CampaignID:   event.CampaignID,
+				CampaignName: event.CampaignName,
+				EventData:    event.EventData,
+				Timestamp:    event.Timestamp.Format("2006-01-02T15:04:05Z07:00"),
+			}
+
+			eventJSON, err := json.Marshal(eventMessage)
+			if err != nil {
+				s.log.Errorf("failed to marshal task completion event: %v, task=%s, user=%d", err, task.ID, event.UserID)
+			} else {
+				msg := primitive.NewMessage("marketing.task.completed", eventJSON)
+				result, err := s.rmqProducer.SendSync(ctx, msg)
+				if err != nil {
+					// 连接失败或发送失败时记录错误日志
+					s.log.Errorf("failed to publish task completion event to RocketMQ: %v, task=%s, user=%d, event_type=%s", err, task.ID, event.UserID, event.EventType)
+				} else {
+					s.log.Infof("published task completion event to RocketMQ successfully: task=%s, user=%d, msg_id=%s", task.ID, event.UserID, result.MsgID)
+				}
+			}
+		} else {
+			// RocketMQ 未配置时，记录调试日志（可选）
+			s.log.Debugf("RocketMQ producer is not available, skipping event publish: task=%s, user=%d", task.ID, event.UserID)
+		}
 	}
 
 	return nil
@@ -140,7 +179,7 @@ func (s *TaskTriggerService) matchTrigger(task *Task, event *TaskEvent) bool {
 }
 
 // checkCondition 检查完成条件
-func (s *TaskTriggerService) checkCondition(ctx context.Context, task *Task, event *TaskEvent) (bool, string, error) {
+func (s *TaskTriggerService) checkCondition(_ context.Context, task *Task, event *TaskEvent) (bool, string, error) {
 	if task.ConditionConfig == "" {
 		return false, "", nil
 	}
@@ -211,8 +250,7 @@ func (s *TaskTriggerService) issueReward(ctx context.Context, task *Task, event 
 	// 2. 获取活动信息（用于校验）
 	var campaign *Campaign
 	if event.CampaignID != "" {
-		// TODO: 需要注入 CampaignUseCase
-		// campaign, _ = s.cuc.Get(ctx, event.CampaignID)
+		campaign, _ = s.cuc.Get(ctx, event.CampaignID)
 	}
 
 	// 3. 校验阶段
@@ -366,4 +404,16 @@ type TaskEvent struct {
 	CampaignName string                 // 活动名称（可选）
 	EventData    map[string]interface{} // 事件数据
 	Timestamp    time.Time              // 事件时间
+}
+
+// TaskEventMessage 任务事件消息（用于 RocketMQ）
+type TaskEventMessage struct {
+	EventType    string                 `json:"event_type"`
+	UserID       int64                  `json:"user_id"`
+	TenantID     string                 `json:"tenant_id"`
+	AppID        string                 `json:"app_id"`
+	CampaignID   string                 `json:"campaign_id,omitempty"`
+	CampaignName string                 `json:"campaign_name,omitempty"`
+	EventData    map[string]interface{} `json:"event_data"`
+	Timestamp    string                 `json:"timestamp"`
 }

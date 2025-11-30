@@ -142,7 +142,6 @@ func (d *WebhookDistributor) Distribute(ctx context.Context, req *DistributionRe
 		return err
 	}
 	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Body = http.NoBody // TODO: 设置请求体
 
 	resp, err := d.httpClient.Do(httpReq)
 	if err != nil {

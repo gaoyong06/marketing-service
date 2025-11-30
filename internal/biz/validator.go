@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -15,14 +16,14 @@ type Validator interface {
 
 // ValidationRequest 校验请求
 type ValidationRequest struct {
-	RewardID    string
-	CampaignID  string
-	UserID      int64
-	TenantID    string
-	AppID       string
-	Config      map[string]interface{} // 校验器配置
-	Reward      *Reward                // 奖励信息
-	Campaign    *Campaign              // 活动信息
+	RewardID   string
+	CampaignID string
+	UserID     int64
+	TenantID   string
+	AppID      string
+	Config     map[string]interface{} // 校验器配置
+	Reward     *Reward                // 奖励信息
+	Campaign   *Campaign              // 活动信息
 }
 
 // ValidatorService 校验器服务
@@ -32,7 +33,7 @@ type ValidatorService struct {
 }
 
 // NewValidatorService 创建校验器服务
-func NewValidatorService(logger log.Logger) *ValidatorService {
+func NewValidatorService(audienceMatcher *AudienceMatcherService, logger log.Logger) *ValidatorService {
 	vs := &ValidatorService{
 		validators: make(map[string]Validator),
 		log:        log.NewHelper(logger),
@@ -40,7 +41,7 @@ func NewValidatorService(logger log.Logger) *ValidatorService {
 
 	// 注册内置校验器
 	vs.Register("TIME", NewTimeValidator())
-	vs.Register("USER", NewUserValidator())
+	vs.Register("USER", NewUserValidator(audienceMatcher))
 	vs.Register("LIMIT", NewLimitValidator())
 	vs.Register("INVENTORY", NewInventoryValidator())
 
@@ -151,18 +152,38 @@ func (v *TimeValidator) Validate(ctx context.Context, req *ValidationRequest) er
 }
 
 // UserValidator 用户资格校验器
-type UserValidator struct{}
+type UserValidator struct {
+	audienceMatcher *AudienceMatcherService
+}
 
 // NewUserValidator 创建用户资格校验器
-func NewUserValidator() Validator {
-	return &UserValidator{}
+func NewUserValidator(audienceMatcher *AudienceMatcherService) Validator {
+	return &UserValidator{
+		audienceMatcher: audienceMatcher,
+	}
 }
 
 // Validate 校验用户资格
 func (v *UserValidator) Validate(ctx context.Context, req *ValidationRequest) error {
-	// TODO: 实现用户资格校验逻辑
-	// 需要配合 Audience 进行用户圈选验证
-	// 这里简化处理，实际应该调用用户服务或查询 Audience 配置
+	if v.audienceMatcher == nil {
+		return nil // 无受众匹配器，跳过校验
+	}
+
+	// 从 Campaign 中获取受众配置
+	if req.Campaign == nil || req.Campaign.AudienceConfig == "" {
+		return nil // 无受众配置，默认通过
+	}
+
+	// 检查用户是否匹配受众配置
+	matched, err := v.audienceMatcher.MatchAudienceConfig(ctx, req.UserID, req.Campaign.AudienceConfig)
+	if err != nil {
+		return fmt.Errorf("failed to match audience: %w", err)
+	}
+
+	if !matched {
+		return ErrValidationFailed("user does not match audience criteria")
+	}
+
 	return nil
 }
 
@@ -271,4 +292,3 @@ func ParseValidatorConfig(configJSON string) (map[string]interface{}, error) {
 
 	return config, nil
 }
-

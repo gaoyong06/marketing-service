@@ -6,6 +6,8 @@ import (
 
 	"marketing-service/conf"
 
+	"github.com/apache/rocketmq-client-go/v2"
+	"github.com/apache/rocketmq-client-go/v2/producer"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"
 	"github.com/redis/go-redis/v9"
@@ -19,6 +21,7 @@ var ProviderSet = wire.NewSet(
 	NewData,
 	NewDB,
 	NewRedis,
+	NewRocketMQProducer,
 	NewCacheService,
 	NewCampaignRepo,
 	NewRewardRepo,
@@ -108,6 +111,58 @@ func NewRedis(c *conf.Data, logger log.Logger) *redis.Client {
 
 	l.Info("redis connected successfully")
 	return rdb
+}
+
+// NewRocketMQProducer 创建 RocketMQ Producer
+// 如果配置未启用或配置为空，返回 nil
+// 如果连接失败，记录错误日志但返回 nil，不导致服务启动失败
+func NewRocketMQProducer(c *conf.Data, logger log.Logger) (rocketmq.Producer, func(), error) {
+	l := log.NewHelper(log.With(logger, "module", "data/rocketmq"))
+
+	// 检查是否启用 RocketMQ
+	if c.Rocketmq == nil || !c.Rocketmq.Enabled {
+		l.Info("RocketMQ is not enabled, skipping producer initialization")
+		return nil, func() {}, nil
+	}
+
+	// 检查 NameServer 配置
+	if len(c.Rocketmq.NameServers) == 0 {
+		l.Warn("RocketMQ name_servers is empty, skipping producer initialization")
+		return nil, func() {}, nil
+	}
+
+	// 创建 Producer
+	rmqProducer, err := rocketmq.NewProducer(
+		producer.WithNameServer(c.Rocketmq.NameServers),
+		producer.WithGroupName(c.Rocketmq.GroupName),
+		producer.WithRetry(int(c.Rocketmq.RetryTimes)),
+		producer.WithSendMsgTimeout(c.Rocketmq.SendTimeout.AsDuration()),
+	)
+	if err != nil {
+		// 连接失败时记录错误日志，但不导致服务启动失败
+		l.Errorf("failed to create RocketMQ producer: %v, name_servers: %v, group: %s", err, c.Rocketmq.NameServers, c.Rocketmq.GroupName)
+		return nil, func() {}, nil
+	}
+
+	// 启动 Producer
+	if err := rmqProducer.Start(); err != nil {
+		// 启动失败时记录错误日志，但不导致服务启动失败
+		l.Errorf("failed to start RocketMQ producer: %v, name_servers: %v, group: %s", err, c.Rocketmq.NameServers, c.Rocketmq.GroupName)
+		// 尝试关闭已创建的 Producer
+		_ = rmqProducer.Shutdown()
+		return nil, func() {}, nil
+	}
+
+	l.Infof("RocketMQ producer started successfully, name_servers: %v, group: %s", c.Rocketmq.NameServers, c.Rocketmq.GroupName)
+
+	cleanup := func() {
+		l.Info("closing RocketMQ producer")
+		if err := rmqProducer.Shutdown(); err != nil {
+			l.Errorf("failed to shutdown RocketMQ producer: %v", err)
+		}
+	}
+
+	return rmqProducer, cleanup, nil
 }
 
 // GormLogger 适配器
