@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
+	pkgErrors "github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
@@ -60,20 +60,26 @@ func NewMarketingService(
 	}
 }
 
+// validateID 函数已移除，ID 格式验证现在由 proto validate 自动处理
+// 验证规则定义在 api/marketing_service/v1/marketing.proto 中：
+// - min_len: 1 (非空)
+// - max_len: 128 (最大长度)
+// - pattern: "^[a-zA-Z0-9_-]+$" (只允许字母、数字、下划线和连字符，防止 SQL 注入)
+
 // CreateCampaign 创建营销活动
 func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCampaignRequest) (*v1.CreateCampaignReply, error) {
 	// 验证必填字段
 	if req.CampaignName == "" {
-		return nil, errors.New("campaign_name is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.TenantId == "" {
-		return nil, errors.New("tenant_id is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.ProductCode == "" {
-		return nil, errors.New("product_code is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.CampaignType == "" {
-		return nil, errors.New("campaign_type is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 
 	// 解析时间
@@ -100,7 +106,7 @@ func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCam
 
 	// 验证时间逻辑
 	if endTime.Before(startTime) {
-		return nil, errors.New("end_time must be after start_time")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeBusinessRuleViolation, "zh-CN")
 	}
 
 	campaign := &biz.Campaign{
@@ -129,6 +135,7 @@ func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCam
 }
 
 // GetCampaign 获取营销活动
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) GetCampaign(ctx context.Context, req *v1.GetCampaignRequest) (*v1.GetCampaignReply, error) {
 	campaign, err := s.uc.Get(ctx, req.CampaignId)
 	if err != nil {
@@ -136,7 +143,8 @@ func (s *MarketingService) GetCampaign(ctx context.Context, req *v1.GetCampaignR
 		return nil, err
 	}
 	if campaign == nil {
-		return &v1.GetCampaignReply{}, nil
+		// 资源不存在，返回 404 错误
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeNotFound, "zh-CN")
 	}
 
 	return &v1.GetCampaignReply{
@@ -173,7 +181,9 @@ func (s *MarketingService) ListCampaigns(ctx context.Context, req *v1.ListCampai
 }
 
 // UpdateCampaign 更新营销活动
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) UpdateCampaign(ctx context.Context, req *v1.UpdateCampaignRequest) (*v1.UpdateCampaignReply, error) {
+	s.log.Infof("UpdateCampaign called: CampaignId=%s, CampaignName='%s'", req.CampaignId, req.CampaignName)
 	campaign, err := s.uc.Get(ctx, req.CampaignId)
 	if err != nil {
 		s.log.Errorf("failed to get campaign: %v", err)
@@ -185,7 +195,10 @@ func (s *MarketingService) UpdateCampaign(ctx context.Context, req *v1.UpdateCam
 
 	// 更新字段
 	if req.CampaignName != "" {
+		s.log.Infof("updating campaign name from '%s' to '%s'", campaign.Name, req.CampaignName)
 		campaign.Name = req.CampaignName
+	} else {
+		s.log.Warnf("CampaignName is empty in request, keeping original name: '%s'", campaign.Name)
 	}
 	if req.StartTime != "" {
 		startTime, err := time.Parse(time.RFC3339, req.StartTime)
@@ -215,6 +228,7 @@ func (s *MarketingService) UpdateCampaign(ctx context.Context, req *v1.UpdateCam
 }
 
 // DeleteCampaign 删除营销活动
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) DeleteCampaign(ctx context.Context, req *v1.DeleteCampaignRequest) (*v1.DeleteCampaignReply, error) {
 	err := s.uc.Delete(ctx, req.CampaignId)
 	if err != nil {
@@ -519,7 +533,7 @@ func (s *MarketingService) toProtoRedeemCode(rc *biz.RedeemCode) *v1.RedeemCode 
 }
 
 // generateCode 生成兑换码
-func generateCode(codeType string) string {
+func generateCode(_ string) string {
 	// 简单的兑换码生成逻辑，实际应该根据 codeType 生成不同类型的码
 	chars := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 	code := make([]byte, 8)
@@ -545,16 +559,16 @@ func getInt64Value(values ...*int64) int64 {
 func (s *MarketingService) CreateReward(ctx context.Context, req *v1.CreateRewardRequest) (*v1.CreateRewardReply, error) {
 	// 验证必填字段
 	if req.Name == "" {
-		return nil, errors.New("name is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.TenantId == "" {
-		return nil, errors.New("tenant_id is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.ProductCode == "" {
-		return nil, errors.New("product_code is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.RewardType == "" {
-		return nil, errors.New("reward_type is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 
 	// 确保 content_config 不为空（数据库要求 NOT NULL）
@@ -592,6 +606,7 @@ func (s *MarketingService) CreateReward(ctx context.Context, req *v1.CreateRewar
 }
 
 // GetReward 获取奖励
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) GetReward(ctx context.Context, req *v1.GetRewardRequest) (*v1.GetRewardReply, error) {
 	reward, err := s.ruc.Get(ctx, req.RewardId)
 	if err != nil {
@@ -599,7 +614,8 @@ func (s *MarketingService) GetReward(ctx context.Context, req *v1.GetRewardReque
 		return nil, err
 	}
 	if reward == nil {
-		return &v1.GetRewardReply{}, nil
+		// 资源不存在，返回 404 错误
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeNotFound, "zh-CN")
 	}
 
 	return &v1.GetRewardReply{
@@ -636,6 +652,7 @@ func (s *MarketingService) ListRewards(ctx context.Context, req *v1.ListRewardsR
 }
 
 // UpdateReward 更新奖励
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) UpdateReward(ctx context.Context, req *v1.UpdateRewardRequest) (*v1.UpdateRewardReply, error) {
 	reward, err := s.ruc.Get(ctx, req.RewardId)
 	if err != nil {
@@ -648,6 +665,7 @@ func (s *MarketingService) UpdateReward(ctx context.Context, req *v1.UpdateRewar
 
 	// 更新字段
 	if req.Name != "" {
+		s.log.Infof("updating reward name from '%s' to '%s'", reward.Name, req.Name)
 		reward.Name = req.Name
 	}
 	if req.ContentConfig != "" {
@@ -678,12 +696,15 @@ func (s *MarketingService) UpdateReward(ctx context.Context, req *v1.UpdateRewar
 		return nil, err
 	}
 
+	s.log.Infof("reward updated successfully, new name: '%s'", result.Name)
+
 	return &v1.UpdateRewardReply{
 		Reward: s.toProtoReward(result),
 	}, nil
 }
 
 // DeleteReward 删除奖励
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) DeleteReward(ctx context.Context, req *v1.DeleteRewardRequest) (*v1.DeleteRewardReply, error) {
 	err := s.ruc.Delete(ctx, req.RewardId)
 	if err != nil {
@@ -724,16 +745,16 @@ func (s *MarketingService) toProtoReward(r *biz.Reward) *v1.Reward {
 func (s *MarketingService) CreateTask(ctx context.Context, req *v1.CreateTaskRequest) (*v1.CreateTaskReply, error) {
 	// 验证必填字段
 	if req.Name == "" {
-		return nil, errors.New("name is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.TenantId == "" {
-		return nil, errors.New("tenant_id is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.ProductCode == "" {
-		return nil, errors.New("product_code is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 	if req.TaskType == "" {
-		return nil, errors.New("task_type is required")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeMissingRequiredField, "zh-CN")
 	}
 
 	var startTime, endTime time.Time
@@ -759,7 +780,7 @@ func (s *MarketingService) CreateTask(ctx context.Context, req *v1.CreateTaskReq
 
 	// 验证时间逻辑
 	if endTime.Before(startTime) {
-		return nil, errors.New("end_time must be after start_time")
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeBusinessRuleViolation, "zh-CN")
 	}
 
 	// 确保 condition_config 不为空（数据库要求 NOT NULL）
@@ -798,6 +819,7 @@ func (s *MarketingService) CreateTask(ctx context.Context, req *v1.CreateTaskReq
 }
 
 // GetTask 获取任务
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) GetTask(ctx context.Context, req *v1.GetTaskRequest) (*v1.GetTaskReply, error) {
 	task, err := s.tuc.Get(ctx, req.TaskId)
 	if err != nil {
@@ -805,7 +827,8 @@ func (s *MarketingService) GetTask(ctx context.Context, req *v1.GetTaskRequest) 
 		return nil, err
 	}
 	if task == nil {
-		return &v1.GetTaskReply{}, nil
+		// 资源不存在，返回 404 错误
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeNotFound, "zh-CN")
 	}
 
 	return &v1.GetTaskReply{
@@ -842,6 +865,7 @@ func (s *MarketingService) ListTasks(ctx context.Context, req *v1.ListTasksReque
 }
 
 // UpdateTask 更新任务
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) UpdateTask(ctx context.Context, req *v1.UpdateTaskRequest) (*v1.UpdateTaskReply, error) {
 	task, err := s.tuc.Get(ctx, req.TaskId)
 	if err != nil {
@@ -899,6 +923,7 @@ func (s *MarketingService) UpdateTask(ctx context.Context, req *v1.UpdateTaskReq
 }
 
 // DeleteTask 删除任务
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) DeleteTask(ctx context.Context, req *v1.DeleteTaskRequest) (*v1.DeleteTaskReply, error) {
 	err := s.tuc.Delete(ctx, req.TaskId)
 	if err != nil {
@@ -977,6 +1002,7 @@ func (s *MarketingService) CreateAudience(ctx context.Context, req *v1.CreateAud
 }
 
 // GetAudience 获取受众
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) GetAudience(ctx context.Context, req *v1.GetAudienceRequest) (*v1.GetAudienceReply, error) {
 	audience, err := s.auc.Get(ctx, req.AudienceId)
 	if err != nil {
@@ -984,7 +1010,8 @@ func (s *MarketingService) GetAudience(ctx context.Context, req *v1.GetAudienceR
 		return nil, err
 	}
 	if audience == nil {
-		return &v1.GetAudienceReply{}, nil
+		// 资源不存在，返回 404 错误
+		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeNotFound, "zh-CN")
 	}
 
 	return &v1.GetAudienceReply{
@@ -1021,6 +1048,7 @@ func (s *MarketingService) ListAudiences(ctx context.Context, req *v1.ListAudien
 }
 
 // UpdateAudience 更新受众
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) UpdateAudience(ctx context.Context, req *v1.UpdateAudienceRequest) (*v1.UpdateAudienceReply, error) {
 	audience, err := s.auc.Get(ctx, req.AudienceId)
 	if err != nil {
@@ -1057,6 +1085,7 @@ func (s *MarketingService) UpdateAudience(ctx context.Context, req *v1.UpdateAud
 }
 
 // DeleteAudience 删除受众
+// ID 格式验证由 proto validate 自动处理
 func (s *MarketingService) DeleteAudience(ctx context.Context, req *v1.DeleteAudienceRequest) (*v1.DeleteAudienceReply, error) {
 	err := s.auc.Delete(ctx, req.AudienceId)
 	if err != nil {

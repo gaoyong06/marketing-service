@@ -6,6 +6,7 @@ import (
 	"marketing-service/internal/data/model"
 	"time"
 
+	"github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 )
@@ -85,8 +86,20 @@ func (r *campaignRepo) Save(ctx context.Context, c *biz.Campaign) (*biz.Campaign
 // Update 更新活动
 func (r *campaignRepo) Update(ctx context.Context, c *biz.Campaign) (*biz.Campaign, error) {
 	m := r.toDataModel(c)
+	// 使用 Select 明确指定要更新的字段，避免零值字段被忽略
+	updateFields := map[string]interface{}{
+		"campaign_name":    m.CampaignName,
+		"campaign_type":    m.CampaignType,
+		"start_time":       m.StartTime,
+		"end_time":         m.EndTime,
+		"audience_config":  m.AudienceConfig,
+		"validator_config": m.ValidatorConfig,
+		"status":           m.Status,
+		"description":      m.Description,
+		"updated_at":       m.UpdatedAt,
+	}
 	if err := r.data.db.WithContext(ctx).Model(&model.Campaign{}).
-		Where("campaign_id = ?", m.CampaignID).Updates(m).Error; err != nil {
+		Where("campaign_id = ?", m.CampaignID).Updates(updateFields).Error; err != nil {
 		r.log.Errorf("failed to update campaign: %v", err)
 		return nil, err
 	}
@@ -108,6 +121,12 @@ func (r *campaignRepo) FindByID(ctx context.Context, id string) (*biz.Campaign, 
 	if r.cache != nil {
 		cached, err := r.cache.GetCampaign(ctx, id)
 		if err == nil && cached != nil {
+			// 检查是否是缓存穿透保护的空对象（只有 ID，没有其他字段）
+			if cached.ID == id && cached.Name == "" && cached.TenantID == "" {
+				r.log.Debugf("campaign cache hit (not found marker): %s", id)
+				// 这是缓存穿透保护的空值，表示记录不存在
+				return nil, errors.NewBizError(errors.ErrCodeNotFound, "zh-CN")
+			}
 			r.log.Debugf("campaign cache hit: %s", id)
 			return cached, nil
 		}
@@ -119,12 +138,15 @@ func (r *campaignRepo) FindByID(ctx context.Context, id string) (*biz.Campaign, 
 	if err := r.data.db.WithContext(ctx).Where("campaign_id = ?", id).First(&m).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// 缓存穿透保护：对于不存在的记录，也缓存一个空值（短时间）
+			// 注意：这里缓存一个特殊的标记值，而不是空的 Campaign 对象
+			// 这样在 GetCampaign 中可以通过检查 campaign.ID == id && campaign.Name == "" 来判断是否是不存在的记录
 			if r.cache != nil {
-				// 创建一个空的 Campaign 对象用于缓存穿透保护
+				// 创建一个空的 Campaign 对象用于缓存穿透保护（只设置 ID，其他字段为空）
 				emptyCampaign := &biz.Campaign{ID: id}
 				_ = r.cache.SetCampaign(ctx, emptyCampaign, 5*time.Minute) // 短时间缓存空值
 			}
-			return nil, nil
+			// 返回明确的错误，使用 go-pkg/errors
+			return nil, errors.NewBizError(errors.ErrCodeNotFound, "zh-CN")
 		}
 		r.log.Errorf("failed to find campaign by id: %v", err)
 		return nil, err

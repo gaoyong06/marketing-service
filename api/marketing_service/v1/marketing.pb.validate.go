@@ -1000,10 +1000,21 @@ func (m *GetCampaignRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCampaignId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetCampaignId()); l < 1 || l > 128 {
 		err := GetCampaignRequestValidationError{
 			field:  "CampaignId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_GetCampaignRequest_CampaignId_Pattern.MatchString(m.GetCampaignId()) {
+		err := GetCampaignRequestValidationError{
+			field:  "CampaignId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -1090,6 +1101,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetCampaignRequestValidationError{}
+
+var _GetCampaignRequest_CampaignId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on GetCampaignReply with the rules defined
 // in the proto definition for this message. If any rules are violated, the
@@ -1494,10 +1507,21 @@ func (m *UpdateCampaignRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCampaignId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetCampaignId()); l < 1 || l > 128 {
 		err := UpdateCampaignRequestValidationError{
 			field:  "CampaignId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_UpdateCampaignRequest_CampaignId_Pattern.MatchString(m.GetCampaignId()) {
+		err := UpdateCampaignRequestValidationError{
+			field:  "CampaignId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -1605,6 +1629,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UpdateCampaignRequestValidationError{}
+
+var _UpdateCampaignRequest_CampaignId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on UpdateCampaignReply with the rules
 // defined in the proto definition for this message. If any rules are
@@ -1759,10 +1785,21 @@ func (m *DeleteCampaignRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCampaignId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetCampaignId()); l < 1 || l > 128 {
 		err := DeleteCampaignRequestValidationError{
 			field:  "CampaignId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_DeleteCampaignRequest_CampaignId_Pattern.MatchString(m.GetCampaignId()) {
+		err := DeleteCampaignRequestValidationError{
+			field:  "CampaignId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -1849,6 +1886,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = DeleteCampaignRequestValidationError{}
+
+var _DeleteCampaignRequest_CampaignId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on DeleteCampaignReply with the rules
 // defined in the proto definition for this message. If any rules are
@@ -3763,10 +3802,21 @@ func (m *GetRewardRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetRewardId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetRewardId()); l < 1 || l > 128 {
 		err := GetRewardRequestValidationError{
 			field:  "RewardId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_GetRewardRequest_RewardId_Pattern.MatchString(m.GetRewardId()) {
+		err := GetRewardRequestValidationError{
+			field:  "RewardId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -3851,6 +3901,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetRewardRequestValidationError{}
+
+var _GetRewardRequest_RewardId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on GetRewardReply with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
@@ -4251,10 +4303,21 @@ func (m *UpdateRewardRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetRewardId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetRewardId()); l < 1 || l > 128 {
 		err := UpdateRewardRequestValidationError{
 			field:  "RewardId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_UpdateRewardRequest_RewardId_Pattern.MatchString(m.GetRewardId()) {
+		err := UpdateRewardRequestValidationError{
+			field:  "RewardId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -4357,6 +4420,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UpdateRewardRequestValidationError{}
+
+var _UpdateRewardRequest_RewardId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on UpdateRewardReply with the rules defined
 // in the proto definition for this message. If any rules are violated, the
@@ -5230,10 +5295,21 @@ func (m *GetTaskRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetTaskId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetTaskId()); l < 1 || l > 128 {
 		err := GetTaskRequestValidationError{
 			field:  "TaskId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_GetTaskRequest_TaskId_Pattern.MatchString(m.GetTaskId()) {
+		err := GetTaskRequestValidationError{
+			field:  "TaskId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -5318,6 +5394,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetTaskRequestValidationError{}
+
+var _GetTaskRequest_TaskId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on GetTaskReply with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
@@ -5715,10 +5793,21 @@ func (m *UpdateTaskRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetTaskId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetTaskId()); l < 1 || l > 128 {
 		err := UpdateTaskRequestValidationError{
 			field:  "TaskId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_UpdateTaskRequest_TaskId_Pattern.MatchString(m.GetTaskId()) {
+		err := UpdateTaskRequestValidationError{
+			field:  "TaskId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -5823,6 +5912,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UpdateTaskRequestValidationError{}
+
+var _UpdateTaskRequest_TaskId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on UpdateTaskReply with the rules defined
 // in the proto definition for this message. If any rules are violated, the
@@ -5975,10 +6066,21 @@ func (m *DeleteTaskRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetTaskId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetTaskId()); l < 1 || l > 128 {
 		err := DeleteTaskRequestValidationError{
 			field:  "TaskId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_DeleteTaskRequest_TaskId_Pattern.MatchString(m.GetTaskId()) {
+		err := DeleteTaskRequestValidationError{
+			field:  "TaskId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -6065,6 +6167,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = DeleteTaskRequestValidationError{}
+
+var _DeleteTaskRequest_TaskId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on DeleteTaskReply with the rules defined
 // in the proto definition for this message. If any rules are violated, the
@@ -6906,10 +7010,21 @@ func (m *GetAudienceRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetAudienceId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetAudienceId()); l < 1 || l > 128 {
 		err := GetAudienceRequestValidationError{
 			field:  "AudienceId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_GetAudienceRequest_AudienceId_Pattern.MatchString(m.GetAudienceId()) {
+		err := GetAudienceRequestValidationError{
+			field:  "AudienceId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -6996,6 +7111,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetAudienceRequestValidationError{}
+
+var _GetAudienceRequest_AudienceId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on GetAudienceReply with the rules defined
 // in the proto definition for this message. If any rules are violated, the
@@ -7398,10 +7515,21 @@ func (m *UpdateAudienceRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetAudienceId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetAudienceId()); l < 1 || l > 128 {
 		err := UpdateAudienceRequestValidationError{
 			field:  "AudienceId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_UpdateAudienceRequest_AudienceId_Pattern.MatchString(m.GetAudienceId()) {
+		err := UpdateAudienceRequestValidationError{
+			field:  "AudienceId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -7496,6 +7624,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = UpdateAudienceRequestValidationError{}
+
+var _UpdateAudienceRequest_AudienceId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on UpdateAudienceReply with the rules
 // defined in the proto definition for this message. If any rules are
@@ -7650,10 +7780,21 @@ func (m *DeleteAudienceRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetAudienceId()) < 1 {
+	if l := utf8.RuneCountInString(m.GetAudienceId()); l < 1 || l > 128 {
 		err := DeleteAudienceRequestValidationError{
 			field:  "AudienceId",
-			reason: "value length must be at least 1 runes",
+			reason: "value length must be between 1 and 128 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if !_DeleteAudienceRequest_AudienceId_Pattern.MatchString(m.GetAudienceId()) {
+		err := DeleteAudienceRequestValidationError{
+			field:  "AudienceId",
+			reason: "value does not match regex pattern \"^[a-zA-Z0-9_-]+$\"",
 		}
 		if !all {
 			return err
@@ -7740,6 +7881,8 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = DeleteAudienceRequestValidationError{}
+
+var _DeleteAudienceRequest_AudienceId_Pattern = regexp.MustCompile("^[a-zA-Z0-9_-]+$")
 
 // Validate checks the field values on DeleteAudienceReply with the rules
 // defined in the proto definition for this message. If any rules are

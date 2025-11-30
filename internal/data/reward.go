@@ -6,6 +6,7 @@ import (
 	"marketing-service/internal/data/model"
 	"time"
 
+	"github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 )
@@ -112,8 +113,23 @@ func (r *rewardRepo) Update(ctx context.Context, reward *biz.Reward) (*biz.Rewar
 	// 版本号递增
 	m.Version = current.Version + 1
 
+	// 使用 map 明确指定要更新的字段，避免零值字段被忽略
+	updateFields := map[string]interface{}{
+		"reward_type":        m.RewardType,
+		"name":               m.Name,
+		"content_config":     m.ContentConfig,
+		"generator_config":   m.GeneratorConfig,
+		"distributor_config": m.DistributorConfig,
+		"validator_config":   m.ValidatorConfig,
+		"version":            m.Version,
+		"valid_days":         m.ValidDays,
+		"extra_config":       m.ExtraConfig,
+		"status":             m.Status,
+		"description":        m.Description,
+		"updated_at":         m.UpdatedAt,
+	}
 	if err := r.data.db.WithContext(ctx).Model(&model.Reward{}).
-		Where("reward_id = ?", m.RewardID).Updates(m).Error; err != nil {
+		Where("reward_id = ?", m.RewardID).Updates(updateFields).Error; err != nil {
 		r.log.Errorf("failed to update reward: %v", err)
 		return nil, err
 	}
@@ -135,6 +151,12 @@ func (r *rewardRepo) FindByID(ctx context.Context, id string) (*biz.Reward, erro
 	if r.cache != nil {
 		cached, err := r.cache.GetReward(ctx, id)
 		if err == nil && cached != nil {
+			// 检查是否是缓存穿透保护的空对象（只有 ID，没有其他字段）
+			if cached.ID == id && cached.Name == "" && cached.TenantID == "" {
+				r.log.Debugf("reward cache hit (not found marker): %s", id)
+				// 这是缓存穿透保护的空值，表示记录不存在
+				return nil, errors.NewBizError(errors.ErrCodeNotFound, "zh-CN")
+			}
 			r.log.Debugf("reward cache hit: %s", id)
 			return cached, nil
 		}
@@ -150,7 +172,8 @@ func (r *rewardRepo) FindByID(ctx context.Context, id string) (*biz.Reward, erro
 				emptyReward := &biz.Reward{ID: id}
 				_ = r.cache.SetReward(ctx, emptyReward, 5*time.Minute) // 短时间缓存空值
 			}
-			return nil, nil
+			// 返回明确的错误，使用 go-pkg/errors
+			return nil, errors.NewBizError(errors.ErrCodeNotFound, "zh-CN")
 		}
 		r.log.Errorf("failed to find reward by id: %v", err)
 		return nil, err

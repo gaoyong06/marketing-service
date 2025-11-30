@@ -5,6 +5,7 @@ import (
 	"marketing-service/internal/biz"
 	"marketing-service/internal/data/model"
 
+	"github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 )
@@ -90,7 +91,8 @@ func (r *audienceRepo) FindByID(ctx context.Context, id string) (*biz.Audience, 
 	var m model.Audience
 	if err := r.data.db.WithContext(ctx).Where("audience_id = ?", id).First(&m).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, nil
+			// 返回明确的错误，使用 go-pkg/errors
+			return nil, errors.NewBizError(errors.ErrCodeNotFound, "zh-CN")
 		}
 		r.log.Errorf("failed to find audience by id: %v", err)
 		return nil, err
@@ -102,7 +104,7 @@ func (r *audienceRepo) FindByID(ctx context.Context, id string) (*biz.Audience, 
 func (r *audienceRepo) List(ctx context.Context, tenantID, appID string, page, pageSize int) ([]*biz.Audience, int64, error) {
 	var (
 		models []model.Audience
-		total   int64
+		total  int64
 	)
 
 	query := r.data.db.WithContext(ctx).Model(&model.Audience{})
@@ -146,4 +148,3 @@ func (r *audienceRepo) Delete(ctx context.Context, id string) error {
 	}
 	return nil
 }
-

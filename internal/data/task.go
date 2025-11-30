@@ -6,6 +6,7 @@ import (
 	"marketing-service/internal/data/model"
 	"time"
 
+	"github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"gorm.io/gorm"
 )
@@ -117,6 +118,12 @@ func (r *taskRepo) FindByID(ctx context.Context, id string) (*biz.Task, error) {
 	if r.cache != nil {
 		cached, err := r.cache.GetTask(ctx, id)
 		if err == nil && cached != nil {
+			// 检查是否是缓存穿透保护的空对象（只有 ID，没有其他字段）
+			if cached.ID == id && cached.Name == "" && cached.TenantID == "" {
+				r.log.Debugf("task cache hit (not found marker): %s", id)
+				// 这是缓存穿透保护的空值，表示记录不存在
+				return nil, errors.NewBizError(errors.ErrCodeNotFound, "zh-CN")
+			}
 			r.log.Debugf("task cache hit: %s", id)
 			return cached, nil
 		}
@@ -132,7 +139,8 @@ func (r *taskRepo) FindByID(ctx context.Context, id string) (*biz.Task, error) {
 				emptyTask := &biz.Task{ID: id}
 				_ = r.cache.SetTask(ctx, emptyTask, 5*time.Minute) // 短时间缓存空值
 			}
-			return nil, nil
+			// 返回明确的错误，使用 go-pkg/errors
+			return nil, errors.NewBizError(errors.ErrCodeNotFound, "zh-CN")
 		}
 		r.log.Errorf("failed to find task by id: %v", err)
 		return nil, err

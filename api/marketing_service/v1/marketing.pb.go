@@ -6511,9 +6511,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"Z\n" +
 	"\x13CreateCampaignReply\x12C\n" +
-	"\bcampaign\x18\x01 \x01(\v2'.platform.marketing_service.v1.CampaignR\bcampaign\">\n" +
-	"\x12GetCampaignRequest\x12(\n" +
-	"\vcampaign_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\n" +
+	"\bcampaign\x18\x01 \x01(\v2'.platform.marketing_service.v1.CampaignR\bcampaign\"S\n" +
+	"\x12GetCampaignRequest\x12=\n" +
+	"\vcampaign_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\n" +
 	"campaignId\"W\n" +
 	"\x10GetCampaignReply\x12C\n" +
 	"\bcampaign\x18\x01 \x01(\v2'.platform.marketing_service.v1.CampaignR\bcampaign\"\xcb\x01\n" +
@@ -6526,9 +6526,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\bpage_num\x18\x06 \x01(\x05R\apageNum\"q\n" +
 	"\x12ListCampaignsReply\x12E\n" +
 	"\tcampaigns\x18\x01 \x03(\v2'.platform.marketing_service.v1.CampaignR\tcampaigns\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x05R\x05total\"\x8c\x03\n" +
-	"\x15UpdateCampaignRequest\x12(\n" +
-	"\vcampaign_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\"\xa1\x03\n" +
+	"\x15UpdateCampaignRequest\x12=\n" +
+	"\vcampaign_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\n" +
 	"campaignId\x12.\n" +
 	"\rcampaign_name\x18\x02 \x01(\tB\t\xfaB\x06r\x04\x10\x01\x18@R\fcampaignName\x12\x1d\n" +
 	"\n" +
@@ -6542,9 +6542,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"Z\n" +
 	"\x13UpdateCampaignReply\x12C\n" +
-	"\bcampaign\x18\x01 \x01(\v2'.platform.marketing_service.v1.CampaignR\bcampaign\"A\n" +
-	"\x15DeleteCampaignRequest\x12(\n" +
-	"\vcampaign_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\n" +
+	"\bcampaign\x18\x01 \x01(\v2'.platform.marketing_service.v1.CampaignR\bcampaign\"V\n" +
+	"\x15DeleteCampaignRequest\x12=\n" +
+	"\vcampaign_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\n" +
 	"campaignId\"/\n" +
 	"\x13DeleteCampaignReply\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\"\xa0\x05\n" +
@@ -6657,9 +6657,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\n" +
 	"created_by\x18\v \x01(\tR\tcreatedBy\"R\n" +
 	"\x11CreateRewardReply\x12=\n" +
-	"\x06reward\x18\x01 \x01(\v2%.platform.marketing_service.v1.RewardR\x06reward\"8\n" +
-	"\x10GetRewardRequest\x12$\n" +
-	"\treward_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\brewardId\"O\n" +
+	"\x06reward\x18\x01 \x01(\v2%.platform.marketing_service.v1.RewardR\x06reward\"M\n" +
+	"\x10GetRewardRequest\x129\n" +
+	"\treward_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\brewardId\"O\n" +
 	"\x0eGetRewardReply\x12=\n" +
 	"\x06reward\x18\x01 \x01(\v2%.platform.marketing_service.v1.RewardR\x06reward\"\xad\x01\n" +
 	"\x12ListRewardsRequest\x12\x1b\n" +
@@ -6671,9 +6671,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\bpage_num\x18\x05 \x01(\x05R\apageNum\"i\n" +
 	"\x10ListRewardsReply\x12?\n" +
 	"\arewards\x18\x01 \x03(\v2%.platform.marketing_service.v1.RewardR\arewards\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x05R\x05total\"\xd4\x02\n" +
-	"\x13UpdateRewardRequest\x12$\n" +
-	"\treward_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\brewardId\x12\x12\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\"\xe9\x02\n" +
+	"\x13UpdateRewardRequest\x129\n" +
+	"\treward_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\brewardId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12%\n" +
 	"\x0econtent_config\x18\x03 \x01(\tR\rcontentConfig\x12)\n" +
 	"\x10generator_config\x18\x04 \x01(\tR\x0fgeneratorConfig\x12-\n" +
@@ -6729,9 +6729,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\n" +
 	"created_by\x18\f \x01(\tR\tcreatedBy\"J\n" +
 	"\x0fCreateTaskReply\x127\n" +
-	"\x04task\x18\x01 \x01(\v2#.platform.marketing_service.v1.TaskR\x04task\"2\n" +
-	"\x0eGetTaskRequest\x12 \n" +
-	"\atask_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x06taskId\"G\n" +
+	"\x04task\x18\x01 \x01(\v2#.platform.marketing_service.v1.TaskR\x04task\"G\n" +
+	"\x0eGetTaskRequest\x125\n" +
+	"\atask_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\x06taskId\"G\n" +
 	"\fGetTaskReply\x127\n" +
 	"\x04task\x18\x01 \x01(\v2#.platform.marketing_service.v1.TaskR\x04task\"\xa7\x01\n" +
 	"\x10ListTasksRequest\x12\x1b\n" +
@@ -6742,9 +6742,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\bpage_num\x18\x05 \x01(\x05R\apageNum\"a\n" +
 	"\x0eListTasksReply\x129\n" +
 	"\x05tasks\x18\x01 \x03(\v2#.platform.marketing_service.v1.TaskR\x05tasks\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x05R\x05total\"\xc9\x02\n" +
-	"\x11UpdateTaskRequest\x12 \n" +
-	"\atask_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x06taskId\x12\x12\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\"\xde\x02\n" +
+	"\x11UpdateTaskRequest\x125\n" +
+	"\atask_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\x06taskId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12%\n" +
 	"\x0etrigger_config\x18\x03 \x01(\tR\rtriggerConfig\x12)\n" +
 	"\x10condition_config\x18\x04 \x01(\tR\x0fconditionConfig\x12\x1b\n" +
@@ -6757,9 +6757,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\vdescription\x18\n" +
 	" \x01(\tR\vdescription\"J\n" +
 	"\x0fUpdateTaskReply\x127\n" +
-	"\x04task\x18\x01 \x01(\v2#.platform.marketing_service.v1.TaskR\x04task\"5\n" +
-	"\x11DeleteTaskRequest\x12 \n" +
-	"\atask_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x06taskId\"+\n" +
+	"\x04task\x18\x01 \x01(\v2#.platform.marketing_service.v1.TaskR\x04task\"J\n" +
+	"\x11DeleteTaskRequest\x125\n" +
+	"\atask_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\x06taskId\"+\n" +
 	"\x0fDeleteTaskReply\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\"F\n" +
 	"\x1aListTasksByCampaignRequest\x12(\n" +
@@ -6797,9 +6797,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\n" +
 	"created_by\x18\a \x01(\tR\tcreatedBy\"Z\n" +
 	"\x13CreateAudienceReply\x12C\n" +
-	"\baudience\x18\x01 \x01(\v2'.platform.marketing_service.v1.AudienceR\baudience\">\n" +
-	"\x12GetAudienceRequest\x12(\n" +
-	"\vaudience_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\n" +
+	"\baudience\x18\x01 \x01(\v2'.platform.marketing_service.v1.AudienceR\baudience\"S\n" +
+	"\x12GetAudienceRequest\x12=\n" +
+	"\vaudience_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\n" +
 	"audienceId\"W\n" +
 	"\x10GetAudienceReply\x12C\n" +
 	"\baudience\x18\x01 \x01(\v2'.platform.marketing_service.v1.AudienceR\baudience\"\xb3\x01\n" +
@@ -6811,9 +6811,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\bpage_num\x18\x05 \x01(\x05R\apageNum\"q\n" +
 	"\x12ListAudiencesReply\x12E\n" +
 	"\taudiences\x18\x01 \x03(\v2'.platform.marketing_service.v1.AudienceR\taudiences\x12\x14\n" +
-	"\x05total\x18\x02 \x01(\x05R\x05total\"\xb0\x01\n" +
-	"\x15UpdateAudienceRequest\x12(\n" +
-	"\vaudience_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\"\xc5\x01\n" +
+	"\x15UpdateAudienceRequest\x12=\n" +
+	"\vaudience_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\n" +
 	"audienceId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1f\n" +
 	"\vrule_config\x18\x03 \x01(\tR\n" +
@@ -6821,9 +6821,9 @@ const file_marketing_proto_rawDesc = "" +
 	"\x06status\x18\x04 \x01(\tR\x06status\x12 \n" +
 	"\vdescription\x18\x05 \x01(\tR\vdescription\"Z\n" +
 	"\x13UpdateAudienceReply\x12C\n" +
-	"\baudience\x18\x01 \x01(\v2'.platform.marketing_service.v1.AudienceR\baudience\"A\n" +
-	"\x15DeleteAudienceRequest\x12(\n" +
-	"\vaudience_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\n" +
+	"\baudience\x18\x01 \x01(\v2'.platform.marketing_service.v1.AudienceR\baudience\"V\n" +
+	"\x15DeleteAudienceRequest\x12=\n" +
+	"\vaudience_id\x18\x01 \x01(\tB\x1c\xfaB\x19r\x17\x10\x01\x18\x80\x012\x10^[a-zA-Z0-9_-]+$R\n" +
 	"audienceId\"/\n" +
 	"\x13DeleteAudienceReply\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\"\xd3\x06\n" +

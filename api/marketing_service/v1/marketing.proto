@@ -398,7 +398,11 @@ message CreateCampaignReply {
 
 // GetCampaignRequest 获取营销活动请求
 message GetCampaignRequest {
-  string campaign_id = 1 [(validate.rules).string.min_len = 1]; // 活动ID
+  string campaign_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }]; // 活动ID
 }
 
 // GetCampaignReply 获取营销活动响应
@@ -424,7 +428,11 @@ message ListCampaignsReply {
 
 // UpdateCampaignRequest 更新营销活动请求
 message UpdateCampaignRequest {
-  string campaign_id = 1 [(validate.rules).string.min_len = 1];                    // 活动ID
+  string campaign_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];                    // 活动ID
   string campaign_name = 2 [(validate.rules).string = {min_len: 1, max_len: 64}];   // 活动名称
   string start_time = 3;                                                             // 开始时间
   string end_time = 4;                                                               // 结束时间
@@ -440,7 +448,11 @@ message UpdateCampaignReply {
 
 // DeleteCampaignRequest 删除营销活动请求
 message DeleteCampaignRequest {
-  string campaign_id = 1 [(validate.rules).string.min_len = 1]; // 活动ID
+  string campaign_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }]; // 活动ID
 }
 
 // DeleteCampaignReply 删除营销活动响应
@@ -573,7 +585,11 @@ message CreateRewardReply {
 
 // GetRewardRequest 获取奖励请求
 message GetRewardRequest {
-  string reward_id = 1 [(validate.rules).string.min_len = 1];
+  string reward_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];
 }
 
 // GetRewardReply 获取奖励响应
@@ -598,7 +614,11 @@ message ListRewardsReply {
 
 // UpdateRewardRequest 更新奖励请求
 message UpdateRewardRequest {
-  string reward_id = 1 [(validate.rules).string.min_len = 1];
+  string reward_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];
   string name = 2;
   string content_config = 3;
   string generator_config = 4;
@@ -668,7 +688,11 @@ message CreateTaskReply {
 
 // GetTaskRequest 获取任务请求
 message GetTaskRequest {
-  string task_id = 1 [(validate.rules).string.min_len = 1];
+  string task_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];
 }
 
 // GetTaskReply 获取任务响应
@@ -693,7 +717,11 @@ message ListTasksReply {
 
 // UpdateTaskRequest 更新任务请求
 message UpdateTaskRequest {
-  string task_id = 1 [(validate.rules).string.min_len = 1];
+  string task_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];
   string name = 2;
   string trigger_config = 3;
   string condition_config = 4;
@@ -712,7 +740,11 @@ message UpdateTaskReply {
 
 // DeleteTaskRequest 删除任务请求
 message DeleteTaskRequest {
-  string task_id = 1 [(validate.rules).string.min_len = 1];
+  string task_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];
 }
 
 // DeleteTaskReply 删除任务响应
@@ -764,7 +796,11 @@ message CreateAudienceReply {
 
 // GetAudienceRequest 获取受众请求
 message GetAudienceRequest {
-  string audience_id = 1 [(validate.rules).string.min_len = 1];
+  string audience_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];
 }
 
 // GetAudienceReply 获取受众响应
@@ -789,7 +825,11 @@ message ListAudiencesReply {
 
 // UpdateAudienceRequest 更新受众请求
 message UpdateAudienceRequest {
-  string audience_id = 1 [(validate.rules).string.min_len = 1];
+  string audience_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];
   string name = 2;
   string rule_config = 3;
   string status = 4;
@@ -803,7 +843,11 @@ message UpdateAudienceReply {
 
 // DeleteAudienceRequest 删除受众请求
 message DeleteAudienceRequest {
-  string audience_id = 1 [(validate.rules).string.min_len = 1];
+  string audience_id = 1 [(validate.rules).string = {
+    min_len: 1,
+    max_len: 128,
+    pattern: "^[a-zA-Z0-9_-]+$"  // 只允许字母、数字、下划线和连字符，防止 SQL 注入
+  }];
 }
 
 // DeleteAudienceReply 删除受众响应
