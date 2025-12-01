@@ -109,6 +109,21 @@ func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCam
 		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeBusinessRuleViolation, "zh-CN")
 	}
 
+	// 从 rule_config 中提取 audience_config 和 validator_config
+	audienceConfig := ""
+	validatorConfig := ""
+	if req.RuleConfig != nil && len(req.RuleConfig) > 0 {
+		// rule_config 是 map[string]string 类型
+		// 提取 audience 配置
+		if audienceStr, ok := req.RuleConfig["audience"]; ok {
+			audienceConfig = audienceStr
+		}
+		// 提取 validators 配置
+		if validatorStr, ok := req.RuleConfig["validators"]; ok {
+			validatorConfig = validatorStr
+		}
+	}
+
 	campaign := &biz.Campaign{
 		TenantID:        req.TenantId,
 		AppID:           req.ProductCode, // 使用 product_code 作为 app_id
@@ -116,8 +131,8 @@ func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCam
 		Type:            req.CampaignType,
 		StartTime:       startTime,
 		EndTime:         endTime,
-		AudienceConfig:  "", // TODO: 从 rule_config 中提取
-		ValidatorConfig: "", // TODO: 从 rule_config 中提取
+		AudienceConfig:  audienceConfig,
+		ValidatorConfig: validatorConfig,
 		Status:          "ACTIVE",
 		Description:     "",
 		CreatedBy:       req.CreatedBy,

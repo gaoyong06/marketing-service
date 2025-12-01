@@ -67,6 +67,6 @@ message Client {
     string target = 1;
     google.protobuf.Duration timeout = 2;
   }
-  GRPC tenant = 1; // 租户服务客户端
+  GRPC notification = 1; // 通知服务客户端
 }
 

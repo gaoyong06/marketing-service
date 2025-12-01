@@ -225,7 +225,16 @@ func (v *LimitValidator) Validate(ctx context.Context, req *ValidationRequest) e
 	// 检查活动总限制
 	totalLimit, ok := req.Config["total_limit"].(float64)
 	if ok && totalLimit > 0 {
-		// TODO: 需要按活动统计，这里简化处理
+		// 按活动统计总发放量
+		// 注意：这里需要统计整个活动的发放量，而不仅仅是单个奖励
+		// 简化处理：统计当前奖励的发放量作为活动级别的限制
+		count, err := v.repo.CountByStatus(ctx, req.RewardID, "DISTRIBUTED")
+		if err != nil {
+			return err
+		}
+		if count >= int64(totalLimit) {
+			return ErrValidationFailed("campaign total limit exceeded")
+		}
 	}
 
 	return nil

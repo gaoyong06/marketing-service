@@ -32,6 +32,7 @@ var ProviderSet = wire.NewSet(
 	NewInventoryReservationRepo,
 	NewTaskCompletionLogRepo,
 	NewCampaignTaskRepo,
+	NewNotificationClient,
 )
 
 // Data .

@@ -31,6 +31,6 @@ data:
     enabled: false  # 设置为 true 启用 RocketMQ
 
 client:
-  tenant_service:
-    target: 127.0.0.1:9000
-    timeout: 1s
+  notification_service:
+    target: 127.0.0.1:9103
+    timeout: 5s

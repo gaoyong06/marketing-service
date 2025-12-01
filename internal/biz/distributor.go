@@ -158,7 +158,8 @@ func (d *WebhookDistributor) Distribute(ctx context.Context, req *DistributionRe
 
 // EmailDistributor 邮件发放器
 type EmailDistributor struct {
-	log *log.Helper
+	notificationService *NotificationService
+	log                 *log.Helper
 }
 
 // NewEmailDistributor 创建邮件发放器
@@ -166,17 +167,43 @@ func NewEmailDistributor() Distributor {
 	return &EmailDistributor{}
 }
 
+// SetNotificationService 设置通知服务（用于依赖注入）
+func (d *EmailDistributor) SetNotificationService(ns *NotificationService) {
+	d.notificationService = ns
+}
+
 // Distribute 通过邮件发放
 func (d *EmailDistributor) Distribute(ctx context.Context, req *DistributionRequest) error {
-	// TODO: 实现邮件发送逻辑
-	// 需要集成邮件服务（如 SMTP、SendGrid 等）
-	d.log.Infof("sending reward via email to user %d", req.UserID)
-	return nil
+	if d.notificationService == nil {
+		// 降级处理：记录日志
+		if d.log != nil {
+			d.log.Infof("notification service not available, logging email send to user %d", req.UserID)
+		}
+		return nil
+	}
+
+	// 从配置中获取模板ID
+	templateID, ok := req.Config["template_id"].(string)
+	if !ok || templateID == "" {
+		templateID = "reward_email" // 默认模板
+	}
+
+	// 构建模板参数
+	params := map[string]string{
+		"grant_id":    req.GrantID,
+		"reward_id":   req.RewardID,
+		"reward_type": req.RewardType,
+		"content":     req.Content,
+	}
+
+	// 发送邮件
+	return d.notificationService.SendEmail(ctx, req.UserID, templateID, params)
 }
 
 // SMSDistributor 短信发放器
 type SMSDistributor struct {
-	log *log.Helper
+	notificationService *NotificationService
+	log                 *log.Helper
 }
 
 // NewSMSDistributor 创建短信发放器
@@ -184,12 +211,37 @@ func NewSMSDistributor() Distributor {
 	return &SMSDistributor{}
 }
 
+// SetNotificationService 设置通知服务（用于依赖注入）
+func (d *SMSDistributor) SetNotificationService(ns *NotificationService) {
+	d.notificationService = ns
+}
+
 // Distribute 通过短信发放
 func (d *SMSDistributor) Distribute(ctx context.Context, req *DistributionRequest) error {
-	// TODO: 实现短信发送逻辑
-	// 需要集成短信服务（如阿里云、腾讯云等）
-	d.log.Infof("sending reward via SMS to user %d", req.UserID)
-	return nil
+	if d.notificationService == nil {
+		// 降级处理：记录日志
+		if d.log != nil {
+			d.log.Infof("notification service not available, logging SMS send to user %d", req.UserID)
+		}
+		return nil
+	}
+
+	// 从配置中获取模板ID
+	templateID, ok := req.Config["template_id"].(string)
+	if !ok || templateID == "" {
+		templateID = "reward_sms" // 默认模板
+	}
+
+	// 构建模板参数
+	params := map[string]string{
+		"grant_id":    req.GrantID,
+		"reward_id":   req.RewardID,
+		"reward_type": req.RewardType,
+		"content":     req.Content,
+	}
+
+	// 发送短信
+	return d.notificationService.SendSMS(ctx, req.UserID, templateID, params)
 }
 
 // ParseDistributorConfig 解析发放器配置
