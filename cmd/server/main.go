@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"marketing-service/conf"
+	"marketing-service/internal/conf"
 
 	"github.com/gaoyong06/go-pkg/logger"
 	"github.com/go-kratos/kratos/v2"

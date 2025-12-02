@@ -9,7 +9,7 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"marketing-service/conf"
+	"marketing-service/internal/conf"
 	"marketing-service/internal/biz"
 	"marketing-service/internal/data"
 	"marketing-service/internal/server"
@@ -52,7 +52,13 @@ func wireApp(confServer *conf.Server, confData *conf.Data, client *conf.Client, 
 	audienceMatcherService := biz.NewAudienceMatcherService(audienceRepo, logger)
 	validatorService := biz.NewValidatorService(audienceMatcherService, logger)
 	generatorService := biz.NewGeneratorService(logger)
-	distributorService := biz.NewDistributorService(logger)
+	notificationClient, err := data.NewNotificationClient(client, logger)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	notificationService := biz.NewNotificationService(notificationClient, logger)
+	distributorService := biz.NewDistributorService(notificationService, logger)
 	producer, cleanup2, err := data.NewRocketMQProducer(confData, logger)
 	if err != nil {
 		cleanup()

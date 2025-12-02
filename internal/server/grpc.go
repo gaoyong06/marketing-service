@@ -1,7 +1,7 @@
 package server
 
 import (
-	"marketing-service/conf"
+	"marketing-service/internal/conf"
 
 	"github.com/gaoyong06/go-pkg/middleware/i18n"
 

@@ -33,7 +33,7 @@ type DistributorService struct {
 }
 
 // NewDistributorService 创建发放器服务
-func NewDistributorService(logger log.Logger) *DistributorService {
+func NewDistributorService(notificationService *NotificationService, logger log.Logger) *DistributorService {
 	ds := &DistributorService{
 		distributors: make(map[string]Distributor),
 		log:          log.NewHelper(logger),
@@ -42,8 +42,16 @@ func NewDistributorService(logger log.Logger) *DistributorService {
 	// 注册内置发放器
 	ds.Register("AUTO", NewAutoDistributor())
 	ds.Register("WEBHOOK", NewWebhookDistributor())
-	ds.Register("EMAIL", NewEmailDistributor())
-	ds.Register("SMS", NewSMSDistributor())
+
+	// 创建并注册邮件发放器
+	emailDistributor := NewEmailDistributor().(*EmailDistributor)
+	emailDistributor.SetNotificationService(notificationService)
+	ds.Register("EMAIL", emailDistributor)
+
+	// 创建并注册短信发放器
+	smsDistributor := NewSMSDistributor().(*SMSDistributor)
+	smsDistributor.SetNotificationService(notificationService)
+	ds.Register("SMS", smsDistributor)
 
 	return ds
 }

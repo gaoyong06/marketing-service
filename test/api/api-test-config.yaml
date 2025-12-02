@@ -15,7 +15,7 @@ request:
     Content-Type: application/json
 
 # 输出目录
-output_dir: ./test-reports
+output_dir: ./test/reports
 # 是否详细输出
 verbose: true
 

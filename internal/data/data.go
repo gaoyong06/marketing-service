@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"marketing-service/conf"
+	"marketing-service/internal/conf"
 
 	"github.com/apache/rocketmq-client-go/v2"
 	"github.com/apache/rocketmq-client-go/v2/producer"

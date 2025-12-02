@@ -15,6 +15,7 @@ var ProviderSet = wire.NewSet(
 	NewCampaignTaskUseCase,
 	NewGeneratorService,
 	NewDistributorService,
+	NewNotificationService,
 	// 注意：以下服务需要特殊依赖，在 wire.go 中手动构建
 	// NewAudienceMatcherService, // 需要 AudienceRepo
 	// NewValidatorService,        // 需要 AudienceMatcherService

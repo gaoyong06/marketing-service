@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"marketing-service/conf"
+	"marketing-service/internal/conf"
+
+	"marketing-service/internal/biz"
 
 	notificationv1 "xinyuan_tech/notification-service/api/notification/v1"
 
@@ -14,15 +16,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// NotificationClient 定义通知服务客户端接口
-// 注意：这个接口与 biz.NotificationClient 相同，用于实现 biz 层接口
-type NotificationClient interface {
-	SendSMS(ctx context.Context, userID int64, templateID string, params map[string]string) error
-	SendEmail(ctx context.Context, userID int64, templateID string, params map[string]string) error
-	Close() error
-}
-
-// notificationClient 实现 NotificationClient 接口
+// notificationClient 实现 biz.NotificationClient 接口
 type notificationClient struct {
 	client notificationv1.NotificationClient
 	conn   *grpc.ClientConn
@@ -30,22 +24,22 @@ type notificationClient struct {
 }
 
 // NewNotificationClient 创建通知服务客户端
-func NewNotificationClient(c *conf.Bootstrap, logger log.Logger) (NotificationClient, error) {
+func NewNotificationClient(c *conf.Client, logger log.Logger) (biz.NotificationClient, error) {
 	// 检查配置中是否有 notification service 配置
-	if c.Client == nil || c.Client.NotificationService == nil {
+	if c == nil || c.Notification == nil {
 		// 如果没有配置，返回空实现
 		return &noopNotificationClient{log: log.NewHelper(logger)}, nil
 	}
 
 	// 从配置获取 notification service 地址
-	grpcAddr := c.Client.NotificationService.Target
+	grpcAddr := c.Notification.Target
 	if grpcAddr == "" {
 		grpcAddr = "127.0.0.1:9103" // notification-service 的默认 gRPC 端口
 	}
 
 	timeout := 5 * time.Second
-	if c.Client.NotificationService.Timeout != nil {
-		timeout = c.Client.NotificationService.Timeout.AsDuration()
+	if c.Notification.Timeout != nil {
+		timeout = c.Notification.Timeout.AsDuration()
 	}
 
 	// 创建 gRPC 连接

@@ -4,7 +4,7 @@
 package main
 
 import (
-	"marketing-service/conf"
+	"marketing-service/internal/conf"
 	"marketing-service/internal/biz"
 	"marketing-service/internal/data"
 	"marketing-service/internal/server"
@@ -26,8 +26,6 @@ func wireApp(*conf.Server, *conf.Data, *conf.Client, log.Logger) (*kratos.App, f
 		biz.NewValidatorService,       // 需要 AudienceMatcherService
 		// NewTaskTriggerService 需要 RocketMQ Producer，在 wire_gen.go 中需要传入 nil 或实际的 Producer
 		biz.NewTaskTriggerService, // 需要所有依赖（包括 RocketMQ Producer，可为 nil）
-		// 将 data.NotificationClient 绑定到 biz.NotificationClient
-		wire.Bind(new(biz.NotificationClient), new(data.NotificationClient)),
 		service.ProviderSet,
 		newApp,
 	))

@@ -1,0 +1,10 @@
+wire: /Users/gaoyong/Documents/work/xinyuan_tech/marketing-service/cmd/server/wire.go:19:1: inject wireApp: no provider found for *marketing-service/conf.Bootstrap
+	needed by marketing-service/internal/biz.NotificationClient in provider set "ProviderSet" (/Users/gaoyong/Documents/work/xinyuan_tech/marketing-service/internal/data/data.go:20:19)
+	needed by *marketing-service/internal/biz.NotificationService in provider set "ProviderSet" (/Users/gaoyong/Documents/work/xinyuan_tech/marketing-service/internal/biz/biz.go:6:19)
+	needed by *marketing-service/internal/biz.DistributorService in provider set "ProviderSet" (/Users/gaoyong/Documents/work/xinyuan_tech/marketing-service/internal/biz/biz.go:6:19)
+	needed by *marketing-service/internal/biz.TaskTriggerService in provider "NewTaskTriggerService" (/Users/gaoyong/Documents/work/xinyuan_tech/marketing-service/internal/biz/task_trigger.go:30:6)
+	needed by *marketing-service/internal/service.MarketingService in provider set "ProviderSet" (/Users/gaoyong/Documents/work/xinyuan_tech/marketing-service/internal/service/service.go:6:19)
+	needed by *github.com/go-kratos/kratos/v2/transport/http.Server in provider set "ProviderSet" (/Users/gaoyong/Documents/work/xinyuan_tech/marketing-service/internal/server/server.go:6:19)
+	needed by *github.com/go-kratos/kratos/v2.App in provider "newApp" (/Users/gaoyong/Documents/work/xinyuan_tech/marketing-service/cmd/server/main.go:35:6)
+wire: marketing-service/cmd/server: generate failed
+wire: at least one generate failure
