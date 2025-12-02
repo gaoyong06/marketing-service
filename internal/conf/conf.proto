@@ -4,7 +4,7 @@ package marketing.conf;
 
 import "google/protobuf/duration.proto";
 
-option go_package = "marketing-service/conf;conf";
+option go_package = "marketing-service/internal/conf;conf";
 
 // 启动配置
 message Bootstrap {
