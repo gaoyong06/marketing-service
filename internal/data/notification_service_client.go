@@ -2,15 +2,15 @@ package data
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"marketing-service/internal/conf"
-
 	"marketing-service/internal/biz"
+	marketingErrors "marketing-service/internal/errors"
 
 	notificationv1 "xinyuan_tech/notification-service/api/notification/v1"
 
+	pkgErrors "github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -52,7 +52,7 @@ func NewNotificationClient(c *conf.Client, logger log.Logger) (biz.NotificationC
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		return nil, fmt.Errorf("failed to connect to notification service: %w", err)
+		return nil, pkgErrors.WrapErrorWithLang(ctx, err, marketingErrors.ErrCodeNotificationServiceUnavailable)
 	}
 
 	client := notificationv1.NewNotificationClient(conn)
@@ -78,12 +78,12 @@ func (c *notificationClient) SendSMS(ctx context.Context, userID int64, template
 	resp, err := c.client.Send(ctx, req)
 	if err != nil {
 		c.log.Errorf("Failed to send SMS via notification-service: %v", err)
-		return fmt.Errorf("failed to call notification service: %w", err)
+		return pkgErrors.WrapErrorWithLang(ctx, err, marketingErrors.ErrCodeNotificationServiceUnavailable)
 	}
 
 	if resp.Status == "failed" {
 		c.log.Warnf("SMS send failed: status=%s, message=%s", resp.Status, resp.Message)
-		return fmt.Errorf("notification send failed: %s", resp.Message)
+		return pkgErrors.NewBizErrorWithLang(ctx, marketingErrors.ErrCodeNotificationSendFailed)
 	}
 
 	c.log.Infof("SMS notification sent: id=%s, status=%s", resp.NotificationId, resp.Status)
@@ -104,12 +104,12 @@ func (c *notificationClient) SendEmail(ctx context.Context, userID int64, templa
 	resp, err := c.client.Send(ctx, req)
 	if err != nil {
 		c.log.Errorf("Failed to send email via notification-service: %v", err)
-		return fmt.Errorf("failed to call notification service: %w", err)
+		return pkgErrors.WrapErrorWithLang(ctx, err, marketingErrors.ErrCodeNotificationServiceUnavailable)
 	}
 
 	if resp.Status == "failed" {
 		c.log.Warnf("Email send failed: status=%s, message=%s", resp.Status, resp.Message)
-		return fmt.Errorf("notification send failed: %s", resp.Message)
+		return pkgErrors.NewBizErrorWithLang(ctx, marketingErrors.ErrCodeNotificationSendFailed)
 	}
 
 	c.log.Infof("Email notification sent: id=%s, status=%s", resp.NotificationId, resp.Status)

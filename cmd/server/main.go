@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"marketing-service/internal/conf"
+	_ "marketing-service/internal/errors" // 初始化错误管理器
 
 	"github.com/gaoyong06/go-pkg/logger"
 	"github.com/go-kratos/kratos/v2"

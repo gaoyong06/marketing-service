@@ -2,8 +2,10 @@ package biz
 
 import (
 	"context"
-	"fmt"
 
+	"marketing-service/internal/errors"
+
+	pkgErrors "github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
@@ -38,7 +40,7 @@ func (ns *NotificationService) SendEmail(ctx context.Context, userID int64, temp
 
 	if err := ns.client.SendEmail(ctx, userID, templateID, params); err != nil {
 		ns.log.Errorf("failed to send email to user %d: %v", userID, err)
-		return fmt.Errorf("failed to send email: %w", err)
+		return pkgErrors.WrapErrorWithLang(ctx, err, errors.ErrCodeNotificationSendFailed)
 	}
 
 	ns.log.Infof("email sent to user %d with template %s", userID, templateID)
@@ -54,7 +56,7 @@ func (ns *NotificationService) SendSMS(ctx context.Context, userID int64, templa
 
 	if err := ns.client.SendSMS(ctx, userID, templateID, params); err != nil {
 		ns.log.Errorf("failed to send SMS to user %d: %v", userID, err)
-		return fmt.Errorf("failed to send SMS: %w", err)
+		return pkgErrors.WrapErrorWithLang(ctx, err, errors.ErrCodeNotificationSendFailed)
 	}
 
 	ns.log.Infof("SMS sent to user %d with template %s", userID, templateID)

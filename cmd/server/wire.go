@@ -4,8 +4,8 @@
 package main
 
 import (
-	"marketing-service/internal/conf"
 	"marketing-service/internal/biz"
+	"marketing-service/internal/conf"
 	"marketing-service/internal/data"
 	"marketing-service/internal/server"
 	"marketing-service/internal/service"

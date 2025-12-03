@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
+	"marketing-service/internal/errors"
+
+	pkgErrors "github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
@@ -67,7 +69,7 @@ func (ds *DistributorService) Distribute(ctx context.Context, req *DistributionR
 		// 无配置，使用自动发放
 		distributor := ds.distributors["AUTO"]
 		if distributor == nil {
-			return fmt.Errorf("auto distributor not found")
+			return pkgErrors.NewBizErrorWithLang(ctx, errors.ErrCodeDistributorNotFound)
 		}
 		return distributor.Distribute(ctx, req)
 	}
@@ -82,7 +84,7 @@ func (ds *DistributorService) Distribute(ctx context.Context, req *DistributionR
 		ds.log.Warnf("unknown distributor type: %s, using auto", distributorType)
 		distributor = ds.distributors["AUTO"]
 		if distributor == nil {
-			return fmt.Errorf("distributor not found: %s", distributorType)
+			return pkgErrors.NewBizErrorWithLang(ctx, errors.ErrCodeDistributorNotFound)
 		}
 	}
 
@@ -127,7 +129,7 @@ func NewWebhookDistributor() Distributor {
 func (d *WebhookDistributor) Distribute(ctx context.Context, req *DistributionRequest) error {
 	webhookURL, ok := req.Config["webhook_url"].(string)
 	if !ok || webhookURL == "" {
-		return fmt.Errorf("webhook_url not configured")
+		return pkgErrors.NewBizErrorWithLang(ctx, errors.ErrCodeWebhookURLNotConfigured)
 	}
 
 	// 构建请求体
@@ -158,7 +160,7 @@ func (d *WebhookDistributor) Distribute(ctx context.Context, req *DistributionRe
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("webhook request failed with status: %d", resp.StatusCode)
+		return pkgErrors.NewBizErrorWithLang(ctx, errors.ErrCodeWebhookRequestFailed)
 	}
 
 	return nil
