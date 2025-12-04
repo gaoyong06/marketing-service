@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // Reward 奖励领域对象
@@ -57,7 +58,7 @@ func (uc *RewardUseCase) Create(ctx context.Context, r *Reward) (*Reward, error)
 		r.ID = GenerateShortID()
 	}
 	if r.Status == "" {
-		r.Status = "ACTIVE"
+		r.Status = constants.StatusActive
 	}
 	if r.Version == 0 {
 		r.Version = 1

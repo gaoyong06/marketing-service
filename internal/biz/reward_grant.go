@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // RewardGrant 奖励发放领域对象
@@ -64,7 +65,7 @@ func (uc *RewardGrantUseCase) Create(ctx context.Context, grant *RewardGrant) (*
 		grant.GrantID = GenerateShortID()
 	}
 	if grant.Status == "" {
-		grant.Status = "PENDING"
+		grant.Status = constants.RewardGrantStatusPending
 	}
 	grant.CreatedAt = time.Now()
 	grant.UpdatedAt = time.Now()
@@ -110,7 +111,7 @@ func (uc *RewardGrantUseCase) BatchCreate(ctx context.Context, grants []*RewardG
 			grant.GrantID = GenerateShortID()
 		}
 		if grant.Status == "" {
-			grant.Status = "GENERATED"
+			grant.Status = constants.RewardGrantStatusGenerated
 		}
 		if grant.CreatedAt.IsZero() {
 			grant.CreatedAt = now

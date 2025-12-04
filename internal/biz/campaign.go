@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // Campaign is a Campaign domain object.
@@ -51,7 +52,7 @@ func (uc *CampaignUseCase) Create(ctx context.Context, c *Campaign) (*Campaign, 
 		c.ID = GenerateShortID()
 	}
 	if c.Status == "" {
-		c.Status = "ACTIVE"
+		c.Status = constants.StatusActive
 	}
 	c.CreatedAt = time.Now()
 	c.UpdatedAt = time.Now()

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // Audience 受众领域对象
@@ -51,7 +52,7 @@ func (uc *AudienceUseCase) Create(ctx context.Context, a *Audience) (*Audience, 
 		a.ID = GenerateShortID()
 	}
 	if a.Status == "" {
-		a.Status = "ACTIVE"
+		a.Status = constants.StatusActive
 	}
 	a.CreatedAt = time.Now()
 	a.UpdatedAt = time.Now()

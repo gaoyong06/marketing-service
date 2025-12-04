@@ -166,6 +166,15 @@ func NewRocketMQProducer(c *conf.Data, logger log.Logger) (rocketmq.Producer, fu
 	return rmqProducer, cleanup, nil
 }
 
+// NewRocketMQTopic 获取 RocketMQ Topic 名称
+// 如果配置为空，返回默认值
+func NewRocketMQTopic(c *conf.Data) string {
+	if c.Rocketmq == nil || c.Rocketmq.Topic == "" {
+		return "marketing.task.completed" // 默认 topic
+	}
+	return c.Rocketmq.Topic
+}
+
 // GormLogger 适配器
 type GormLogger struct {
 	*log.Helper

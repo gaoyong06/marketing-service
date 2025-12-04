@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/uuid"
+	"marketing-service/internal/constants"
 )
 
 // Generator 生成器接口
@@ -38,9 +39,9 @@ func NewGeneratorService(logger log.Logger) *GeneratorService {
 	}
 
 	// 注册内置生成器
-	gs.Register("CODE", NewCodeGenerator())
-	gs.Register("COUPON", NewCouponGenerator())
-	gs.Register("POINTS", NewPointsGenerator())
+	gs.Register(constants.GeneratorTypeCode, NewCodeGenerator())
+	gs.Register(constants.GeneratorTypeCoupon, NewCouponGenerator())
+	gs.Register(constants.GeneratorTypePoints, NewPointsGenerator())
 
 	return gs
 }
@@ -75,11 +76,11 @@ func (gs *GeneratorService) Generate(ctx context.Context, req *GenerationRequest
 func (gs *GeneratorService) generateDefault(ctx context.Context, req *GenerationRequest) (string, error) {
 	// 根据奖励类型选择生成器
 	switch req.RewardType {
-	case "REDEEM_CODE":
+	case constants.RewardTypeRedeemCode:
 		return NewCodeGenerator().Generate(ctx, req)
-	case "COUPON":
+	case constants.RewardTypeCoupon:
 		return NewCouponGenerator().Generate(ctx, req)
-	case "POINTS":
+	case constants.RewardTypePoints:
 		return NewPointsGenerator().Generate(ctx, req)
 	default:
 		// 返回基础内容配置
@@ -105,7 +106,7 @@ func (g *CodeGenerator) Generate(ctx context.Context, req *GenerationRequest) (s
 	// 构建内容配置
 	content := map[string]interface{}{
 		"code":      code,
-		"code_type": getStringValue(req.Config, "code_type", "COUPON"),
+		"code_type": getStringValue(req.Config, "code_type", constants.CodeTypeCoupon),
 		"value":     getFloatValue(req.Config, "value", 0),
 	}
 
@@ -133,7 +134,7 @@ func (g *CouponGenerator) Generate(ctx context.Context, req *GenerationRequest) 
 	// 构建内容配置
 	content := map[string]interface{}{
 		"coupon_id":      couponID,
-		"discount_type":  getStringValue(req.Config, "discount_type", "AMOUNT"),
+		"discount_type":  getStringValue(req.Config, "discount_type", constants.DiscountTypeAmount),
 		"discount_value": getFloatValue(req.Config, "discount_value", 0),
 		"min_amount":     getFloatValue(req.Config, "min_amount", 0),
 	}

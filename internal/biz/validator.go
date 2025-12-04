@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // Validator 校验器接口
@@ -213,7 +214,7 @@ func (v *LimitValidator) Validate(ctx context.Context, req *ValidationRequest) e
 	// 检查用户限制
 	userLimit, ok := req.Config["user_limit"].(float64)
 	if ok && userLimit > 0 {
-		count, err := v.repo.CountByStatus(ctx, req.RewardID, "DISTRIBUTED")
+		count, err := v.repo.CountByStatus(ctx, req.RewardID, constants.RewardGrantStatusDistributed)
 		if err != nil {
 			return err
 		}
@@ -228,7 +229,7 @@ func (v *LimitValidator) Validate(ctx context.Context, req *ValidationRequest) e
 		// 按活动统计总发放量
 		// 注意：这里需要统计整个活动的发放量，而不仅仅是单个奖励
 		// 简化处理：统计当前奖励的发放量作为活动级别的限制
-		count, err := v.repo.CountByStatus(ctx, req.RewardID, "DISTRIBUTED")
+		count, err := v.repo.CountByStatus(ctx, req.RewardID, constants.RewardGrantStatusDistributed)
 		if err != nil {
 			return err
 		}

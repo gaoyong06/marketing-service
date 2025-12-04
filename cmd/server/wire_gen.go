@@ -65,7 +65,8 @@ func wireApp(confServer *conf.Server, confData *conf.Data, client *conf.Client, 
 		cleanup()
 		return nil, nil, err
 	}
-	taskTriggerService := biz.NewTaskTriggerService(taskUseCase, taskCompletionLogUseCase, rewardGrantUseCase, rewardUseCase, campaignUseCase, inventoryReservationUseCase, validatorService, generatorService, distributorService, producer, logger)
+	string2 := data.NewRocketMQTopic(confData)
+	taskTriggerService := biz.NewTaskTriggerService(taskUseCase, taskCompletionLogUseCase, rewardGrantUseCase, rewardUseCase, campaignUseCase, inventoryReservationUseCase, validatorService, generatorService, distributorService, producer, string2, logger)
 	marketingService := service.NewMarketingService(campaignUseCase, rewardUseCase, rewardGrantUseCase, taskUseCase, audienceUseCase, redeemCodeUseCase, inventoryReservationUseCase, taskCompletionLogUseCase, campaignTaskUseCase, taskTriggerService, logger)
 	httpServer := server.NewHTTPServer(confServer, marketingService, logger)
 	grpcServer := server.NewGRPCServer(confServer, marketingService, logger)

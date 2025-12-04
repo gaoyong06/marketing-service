@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // Task 任务领域对象
@@ -58,7 +59,7 @@ func (uc *TaskUseCase) Create(ctx context.Context, t *Task) (*Task, error) {
 		t.ID = GenerateShortID()
 	}
 	if t.Status == "" {
-		t.Status = "ACTIVE"
+		t.Status = constants.StatusActive
 	}
 	t.CreatedAt = time.Now()
 	t.UpdatedAt = time.Now()

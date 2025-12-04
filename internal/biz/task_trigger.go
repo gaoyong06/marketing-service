@@ -9,6 +9,7 @@ import (
 	"github.com/apache/rocketmq-client-go/v2"
 	"github.com/apache/rocketmq-client-go/v2/primitive"
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // TaskTriggerService 任务触发服务
@@ -23,6 +24,7 @@ type TaskTriggerService struct {
 	generator   *GeneratorService
 	distributor *DistributorService
 	rmqProducer rocketmq.Producer // 直接使用 RocketMQ Producer
+	rmqTopic    string           // RocketMQ Topic 名称
 	log         *log.Helper
 }
 
@@ -38,8 +40,13 @@ func NewTaskTriggerService(
 	generator *GeneratorService,
 	distributor *DistributorService,
 	rmqProducer rocketmq.Producer, // 直接使用 RocketMQ Producer，可为 nil
+	rmqTopic string,                // RocketMQ Topic 名称，如果为空则使用默认值
 	logger log.Logger,
 ) *TaskTriggerService {
+	// 如果 topic 为空，使用默认值
+	if rmqTopic == "" {
+		rmqTopic = constants.RocketMQTopicTaskCompleted
+	}
 	return &TaskTriggerService{
 		tuc:         tuc,
 		tcluc:       tcluc,
@@ -51,6 +58,7 @@ func NewTaskTriggerService(
 		generator:   generator,
 		distributor: distributor,
 		rmqProducer: rmqProducer,
+		rmqTopic:    rmqTopic,
 		log:         log.NewHelper(logger),
 	}
 }
@@ -138,7 +146,7 @@ func (s *TaskTriggerService) TriggerEvent(ctx context.Context, event *TaskEvent)
 			if err != nil {
 				s.log.Errorf("failed to marshal task completion event: %v, task=%s, user=%d", err, task.ID, event.UserID)
 			} else {
-				msg := primitive.NewMessage("marketing.task.completed", eventJSON)
+				msg := primitive.NewMessage(s.rmqTopic, eventJSON)
 				result, err := s.rmqProducer.SendSync(ctx, msg)
 				if err != nil {
 					// 连接失败或发送失败时记录错误日志
@@ -317,7 +325,7 @@ func (s *TaskTriggerService) issueReward(ctx context.Context, task *Task, event 
 					CampaignID: event.CampaignID,
 					UserID:     event.UserID,
 					Quantity:   1,
-					Status:     "PENDING",
+					Status:     constants.InventoryReservationStatusPending,
 					ExpireAt:   time.Now().Add(30 * time.Minute), // 30分钟过期
 				}
 				result, err := s.iruc.Reserve(ctx, reservation)
@@ -365,7 +373,7 @@ func (s *TaskTriggerService) issueReward(ctx context.Context, task *Task, event 
 		TenantID:        event.TenantID,
 		AppID:           event.AppID,
 		UserID:          event.UserID,
-		Status:          "GENERATED", // 已生成
+		Status:          constants.RewardGrantStatusGenerated, // 已生成
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 	}
@@ -413,7 +421,7 @@ func (s *TaskTriggerService) issueReward(ctx context.Context, task *Task, event 
 	}
 
 	// 11. 更新状态为已发放
-	grant.Status = "DISTRIBUTED"
+	grant.Status = constants.RewardGrantStatusDistributed
 	now := time.Now()
 	grant.DistributedAt = &now
 	_, err = s.guc.Update(ctx, grant)

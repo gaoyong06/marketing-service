@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"marketing-service/internal/biz"
+	"marketing-service/internal/constants"
 	"marketing-service/internal/data/model"
 	"time"
 
@@ -223,7 +224,7 @@ func (r *taskRepo) ListActive(ctx context.Context, tenantID, appID string) ([]*b
 	now := r.data.db.NowFunc()
 	if err := r.data.db.WithContext(ctx).
 		Where("tenant_id = ? AND app_id = ? AND status = ? AND start_time <= ? AND end_time >= ?",
-			tenantID, appID, "ACTIVE", now, now).
+			tenantID, appID, constants.StatusActive, now, now).
 		Find(&models).Error; err != nil {
 		r.log.Errorf("failed to list active tasks: %v", err)
 		return nil, err

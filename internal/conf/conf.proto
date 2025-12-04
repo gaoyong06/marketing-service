@@ -52,9 +52,10 @@ message Data {
   message RocketMQ {
     repeated string name_servers = 1;  // NameServer 地址列表
     string group_name = 2;              // Producer Group 名称
-    int32 retry_times = 3;              // 重试次数
-    google.protobuf.Duration send_timeout = 4;  // 发送超时时间
-    bool enabled = 5;                   // 是否启用
+    string topic = 3;                   // Topic 名称（任务完成事件主题）
+    int32 retry_times = 4;              // 重试次数
+    google.protobuf.Duration send_timeout = 5;  // 发送超时时间
+    bool enabled = 6;                   // 是否启用
   }
   Database database = 1;
   Redis redis = 2;

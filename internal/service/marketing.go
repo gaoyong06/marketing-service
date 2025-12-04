@@ -11,6 +11,7 @@ import (
 
 	v1 "marketing-service/api/marketing_service/v1"
 	"marketing-service/internal/biz"
+	"marketing-service/internal/constants"
 	"marketing-service/internal/metrics"
 )
 
@@ -133,7 +134,7 @@ func (s *MarketingService) CreateCampaign(ctx context.Context, req *v1.CreateCam
 		EndTime:         endTime,
 		AudienceConfig:  audienceConfig,
 		ValidatorConfig: validatorConfig,
-		Status:          "ACTIVE",
+		Status:          constants.StatusActive,
 		Description:     "",
 		CreatedBy:       req.CreatedBy,
 	}
@@ -259,9 +260,9 @@ func (s *MarketingService) DeleteCampaign(ctx context.Context, req *v1.DeleteCam
 // toProtoCampaign 转换为 Proto Campaign
 func (s *MarketingService) toProtoCampaign(c *biz.Campaign) *v1.Campaign {
 	status := int32(0)
-	if c.Status == "ACTIVE" {
+	if c.Status == constants.CampaignStatusActive {
 		status = 1
-	} else if c.Status == "ENDED" {
+	} else if c.Status == constants.CampaignStatusEnded {
 		status = 2
 	}
 
@@ -321,7 +322,7 @@ func (s *MarketingService) GenerateRedeemCodes(ctx context.Context, req *v1.Gene
 			CampaignID:   req.CampaignId,
 			CampaignName: campaign.Name,
 			BatchID:      batchID,
-			Status:       "ACTIVE",
+			Status:       constants.StatusActive,
 			ExpireAt:     expireAt,
 			CreatedAt:    now, // 使用相同的时间戳，减少系统调用
 			UpdatedAt:    now,
@@ -371,7 +372,7 @@ func (s *MarketingService) RedeemCode(ctx context.Context, req *v1.RedeemCodeReq
 	}
 
 	// 检查状态
-	if code.Status != "ACTIVE" {
+	if code.Status != constants.RedeemCodeStatusActive {
 		return &v1.RedeemCodeReply{
 			Success:  false,
 			Message:  "redeem code is not active",
@@ -382,7 +383,7 @@ func (s *MarketingService) RedeemCode(ctx context.Context, req *v1.RedeemCodeReq
 	// 检查是否过期
 	if code.ExpireAt != nil && code.ExpireAt.Before(time.Now()) {
 		// 更新状态为过期
-		_ = s.rdeuc.UpdateStatus(ctx, req.Code, code.TenantID, "EXPIRED")
+		_ = s.rdeuc.UpdateStatus(ctx, req.Code, code.TenantID, constants.RedeemCodeStatusExpired)
 		return &v1.RedeemCodeReply{
 			Success:  false,
 			Message:  "redeem code expired",
@@ -432,7 +433,7 @@ func (s *MarketingService) AssignRedeemCode(ctx context.Context, req *v1.AssignR
 	}
 
 	// 检查状态
-	if code.Status != "ACTIVE" {
+	if code.Status != constants.RedeemCodeStatusActive {
 		return &v1.AssignRedeemCodeReply{
 			Success:  false,
 			Message:  "redeem code is not active",
@@ -469,10 +470,10 @@ func (s *MarketingService) ListRedeemCodes(ctx context.Context, req *v1.ListRede
 	status := ""
 	if req.Status >= 0 {
 		statusMap := map[int32]string{
-			0: "ACTIVE",
-			1: "REDEEMED",
-			2: "EXPIRED",
-			3: "REVOKED",
+			0: constants.RedeemCodeStatusActive,
+			1: constants.RedeemCodeStatusRedeemed,
+			2: constants.RedeemCodeStatusExpired,
+			3: constants.RedeemCodeStatusRevoked,
 		}
 		status = statusMap[req.Status]
 	}
@@ -515,13 +516,13 @@ func (s *MarketingService) GetRedeemCode(ctx context.Context, req *v1.GetRedeemC
 func (s *MarketingService) toProtoRedeemCode(rc *biz.RedeemCode) *v1.RedeemCode {
 	status := int32(0)
 	switch rc.Status {
-	case "ACTIVE":
+	case constants.RedeemCodeStatusActive:
 		status = 0
-	case "REDEEMED":
+	case constants.RedeemCodeStatusRedeemed:
 		status = 2
-	case "EXPIRED":
+	case constants.RedeemCodeStatusExpired:
 		status = 3
-	case "REVOKED":
+	case constants.RedeemCodeStatusRevoked:
 		status = 3
 	}
 

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // InventoryReservation 库存预占领域对象
@@ -51,7 +52,7 @@ func (uc *InventoryReservationUseCase) Reserve(ctx context.Context, ir *Inventor
 		ir.ReservationID = GenerateShortID()
 	}
 	if ir.Status == "" {
-		ir.Status = "PENDING"
+		ir.Status = constants.InventoryReservationStatusPending
 	}
 	ir.CreatedAt = time.Now()
 	ir.UpdatedAt = time.Now()
@@ -60,12 +61,12 @@ func (uc *InventoryReservationUseCase) Reserve(ctx context.Context, ir *Inventor
 
 // Confirm 确认预占（核销）
 func (uc *InventoryReservationUseCase) Confirm(ctx context.Context, reservationID string) error {
-	return uc.repo.UpdateStatus(ctx, reservationID, "CONFIRMED")
+	return uc.repo.UpdateStatus(ctx, reservationID, constants.InventoryReservationStatusConfirmed)
 }
 
 // Cancel 取消预占
 func (uc *InventoryReservationUseCase) Cancel(ctx context.Context, reservationID string) error {
-	return uc.repo.UpdateStatus(ctx, reservationID, "CANCELLED")
+	return uc.repo.UpdateStatus(ctx, reservationID, constants.InventoryReservationStatusCancelled)
 }
 
 // GetPendingCount 获取资源的待确认预占数量

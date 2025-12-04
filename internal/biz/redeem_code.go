@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
+	"marketing-service/internal/constants"
 )
 
 // RedeemCode 兑换码领域对象
@@ -54,7 +55,7 @@ func NewRedeemCodeUseCase(repo RedeemCodeRepo, logger log.Logger) *RedeemCodeUse
 // Create 创建兑换码
 func (uc *RedeemCodeUseCase) Create(ctx context.Context, rc *RedeemCode) (*RedeemCode, error) {
 	if rc.Status == "" {
-		rc.Status = "ACTIVE"
+		rc.Status = constants.RedeemCodeStatusActive
 	}
 	rc.CreatedAt = time.Now()
 	rc.UpdatedAt = time.Now()
