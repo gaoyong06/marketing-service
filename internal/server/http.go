@@ -35,8 +35,8 @@ func NewHTTPServer(s *conf.Server, marketing *service.MarketingService, logger l
 	// 添加中间件：recovery、validate、i18n
 	opts = append(opts, kratoshttp.Middleware(
 		recovery.Recovery(),
-		validate.Validator(), // 自动验证 proto validate 规则
-		i18n.Middleware(),    // 国际化中间件
+		validate.Validator(),                   // 自动验证 proto validate 规则
+		i18n.Middleware(),                      // 国际化中间件
 	))
 
 	// 使用自定义响应编码器统一响应格式
@@ -54,6 +54,7 @@ func NewHTTPServer(s *conf.Server, marketing *service.MarketingService, logger l
 	}
 
 	srv := kratoshttp.NewServer(opts...)
+
 	v1.RegisterMarketingHTTPServer(srv, marketing)
 
 	// 注册 Prometheus metrics 端点

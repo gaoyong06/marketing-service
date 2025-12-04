@@ -9,8 +9,8 @@ package main
 import (
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"marketing-service/internal/conf"
 	"marketing-service/internal/biz"
+	"marketing-service/internal/conf"
 	"marketing-service/internal/data"
 	"marketing-service/internal/server"
 	"marketing-service/internal/service"
@@ -18,6 +18,7 @@ import (
 
 import (
 	_ "go.uber.org/automaxprocs"
+	_ "marketing-service/internal/errors"
 )
 
 // Injectors from wire.go:
