@@ -58,6 +58,16 @@ const (
 	Marketing_AddTaskToCampaign_FullMethodName         = "/platform.marketing_service.v1.Marketing/AddTaskToCampaign"
 	Marketing_RemoveTaskFromCampaign_FullMethodName    = "/platform.marketing_service.v1.Marketing/RemoveTaskFromCampaign"
 	Marketing_ListCampaignTasks_FullMethodName         = "/platform.marketing_service.v1.Marketing/ListCampaignTasks"
+	Marketing_CreateCoupon_FullMethodName              = "/platform.marketing_service.v1.Marketing/CreateCoupon"
+	Marketing_GetCoupon_FullMethodName                 = "/platform.marketing_service.v1.Marketing/GetCoupon"
+	Marketing_ListCoupons_FullMethodName               = "/platform.marketing_service.v1.Marketing/ListCoupons"
+	Marketing_UpdateCoupon_FullMethodName              = "/platform.marketing_service.v1.Marketing/UpdateCoupon"
+	Marketing_DeleteCoupon_FullMethodName              = "/platform.marketing_service.v1.Marketing/DeleteCoupon"
+	Marketing_ValidateCoupon_FullMethodName            = "/platform.marketing_service.v1.Marketing/ValidateCoupon"
+	Marketing_UseCoupon_FullMethodName                 = "/platform.marketing_service.v1.Marketing/UseCoupon"
+	Marketing_GetCouponStats_FullMethodName            = "/platform.marketing_service.v1.Marketing/GetCouponStats"
+	Marketing_ListCouponUsages_FullMethodName          = "/platform.marketing_service.v1.Marketing/ListCouponUsages"
+	Marketing_GetCouponsSummaryStats_FullMethodName    = "/platform.marketing_service.v1.Marketing/GetCouponsSummaryStats"
 )
 
 // MarketingClient is the client API for Marketing service.
@@ -152,6 +162,27 @@ type MarketingClient interface {
 	RemoveTaskFromCampaign(ctx context.Context, in *RemoveTaskFromCampaignRequest, opts ...grpc.CallOption) (*RemoveTaskFromCampaignReply, error)
 	// ListCampaignTasks 列出活动的所有任务
 	ListCampaignTasks(ctx context.Context, in *ListCampaignTasksRequest, opts ...grpc.CallOption) (*ListCampaignTasksReply, error)
+	// ========== Coupon Management API (供开发者控制台使用) ==========
+	// CreateCoupon 创建优惠券
+	CreateCoupon(ctx context.Context, in *CreateCouponRequest, opts ...grpc.CallOption) (*CreateCouponReply, error)
+	// GetCoupon 获取优惠券
+	GetCoupon(ctx context.Context, in *GetCouponRequest, opts ...grpc.CallOption) (*GetCouponReply, error)
+	// ListCoupons 列出优惠券
+	ListCoupons(ctx context.Context, in *ListCouponsRequest, opts ...grpc.CallOption) (*ListCouponsReply, error)
+	// UpdateCoupon 更新优惠券
+	UpdateCoupon(ctx context.Context, in *UpdateCouponRequest, opts ...grpc.CallOption) (*UpdateCouponReply, error)
+	// DeleteCoupon 删除优惠券
+	DeleteCoupon(ctx context.Context, in *DeleteCouponRequest, opts ...grpc.CallOption) (*DeleteCouponReply, error)
+	// ValidateCoupon 验证优惠券 (供 Payment Service 调用)
+	ValidateCoupon(ctx context.Context, in *ValidateCouponRequest, opts ...grpc.CallOption) (*ValidateCouponReply, error)
+	// UseCoupon 使用优惠券 (供 Payment Service 调用)
+	UseCoupon(ctx context.Context, in *UseCouponRequest, opts ...grpc.CallOption) (*UseCouponReply, error)
+	// GetCouponStats 获取优惠券统计
+	GetCouponStats(ctx context.Context, in *GetCouponStatsRequest, opts ...grpc.CallOption) (*GetCouponStatsReply, error)
+	// ListCouponUsages 列出优惠券使用记录
+	ListCouponUsages(ctx context.Context, in *ListCouponUsagesRequest, opts ...grpc.CallOption) (*ListCouponUsagesReply, error)
+	// GetCouponsSummaryStats 获取所有优惠券汇总统计（供营销效果仪表板使用）
+	GetCouponsSummaryStats(ctx context.Context, in *GetCouponsSummaryStatsRequest, opts ...grpc.CallOption) (*GetCouponsSummaryStatsReply, error)
 }
 
 type marketingClient struct {
@@ -552,6 +583,106 @@ func (c *marketingClient) ListCampaignTasks(ctx context.Context, in *ListCampaig
 	return out, nil
 }
 
+func (c *marketingClient) CreateCoupon(ctx context.Context, in *CreateCouponRequest, opts ...grpc.CallOption) (*CreateCouponReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateCouponReply)
+	err := c.cc.Invoke(ctx, Marketing_CreateCoupon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) GetCoupon(ctx context.Context, in *GetCouponRequest, opts ...grpc.CallOption) (*GetCouponReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCouponReply)
+	err := c.cc.Invoke(ctx, Marketing_GetCoupon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) ListCoupons(ctx context.Context, in *ListCouponsRequest, opts ...grpc.CallOption) (*ListCouponsReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCouponsReply)
+	err := c.cc.Invoke(ctx, Marketing_ListCoupons_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) UpdateCoupon(ctx context.Context, in *UpdateCouponRequest, opts ...grpc.CallOption) (*UpdateCouponReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateCouponReply)
+	err := c.cc.Invoke(ctx, Marketing_UpdateCoupon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) DeleteCoupon(ctx context.Context, in *DeleteCouponRequest, opts ...grpc.CallOption) (*DeleteCouponReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteCouponReply)
+	err := c.cc.Invoke(ctx, Marketing_DeleteCoupon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) ValidateCoupon(ctx context.Context, in *ValidateCouponRequest, opts ...grpc.CallOption) (*ValidateCouponReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ValidateCouponReply)
+	err := c.cc.Invoke(ctx, Marketing_ValidateCoupon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) UseCoupon(ctx context.Context, in *UseCouponRequest, opts ...grpc.CallOption) (*UseCouponReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UseCouponReply)
+	err := c.cc.Invoke(ctx, Marketing_UseCoupon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) GetCouponStats(ctx context.Context, in *GetCouponStatsRequest, opts ...grpc.CallOption) (*GetCouponStatsReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCouponStatsReply)
+	err := c.cc.Invoke(ctx, Marketing_GetCouponStats_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) ListCouponUsages(ctx context.Context, in *ListCouponUsagesRequest, opts ...grpc.CallOption) (*ListCouponUsagesReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCouponUsagesReply)
+	err := c.cc.Invoke(ctx, Marketing_ListCouponUsages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *marketingClient) GetCouponsSummaryStats(ctx context.Context, in *GetCouponsSummaryStatsRequest, opts ...grpc.CallOption) (*GetCouponsSummaryStatsReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCouponsSummaryStatsReply)
+	err := c.cc.Invoke(ctx, Marketing_GetCouponsSummaryStats_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MarketingServer is the server API for Marketing service.
 // All implementations must embed UnimplementedMarketingServer
 // for forward compatibility.
@@ -644,6 +775,27 @@ type MarketingServer interface {
 	RemoveTaskFromCampaign(context.Context, *RemoveTaskFromCampaignRequest) (*RemoveTaskFromCampaignReply, error)
 	// ListCampaignTasks 列出活动的所有任务
 	ListCampaignTasks(context.Context, *ListCampaignTasksRequest) (*ListCampaignTasksReply, error)
+	// ========== Coupon Management API (供开发者控制台使用) ==========
+	// CreateCoupon 创建优惠券
+	CreateCoupon(context.Context, *CreateCouponRequest) (*CreateCouponReply, error)
+	// GetCoupon 获取优惠券
+	GetCoupon(context.Context, *GetCouponRequest) (*GetCouponReply, error)
+	// ListCoupons 列出优惠券
+	ListCoupons(context.Context, *ListCouponsRequest) (*ListCouponsReply, error)
+	// UpdateCoupon 更新优惠券
+	UpdateCoupon(context.Context, *UpdateCouponRequest) (*UpdateCouponReply, error)
+	// DeleteCoupon 删除优惠券
+	DeleteCoupon(context.Context, *DeleteCouponRequest) (*DeleteCouponReply, error)
+	// ValidateCoupon 验证优惠券 (供 Payment Service 调用)
+	ValidateCoupon(context.Context, *ValidateCouponRequest) (*ValidateCouponReply, error)
+	// UseCoupon 使用优惠券 (供 Payment Service 调用)
+	UseCoupon(context.Context, *UseCouponRequest) (*UseCouponReply, error)
+	// GetCouponStats 获取优惠券统计
+	GetCouponStats(context.Context, *GetCouponStatsRequest) (*GetCouponStatsReply, error)
+	// ListCouponUsages 列出优惠券使用记录
+	ListCouponUsages(context.Context, *ListCouponUsagesRequest) (*ListCouponUsagesReply, error)
+	// GetCouponsSummaryStats 获取所有优惠券汇总统计（供营销效果仪表板使用）
+	GetCouponsSummaryStats(context.Context, *GetCouponsSummaryStatsRequest) (*GetCouponsSummaryStatsReply, error)
 	mustEmbedUnimplementedMarketingServer()
 }
 
@@ -770,6 +922,36 @@ func (UnimplementedMarketingServer) RemoveTaskFromCampaign(context.Context, *Rem
 }
 func (UnimplementedMarketingServer) ListCampaignTasks(context.Context, *ListCampaignTasksRequest) (*ListCampaignTasksReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListCampaignTasks not implemented")
+}
+func (UnimplementedMarketingServer) CreateCoupon(context.Context, *CreateCouponRequest) (*CreateCouponReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateCoupon not implemented")
+}
+func (UnimplementedMarketingServer) GetCoupon(context.Context, *GetCouponRequest) (*GetCouponReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCoupon not implemented")
+}
+func (UnimplementedMarketingServer) ListCoupons(context.Context, *ListCouponsRequest) (*ListCouponsReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListCoupons not implemented")
+}
+func (UnimplementedMarketingServer) UpdateCoupon(context.Context, *UpdateCouponRequest) (*UpdateCouponReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateCoupon not implemented")
+}
+func (UnimplementedMarketingServer) DeleteCoupon(context.Context, *DeleteCouponRequest) (*DeleteCouponReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteCoupon not implemented")
+}
+func (UnimplementedMarketingServer) ValidateCoupon(context.Context, *ValidateCouponRequest) (*ValidateCouponReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method ValidateCoupon not implemented")
+}
+func (UnimplementedMarketingServer) UseCoupon(context.Context, *UseCouponRequest) (*UseCouponReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method UseCoupon not implemented")
+}
+func (UnimplementedMarketingServer) GetCouponStats(context.Context, *GetCouponStatsRequest) (*GetCouponStatsReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCouponStats not implemented")
+}
+func (UnimplementedMarketingServer) ListCouponUsages(context.Context, *ListCouponUsagesRequest) (*ListCouponUsagesReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListCouponUsages not implemented")
+}
+func (UnimplementedMarketingServer) GetCouponsSummaryStats(context.Context, *GetCouponsSummaryStatsRequest) (*GetCouponsSummaryStatsReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCouponsSummaryStats not implemented")
 }
 func (UnimplementedMarketingServer) mustEmbedUnimplementedMarketingServer() {}
 func (UnimplementedMarketingServer) testEmbeddedByValue()                   {}
@@ -1494,6 +1676,186 @@ func _Marketing_ListCampaignTasks_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Marketing_CreateCoupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCouponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).CreateCoupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_CreateCoupon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).CreateCoupon(ctx, req.(*CreateCouponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_GetCoupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCouponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).GetCoupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_GetCoupon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).GetCoupon(ctx, req.(*GetCouponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_ListCoupons_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCouponsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).ListCoupons(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_ListCoupons_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).ListCoupons(ctx, req.(*ListCouponsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_UpdateCoupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCouponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).UpdateCoupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_UpdateCoupon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).UpdateCoupon(ctx, req.(*UpdateCouponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_DeleteCoupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCouponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).DeleteCoupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_DeleteCoupon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).DeleteCoupon(ctx, req.(*DeleteCouponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_ValidateCoupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidateCouponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).ValidateCoupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_ValidateCoupon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).ValidateCoupon(ctx, req.(*ValidateCouponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_UseCoupon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UseCouponRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).UseCoupon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_UseCoupon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).UseCoupon(ctx, req.(*UseCouponRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_GetCouponStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCouponStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).GetCouponStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_GetCouponStats_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).GetCouponStats(ctx, req.(*GetCouponStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_ListCouponUsages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCouponUsagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).ListCouponUsages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_ListCouponUsages_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).ListCouponUsages(ctx, req.(*ListCouponUsagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Marketing_GetCouponsSummaryStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCouponsSummaryStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MarketingServer).GetCouponsSummaryStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Marketing_GetCouponsSummaryStats_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MarketingServer).GetCouponsSummaryStats(ctx, req.(*GetCouponsSummaryStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Marketing_ServiceDesc is the grpc.ServiceDesc for Marketing service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1656,6 +2018,46 @@ var Marketing_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListCampaignTasks",
 			Handler:    _Marketing_ListCampaignTasks_Handler,
+		},
+		{
+			MethodName: "CreateCoupon",
+			Handler:    _Marketing_CreateCoupon_Handler,
+		},
+		{
+			MethodName: "GetCoupon",
+			Handler:    _Marketing_GetCoupon_Handler,
+		},
+		{
+			MethodName: "ListCoupons",
+			Handler:    _Marketing_ListCoupons_Handler,
+		},
+		{
+			MethodName: "UpdateCoupon",
+			Handler:    _Marketing_UpdateCoupon_Handler,
+		},
+		{
+			MethodName: "DeleteCoupon",
+			Handler:    _Marketing_DeleteCoupon_Handler,
+		},
+		{
+			MethodName: "ValidateCoupon",
+			Handler:    _Marketing_ValidateCoupon_Handler,
+		},
+		{
+			MethodName: "UseCoupon",
+			Handler:    _Marketing_UseCoupon_Handler,
+		},
+		{
+			MethodName: "GetCouponStats",
+			Handler:    _Marketing_GetCouponStats_Handler,
+		},
+		{
+			MethodName: "ListCouponUsages",
+			Handler:    _Marketing_ListCouponUsages_Handler,
+		},
+		{
+			MethodName: "GetCouponsSummaryStats",
+			Handler:    _Marketing_GetCouponsSummaryStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

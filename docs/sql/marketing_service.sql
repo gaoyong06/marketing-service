@@ -349,6 +349,48 @@ ALTER TABLE `task_completion_log` ADD INDEX `idx_tenant_app_task` (`tenant_id`, 
 -- ========== InventoryReservation 表索引优化 ==========
 -- 注意：idx_resource_status、idx_expire_at、idx_user_id 已在 CREATE TABLE 中定义，无需重复添加
 
+-- ========== Coupon 优惠券表 ==========
+-- 优惠券表（供开发者控制台使用，用于支付场景的优惠券管理）
+CREATE TABLE `coupon` (
+  `code` varchar(50) NOT NULL COMMENT '优惠码（唯一标识）',
+  `app_id` varchar(32) NOT NULL COMMENT '应用ID',
+  `discount_type` varchar(16) NOT NULL COMMENT '折扣类型: percent(百分比)/fixed(固定金额)',
+  `discount_value` bigint(20) NOT NULL COMMENT '折扣值(百分比或分)',
+  `valid_from` bigint(20) NOT NULL COMMENT '生效时间(timestamp)',
+  `valid_until` bigint(20) NOT NULL COMMENT '过期时间(timestamp)',
+  `max_uses` int(11) NOT NULL DEFAULT 1 COMMENT '最大使用次数',
+  `used_count` int(11) NOT NULL DEFAULT 0 COMMENT '已使用次数',
+  `min_amount` bigint(20) NOT NULL DEFAULT 0 COMMENT '最低消费金额(分)',
+  `status` varchar(16) NOT NULL DEFAULT 'active' COMMENT '状态: active/inactive/expired',
+  `created_at` bigint(20) NOT NULL COMMENT '创建时间(timestamp)',
+  `updated_at` bigint(20) NOT NULL COMMENT '更新时间(timestamp)',
+  PRIMARY KEY (`code`),
+  KEY `idx_app_id` (`app_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_valid_time` (`valid_from`, `valid_until`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券表';
+
+-- ========== CouponUsage 优惠券使用记录表 ==========
+-- 优惠券使用记录表（记录每次优惠券的使用情况）
+CREATE TABLE `coupon_usage` (
+  `id` varchar(32) NOT NULL COMMENT '使用记录ID（唯一标识）',
+  `coupon_code` varchar(50) NOT NULL COMMENT '优惠券码',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `order_id` varchar(64) NOT NULL COMMENT '订单ID',
+  `payment_id` varchar(64) NOT NULL COMMENT '支付ID',
+  `original_amount` bigint(20) NOT NULL COMMENT '原价(分)',
+  `discount_amount` bigint(20) NOT NULL COMMENT '折扣金额(分)',
+  `final_amount` bigint(20) NOT NULL COMMENT '实付金额(分)',
+  `used_at` bigint(20) NOT NULL COMMENT '使用时间(timestamp)',
+  `created_at` bigint(20) NOT NULL COMMENT '创建时间(timestamp)',
+  PRIMARY KEY (`id`),
+  KEY `idx_coupon_code` (`coupon_code`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_order_id` (`order_id`),
+  KEY `idx_payment_id` (`payment_id`),
+  KEY `idx_used_at` (`used_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券使用记录表';
+
 -- ========== 分页查询优化建议 ==========
 -- 对于大数据量的分页查询，建议使用游标分页（cursor-based pagination）
 -- 而不是 OFFSET/LIMIT，可以避免深度分页的性能问题

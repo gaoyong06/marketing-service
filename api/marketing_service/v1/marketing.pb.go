@@ -6397,6 +6397,1634 @@ func (x *ListCampaignTasksReply) GetCampaignTasks() []*CampaignTask {
 	return nil
 }
 
+// ========== Coupon Messages (供开发者控制台使用) ==========
+// Coupon 优惠券
+type Coupon struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`                                         // 优惠码
+	AppId         string                 `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`                          // 应用ID
+	DiscountType  string                 `protobuf:"bytes,3,opt,name=discount_type,json=discountType,proto3" json:"discount_type,omitempty"`     // 折扣类型: percent/fixed
+	DiscountValue int64                  `protobuf:"varint,4,opt,name=discount_value,json=discountValue,proto3" json:"discount_value,omitempty"` // 折扣值(百分比或分)
+	ValidFrom     int64                  `protobuf:"varint,5,opt,name=valid_from,json=validFrom,proto3" json:"valid_from,omitempty"`             // 生效时间(timestamp)
+	ValidUntil    int64                  `protobuf:"varint,6,opt,name=valid_until,json=validUntil,proto3" json:"valid_until,omitempty"`          // 过期时间(timestamp)
+	MaxUses       int32                  `protobuf:"varint,7,opt,name=max_uses,json=maxUses,proto3" json:"max_uses,omitempty"`                   // 最大使用次数
+	UsedCount     int32                  `protobuf:"varint,8,opt,name=used_count,json=usedCount,proto3" json:"used_count,omitempty"`             // 已使用次数
+	MinAmount     int64                  `protobuf:"varint,9,opt,name=min_amount,json=minAmount,proto3" json:"min_amount,omitempty"`             // 最低消费金额(分)
+	Status        string                 `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"`                                    // 状态: active/inactive/expired
+	CreatedAt     int64                  `protobuf:"varint,11,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`            // 创建时间(timestamp)
+	UpdatedAt     int64                  `protobuf:"varint,12,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`            // 更新时间(timestamp)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Coupon) Reset() {
+	*x = Coupon{}
+	mi := &file_marketing_proto_msgTypes[89]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Coupon) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Coupon) ProtoMessage() {}
+
+func (x *Coupon) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[89]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Coupon.ProtoReflect.Descriptor instead.
+func (*Coupon) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{89}
+}
+
+func (x *Coupon) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *Coupon) GetAppId() string {
+	if x != nil {
+		return x.AppId
+	}
+	return ""
+}
+
+func (x *Coupon) GetDiscountType() string {
+	if x != nil {
+		return x.DiscountType
+	}
+	return ""
+}
+
+func (x *Coupon) GetDiscountValue() int64 {
+	if x != nil {
+		return x.DiscountValue
+	}
+	return 0
+}
+
+func (x *Coupon) GetValidFrom() int64 {
+	if x != nil {
+		return x.ValidFrom
+	}
+	return 0
+}
+
+func (x *Coupon) GetValidUntil() int64 {
+	if x != nil {
+		return x.ValidUntil
+	}
+	return 0
+}
+
+func (x *Coupon) GetMaxUses() int32 {
+	if x != nil {
+		return x.MaxUses
+	}
+	return 0
+}
+
+func (x *Coupon) GetUsedCount() int32 {
+	if x != nil {
+		return x.UsedCount
+	}
+	return 0
+}
+
+func (x *Coupon) GetMinAmount() int64 {
+	if x != nil {
+		return x.MinAmount
+	}
+	return 0
+}
+
+func (x *Coupon) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *Coupon) GetCreatedAt() int64 {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return 0
+}
+
+func (x *Coupon) GetUpdatedAt() int64 {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return 0
+}
+
+// CreateCouponRequest 创建优惠券请求
+type CreateCouponRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	AppId         string                 `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	DiscountType  string                 `protobuf:"bytes,3,opt,name=discount_type,json=discountType,proto3" json:"discount_type,omitempty"`
+	DiscountValue int64                  `protobuf:"varint,4,opt,name=discount_value,json=discountValue,proto3" json:"discount_value,omitempty"`
+	ValidFrom     int64                  `protobuf:"varint,5,opt,name=valid_from,json=validFrom,proto3" json:"valid_from,omitempty"`
+	ValidUntil    int64                  `protobuf:"varint,6,opt,name=valid_until,json=validUntil,proto3" json:"valid_until,omitempty"`
+	MaxUses       int32                  `protobuf:"varint,7,opt,name=max_uses,json=maxUses,proto3" json:"max_uses,omitempty"`
+	MinAmount     int64                  `protobuf:"varint,8,opt,name=min_amount,json=minAmount,proto3" json:"min_amount,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateCouponRequest) Reset() {
+	*x = CreateCouponRequest{}
+	mi := &file_marketing_proto_msgTypes[90]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateCouponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateCouponRequest) ProtoMessage() {}
+
+func (x *CreateCouponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[90]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateCouponRequest.ProtoReflect.Descriptor instead.
+func (*CreateCouponRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{90}
+}
+
+func (x *CreateCouponRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *CreateCouponRequest) GetAppId() string {
+	if x != nil {
+		return x.AppId
+	}
+	return ""
+}
+
+func (x *CreateCouponRequest) GetDiscountType() string {
+	if x != nil {
+		return x.DiscountType
+	}
+	return ""
+}
+
+func (x *CreateCouponRequest) GetDiscountValue() int64 {
+	if x != nil {
+		return x.DiscountValue
+	}
+	return 0
+}
+
+func (x *CreateCouponRequest) GetValidFrom() int64 {
+	if x != nil {
+		return x.ValidFrom
+	}
+	return 0
+}
+
+func (x *CreateCouponRequest) GetValidUntil() int64 {
+	if x != nil {
+		return x.ValidUntil
+	}
+	return 0
+}
+
+func (x *CreateCouponRequest) GetMaxUses() int32 {
+	if x != nil {
+		return x.MaxUses
+	}
+	return 0
+}
+
+func (x *CreateCouponRequest) GetMinAmount() int64 {
+	if x != nil {
+		return x.MinAmount
+	}
+	return 0
+}
+
+// CreateCouponReply 创建优惠券响应
+type CreateCouponReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Coupon        *Coupon                `protobuf:"bytes,1,opt,name=coupon,proto3" json:"coupon,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateCouponReply) Reset() {
+	*x = CreateCouponReply{}
+	mi := &file_marketing_proto_msgTypes[91]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateCouponReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateCouponReply) ProtoMessage() {}
+
+func (x *CreateCouponReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[91]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateCouponReply.ProtoReflect.Descriptor instead.
+func (*CreateCouponReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{91}
+}
+
+func (x *CreateCouponReply) GetCoupon() *Coupon {
+	if x != nil {
+		return x.Coupon
+	}
+	return nil
+}
+
+// GetCouponRequest 获取优惠券请求
+type GetCouponRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCouponRequest) Reset() {
+	*x = GetCouponRequest{}
+	mi := &file_marketing_proto_msgTypes[92]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCouponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCouponRequest) ProtoMessage() {}
+
+func (x *GetCouponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[92]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCouponRequest.ProtoReflect.Descriptor instead.
+func (*GetCouponRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{92}
+}
+
+func (x *GetCouponRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+// GetCouponReply 获取优惠券响应
+type GetCouponReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Coupon        *Coupon                `protobuf:"bytes,1,opt,name=coupon,proto3" json:"coupon,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCouponReply) Reset() {
+	*x = GetCouponReply{}
+	mi := &file_marketing_proto_msgTypes[93]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCouponReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCouponReply) ProtoMessage() {}
+
+func (x *GetCouponReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[93]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCouponReply.ProtoReflect.Descriptor instead.
+func (*GetCouponReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{93}
+}
+
+func (x *GetCouponReply) GetCoupon() *Coupon {
+	if x != nil {
+		return x.Coupon
+	}
+	return nil
+}
+
+// ListCouponsRequest 列出优惠券请求
+type ListCouponsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AppId         string                 `protobuf:"bytes,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListCouponsRequest) Reset() {
+	*x = ListCouponsRequest{}
+	mi := &file_marketing_proto_msgTypes[94]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListCouponsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListCouponsRequest) ProtoMessage() {}
+
+func (x *ListCouponsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[94]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListCouponsRequest.ProtoReflect.Descriptor instead.
+func (*ListCouponsRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{94}
+}
+
+func (x *ListCouponsRequest) GetAppId() string {
+	if x != nil {
+		return x.AppId
+	}
+	return ""
+}
+
+func (x *ListCouponsRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ListCouponsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListCouponsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+// ListCouponsReply 列出优惠券响应
+type ListCouponsReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Coupons       []*Coupon              `protobuf:"bytes,1,rep,name=coupons,proto3" json:"coupons,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListCouponsReply) Reset() {
+	*x = ListCouponsReply{}
+	mi := &file_marketing_proto_msgTypes[95]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListCouponsReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListCouponsReply) ProtoMessage() {}
+
+func (x *ListCouponsReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[95]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListCouponsReply.ProtoReflect.Descriptor instead.
+func (*ListCouponsReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{95}
+}
+
+func (x *ListCouponsReply) GetCoupons() []*Coupon {
+	if x != nil {
+		return x.Coupons
+	}
+	return nil
+}
+
+func (x *ListCouponsReply) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *ListCouponsReply) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListCouponsReply) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+// UpdateCouponRequest 更新优惠券请求
+type UpdateCouponRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	DiscountType  string                 `protobuf:"bytes,2,opt,name=discount_type,json=discountType,proto3" json:"discount_type,omitempty"`
+	DiscountValue int64                  `protobuf:"varint,3,opt,name=discount_value,json=discountValue,proto3" json:"discount_value,omitempty"`
+	ValidFrom     int64                  `protobuf:"varint,4,opt,name=valid_from,json=validFrom,proto3" json:"valid_from,omitempty"`
+	ValidUntil    int64                  `protobuf:"varint,5,opt,name=valid_until,json=validUntil,proto3" json:"valid_until,omitempty"`
+	MaxUses       int32                  `protobuf:"varint,6,opt,name=max_uses,json=maxUses,proto3" json:"max_uses,omitempty"`
+	MinAmount     int64                  `protobuf:"varint,7,opt,name=min_amount,json=minAmount,proto3" json:"min_amount,omitempty"`
+	Status        string                 `protobuf:"bytes,8,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateCouponRequest) Reset() {
+	*x = UpdateCouponRequest{}
+	mi := &file_marketing_proto_msgTypes[96]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateCouponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateCouponRequest) ProtoMessage() {}
+
+func (x *UpdateCouponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[96]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateCouponRequest.ProtoReflect.Descriptor instead.
+func (*UpdateCouponRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{96}
+}
+
+func (x *UpdateCouponRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *UpdateCouponRequest) GetDiscountType() string {
+	if x != nil {
+		return x.DiscountType
+	}
+	return ""
+}
+
+func (x *UpdateCouponRequest) GetDiscountValue() int64 {
+	if x != nil {
+		return x.DiscountValue
+	}
+	return 0
+}
+
+func (x *UpdateCouponRequest) GetValidFrom() int64 {
+	if x != nil {
+		return x.ValidFrom
+	}
+	return 0
+}
+
+func (x *UpdateCouponRequest) GetValidUntil() int64 {
+	if x != nil {
+		return x.ValidUntil
+	}
+	return 0
+}
+
+func (x *UpdateCouponRequest) GetMaxUses() int32 {
+	if x != nil {
+		return x.MaxUses
+	}
+	return 0
+}
+
+func (x *UpdateCouponRequest) GetMinAmount() int64 {
+	if x != nil {
+		return x.MinAmount
+	}
+	return 0
+}
+
+func (x *UpdateCouponRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+// UpdateCouponReply 更新优惠券响应
+type UpdateCouponReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Coupon        *Coupon                `protobuf:"bytes,1,opt,name=coupon,proto3" json:"coupon,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateCouponReply) Reset() {
+	*x = UpdateCouponReply{}
+	mi := &file_marketing_proto_msgTypes[97]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateCouponReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateCouponReply) ProtoMessage() {}
+
+func (x *UpdateCouponReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[97]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateCouponReply.ProtoReflect.Descriptor instead.
+func (*UpdateCouponReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{97}
+}
+
+func (x *UpdateCouponReply) GetCoupon() *Coupon {
+	if x != nil {
+		return x.Coupon
+	}
+	return nil
+}
+
+// DeleteCouponRequest 删除优惠券请求
+type DeleteCouponRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteCouponRequest) Reset() {
+	*x = DeleteCouponRequest{}
+	mi := &file_marketing_proto_msgTypes[98]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteCouponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteCouponRequest) ProtoMessage() {}
+
+func (x *DeleteCouponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[98]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteCouponRequest.ProtoReflect.Descriptor instead.
+func (*DeleteCouponRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{98}
+}
+
+func (x *DeleteCouponRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+// DeleteCouponReply 删除优惠券响应
+type DeleteCouponReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteCouponReply) Reset() {
+	*x = DeleteCouponReply{}
+	mi := &file_marketing_proto_msgTypes[99]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteCouponReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteCouponReply) ProtoMessage() {}
+
+func (x *DeleteCouponReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[99]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteCouponReply.ProtoReflect.Descriptor instead.
+func (*DeleteCouponReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{99}
+}
+
+func (x *DeleteCouponReply) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+// ValidateCouponRequest 验证优惠券请求 (供 Payment Service 调用)
+type ValidateCouponRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	AppId         string                 `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	Amount        int64                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"` // 订单金额(分)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ValidateCouponRequest) Reset() {
+	*x = ValidateCouponRequest{}
+	mi := &file_marketing_proto_msgTypes[100]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ValidateCouponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ValidateCouponRequest) ProtoMessage() {}
+
+func (x *ValidateCouponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[100]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ValidateCouponRequest.ProtoReflect.Descriptor instead.
+func (*ValidateCouponRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{100}
+}
+
+func (x *ValidateCouponRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *ValidateCouponRequest) GetAppId() string {
+	if x != nil {
+		return x.AppId
+	}
+	return ""
+}
+
+func (x *ValidateCouponRequest) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+// ValidateCouponReply 验证优惠券响应
+type ValidateCouponReply struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Valid          bool                   `protobuf:"varint,1,opt,name=valid,proto3" json:"valid,omitempty"`
+	Message        string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	DiscountAmount int64                  `protobuf:"varint,3,opt,name=discount_amount,json=discountAmount,proto3" json:"discount_amount,omitempty"` // 折扣金额(分)
+	FinalAmount    int64                  `protobuf:"varint,4,opt,name=final_amount,json=finalAmount,proto3" json:"final_amount,omitempty"`          // 最终金额(分)
+	Coupon         *Coupon                `protobuf:"bytes,5,opt,name=coupon,proto3" json:"coupon,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ValidateCouponReply) Reset() {
+	*x = ValidateCouponReply{}
+	mi := &file_marketing_proto_msgTypes[101]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ValidateCouponReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ValidateCouponReply) ProtoMessage() {}
+
+func (x *ValidateCouponReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[101]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ValidateCouponReply.ProtoReflect.Descriptor instead.
+func (*ValidateCouponReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{101}
+}
+
+func (x *ValidateCouponReply) GetValid() bool {
+	if x != nil {
+		return x.Valid
+	}
+	return false
+}
+
+func (x *ValidateCouponReply) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *ValidateCouponReply) GetDiscountAmount() int64 {
+	if x != nil {
+		return x.DiscountAmount
+	}
+	return 0
+}
+
+func (x *ValidateCouponReply) GetFinalAmount() int64 {
+	if x != nil {
+		return x.FinalAmount
+	}
+	return 0
+}
+
+func (x *ValidateCouponReply) GetCoupon() *Coupon {
+	if x != nil {
+		return x.Coupon
+	}
+	return nil
+}
+
+// UseCouponRequest 使用优惠券请求 (供 Payment Service 调用)
+type UseCouponRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Code           string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	UserId         uint64                 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	OrderId        string                 `protobuf:"bytes,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	PaymentId      string                 `protobuf:"bytes,4,opt,name=payment_id,json=paymentId,proto3" json:"payment_id,omitempty"`
+	OriginalAmount int64                  `protobuf:"varint,5,opt,name=original_amount,json=originalAmount,proto3" json:"original_amount,omitempty"`
+	DiscountAmount int64                  `protobuf:"varint,6,opt,name=discount_amount,json=discountAmount,proto3" json:"discount_amount,omitempty"`
+	FinalAmount    int64                  `protobuf:"varint,7,opt,name=final_amount,json=finalAmount,proto3" json:"final_amount,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *UseCouponRequest) Reset() {
+	*x = UseCouponRequest{}
+	mi := &file_marketing_proto_msgTypes[102]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UseCouponRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UseCouponRequest) ProtoMessage() {}
+
+func (x *UseCouponRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[102]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UseCouponRequest.ProtoReflect.Descriptor instead.
+func (*UseCouponRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{102}
+}
+
+func (x *UseCouponRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *UseCouponRequest) GetUserId() uint64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *UseCouponRequest) GetOrderId() string {
+	if x != nil {
+		return x.OrderId
+	}
+	return ""
+}
+
+func (x *UseCouponRequest) GetPaymentId() string {
+	if x != nil {
+		return x.PaymentId
+	}
+	return ""
+}
+
+func (x *UseCouponRequest) GetOriginalAmount() int64 {
+	if x != nil {
+		return x.OriginalAmount
+	}
+	return 0
+}
+
+func (x *UseCouponRequest) GetDiscountAmount() int64 {
+	if x != nil {
+		return x.DiscountAmount
+	}
+	return 0
+}
+
+func (x *UseCouponRequest) GetFinalAmount() int64 {
+	if x != nil {
+		return x.FinalAmount
+	}
+	return 0
+}
+
+// UseCouponReply 使用优惠券响应
+type UseCouponReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UseCouponReply) Reset() {
+	*x = UseCouponReply{}
+	mi := &file_marketing_proto_msgTypes[103]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UseCouponReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UseCouponReply) ProtoMessage() {}
+
+func (x *UseCouponReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[103]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UseCouponReply.ProtoReflect.Descriptor instead.
+func (*UseCouponReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{103}
+}
+
+func (x *UseCouponReply) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *UseCouponReply) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+// GetCouponStatsRequest 获取优惠券统计请求
+type GetCouponStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCouponStatsRequest) Reset() {
+	*x = GetCouponStatsRequest{}
+	mi := &file_marketing_proto_msgTypes[104]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCouponStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCouponStatsRequest) ProtoMessage() {}
+
+func (x *GetCouponStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[104]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCouponStatsRequest.ProtoReflect.Descriptor instead.
+func (*GetCouponStatsRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{104}
+}
+
+func (x *GetCouponStatsRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+// GetCouponStatsReply 获取优惠券统计响应
+type GetCouponStatsReply struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Code           string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	TotalUses      int32                  `protobuf:"varint,2,opt,name=total_uses,json=totalUses,proto3" json:"total_uses,omitempty"`                 // 使用次数
+	TotalOrders    int32                  `protobuf:"varint,3,opt,name=total_orders,json=totalOrders,proto3" json:"total_orders,omitempty"`           // 订单数
+	TotalRevenue   int64                  `protobuf:"varint,4,opt,name=total_revenue,json=totalRevenue,proto3" json:"total_revenue,omitempty"`        // 产生收入(分)
+	TotalDiscount  int64                  `protobuf:"varint,5,opt,name=total_discount,json=totalDiscount,proto3" json:"total_discount,omitempty"`     // 折扣金额(分)
+	ConversionRate float32                `protobuf:"fixed32,6,opt,name=conversion_rate,json=conversionRate,proto3" json:"conversion_rate,omitempty"` // 转化率
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GetCouponStatsReply) Reset() {
+	*x = GetCouponStatsReply{}
+	mi := &file_marketing_proto_msgTypes[105]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCouponStatsReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCouponStatsReply) ProtoMessage() {}
+
+func (x *GetCouponStatsReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[105]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCouponStatsReply.ProtoReflect.Descriptor instead.
+func (*GetCouponStatsReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{105}
+}
+
+func (x *GetCouponStatsReply) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *GetCouponStatsReply) GetTotalUses() int32 {
+	if x != nil {
+		return x.TotalUses
+	}
+	return 0
+}
+
+func (x *GetCouponStatsReply) GetTotalOrders() int32 {
+	if x != nil {
+		return x.TotalOrders
+	}
+	return 0
+}
+
+func (x *GetCouponStatsReply) GetTotalRevenue() int64 {
+	if x != nil {
+		return x.TotalRevenue
+	}
+	return 0
+}
+
+func (x *GetCouponStatsReply) GetTotalDiscount() int64 {
+	if x != nil {
+		return x.TotalDiscount
+	}
+	return 0
+}
+
+func (x *GetCouponStatsReply) GetConversionRate() float32 {
+	if x != nil {
+		return x.ConversionRate
+	}
+	return 0
+}
+
+// CouponUsage 优惠券使用记录
+type CouponUsage struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CouponCode     string                 `protobuf:"bytes,2,opt,name=coupon_code,json=couponCode,proto3" json:"coupon_code,omitempty"`
+	UserId         uint64                 `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	OrderId        string                 `protobuf:"bytes,4,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	PaymentId      string                 `protobuf:"bytes,5,opt,name=payment_id,json=paymentId,proto3" json:"payment_id,omitempty"`
+	OriginalAmount int64                  `protobuf:"varint,6,opt,name=original_amount,json=originalAmount,proto3" json:"original_amount,omitempty"` // 原价(分)
+	DiscountAmount int64                  `protobuf:"varint,7,opt,name=discount_amount,json=discountAmount,proto3" json:"discount_amount,omitempty"` // 折扣金额(分)
+	FinalAmount    int64                  `protobuf:"varint,8,opt,name=final_amount,json=finalAmount,proto3" json:"final_amount,omitempty"`          // 实付金额(分)
+	UsedAt         int64                  `protobuf:"varint,9,opt,name=used_at,json=usedAt,proto3" json:"used_at,omitempty"`                         // 使用时间(timestamp)
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *CouponUsage) Reset() {
+	*x = CouponUsage{}
+	mi := &file_marketing_proto_msgTypes[106]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CouponUsage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CouponUsage) ProtoMessage() {}
+
+func (x *CouponUsage) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[106]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CouponUsage.ProtoReflect.Descriptor instead.
+func (*CouponUsage) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{106}
+}
+
+func (x *CouponUsage) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *CouponUsage) GetCouponCode() string {
+	if x != nil {
+		return x.CouponCode
+	}
+	return ""
+}
+
+func (x *CouponUsage) GetUserId() uint64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *CouponUsage) GetOrderId() string {
+	if x != nil {
+		return x.OrderId
+	}
+	return ""
+}
+
+func (x *CouponUsage) GetPaymentId() string {
+	if x != nil {
+		return x.PaymentId
+	}
+	return ""
+}
+
+func (x *CouponUsage) GetOriginalAmount() int64 {
+	if x != nil {
+		return x.OriginalAmount
+	}
+	return 0
+}
+
+func (x *CouponUsage) GetDiscountAmount() int64 {
+	if x != nil {
+		return x.DiscountAmount
+	}
+	return 0
+}
+
+func (x *CouponUsage) GetFinalAmount() int64 {
+	if x != nil {
+		return x.FinalAmount
+	}
+	return 0
+}
+
+func (x *CouponUsage) GetUsedAt() int64 {
+	if x != nil {
+		return x.UsedAt
+	}
+	return 0
+}
+
+// ListCouponUsagesRequest 列出优惠券使用记录请求
+type ListCouponUsagesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListCouponUsagesRequest) Reset() {
+	*x = ListCouponUsagesRequest{}
+	mi := &file_marketing_proto_msgTypes[107]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListCouponUsagesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListCouponUsagesRequest) ProtoMessage() {}
+
+func (x *ListCouponUsagesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[107]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListCouponUsagesRequest.ProtoReflect.Descriptor instead.
+func (*ListCouponUsagesRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{107}
+}
+
+func (x *ListCouponUsagesRequest) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *ListCouponUsagesRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListCouponUsagesRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+// ListCouponUsagesReply 列出优惠券使用记录响应
+type ListCouponUsagesReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Usages        []*CouponUsage         `protobuf:"bytes,1,rep,name=usages,proto3" json:"usages,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListCouponUsagesReply) Reset() {
+	*x = ListCouponUsagesReply{}
+	mi := &file_marketing_proto_msgTypes[108]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListCouponUsagesReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListCouponUsagesReply) ProtoMessage() {}
+
+func (x *ListCouponUsagesReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[108]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListCouponUsagesReply.ProtoReflect.Descriptor instead.
+func (*ListCouponUsagesReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{108}
+}
+
+func (x *ListCouponUsagesReply) GetUsages() []*CouponUsage {
+	if x != nil {
+		return x.Usages
+	}
+	return nil
+}
+
+func (x *ListCouponUsagesReply) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *ListCouponUsagesReply) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListCouponUsagesReply) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+// GetCouponsSummaryStatsRequest 获取所有优惠券汇总统计请求
+type GetCouponsSummaryStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AppId         string                 `protobuf:"bytes,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"` // 应用ID（可选，如果提供则只统计该应用的优惠券）
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCouponsSummaryStatsRequest) Reset() {
+	*x = GetCouponsSummaryStatsRequest{}
+	mi := &file_marketing_proto_msgTypes[109]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCouponsSummaryStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCouponsSummaryStatsRequest) ProtoMessage() {}
+
+func (x *GetCouponsSummaryStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[109]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCouponsSummaryStatsRequest.ProtoReflect.Descriptor instead.
+func (*GetCouponsSummaryStatsRequest) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{109}
+}
+
+func (x *GetCouponsSummaryStatsRequest) GetAppId() string {
+	if x != nil {
+		return x.AppId
+	}
+	return ""
+}
+
+// GetCouponsSummaryStatsReply 获取所有优惠券汇总统计响应
+type GetCouponsSummaryStatsReply struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	TotalCoupons          int32                  `protobuf:"varint,1,opt,name=total_coupons,json=totalCoupons,proto3" json:"total_coupons,omitempty"`                               // 优惠券总数
+	ActiveCoupons         int32                  `protobuf:"varint,2,opt,name=active_coupons,json=activeCoupons,proto3" json:"active_coupons,omitempty"`                            // 激活的优惠券数
+	TotalUses             int32                  `protobuf:"varint,3,opt,name=total_uses,json=totalUses,proto3" json:"total_uses,omitempty"`                                        // 总使用次数
+	TotalOrders           int32                  `protobuf:"varint,4,opt,name=total_orders,json=totalOrders,proto3" json:"total_orders,omitempty"`                                  // 总订单数
+	TotalRevenue          int64                  `protobuf:"varint,5,opt,name=total_revenue,json=totalRevenue,proto3" json:"total_revenue,omitempty"`                               // 总收入(分)
+	TotalDiscount         int64                  `protobuf:"varint,6,opt,name=total_discount,json=totalDiscount,proto3" json:"total_discount,omitempty"`                            // 总折扣金额(分)
+	AverageConversionRate float32                `protobuf:"fixed32,7,opt,name=average_conversion_rate,json=averageConversionRate,proto3" json:"average_conversion_rate,omitempty"` // 平均转化率
+	TopCoupons            []*CouponStats         `protobuf:"bytes,8,rep,name=top_coupons,json=topCoupons,proto3" json:"top_coupons,omitempty"`                                      // 前N个优惠券的详细统计（按使用次数排序）
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *GetCouponsSummaryStatsReply) Reset() {
+	*x = GetCouponsSummaryStatsReply{}
+	mi := &file_marketing_proto_msgTypes[110]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCouponsSummaryStatsReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCouponsSummaryStatsReply) ProtoMessage() {}
+
+func (x *GetCouponsSummaryStatsReply) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[110]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCouponsSummaryStatsReply.ProtoReflect.Descriptor instead.
+func (*GetCouponsSummaryStatsReply) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{110}
+}
+
+func (x *GetCouponsSummaryStatsReply) GetTotalCoupons() int32 {
+	if x != nil {
+		return x.TotalCoupons
+	}
+	return 0
+}
+
+func (x *GetCouponsSummaryStatsReply) GetActiveCoupons() int32 {
+	if x != nil {
+		return x.ActiveCoupons
+	}
+	return 0
+}
+
+func (x *GetCouponsSummaryStatsReply) GetTotalUses() int32 {
+	if x != nil {
+		return x.TotalUses
+	}
+	return 0
+}
+
+func (x *GetCouponsSummaryStatsReply) GetTotalOrders() int32 {
+	if x != nil {
+		return x.TotalOrders
+	}
+	return 0
+}
+
+func (x *GetCouponsSummaryStatsReply) GetTotalRevenue() int64 {
+	if x != nil {
+		return x.TotalRevenue
+	}
+	return 0
+}
+
+func (x *GetCouponsSummaryStatsReply) GetTotalDiscount() int64 {
+	if x != nil {
+		return x.TotalDiscount
+	}
+	return 0
+}
+
+func (x *GetCouponsSummaryStatsReply) GetAverageConversionRate() float32 {
+	if x != nil {
+		return x.AverageConversionRate
+	}
+	return 0
+}
+
+func (x *GetCouponsSummaryStatsReply) GetTopCoupons() []*CouponStats {
+	if x != nil {
+		return x.TopCoupons
+	}
+	return nil
+}
+
+// CouponStats 优惠券统计（用于汇总统计响应）
+type CouponStats struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Code           string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
+	TotalUses      int32                  `protobuf:"varint,2,opt,name=total_uses,json=totalUses,proto3" json:"total_uses,omitempty"`
+	TotalOrders    int32                  `protobuf:"varint,3,opt,name=total_orders,json=totalOrders,proto3" json:"total_orders,omitempty"`
+	TotalRevenue   int64                  `protobuf:"varint,4,opt,name=total_revenue,json=totalRevenue,proto3" json:"total_revenue,omitempty"`
+	TotalDiscount  int64                  `protobuf:"varint,5,opt,name=total_discount,json=totalDiscount,proto3" json:"total_discount,omitempty"`
+	ConversionRate float32                `protobuf:"fixed32,6,opt,name=conversion_rate,json=conversionRate,proto3" json:"conversion_rate,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *CouponStats) Reset() {
+	*x = CouponStats{}
+	mi := &file_marketing_proto_msgTypes[111]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CouponStats) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CouponStats) ProtoMessage() {}
+
+func (x *CouponStats) ProtoReflect() protoreflect.Message {
+	mi := &file_marketing_proto_msgTypes[111]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CouponStats.ProtoReflect.Descriptor instead.
+func (*CouponStats) Descriptor() ([]byte, []int) {
+	return file_marketing_proto_rawDescGZIP(), []int{111}
+}
+
+func (x *CouponStats) GetCode() string {
+	if x != nil {
+		return x.Code
+	}
+	return ""
+}
+
+func (x *CouponStats) GetTotalUses() int32 {
+	if x != nil {
+		return x.TotalUses
+	}
+	return 0
+}
+
+func (x *CouponStats) GetTotalOrders() int32 {
+	if x != nil {
+		return x.TotalOrders
+	}
+	return 0
+}
+
+func (x *CouponStats) GetTotalRevenue() int64 {
+	if x != nil {
+		return x.TotalRevenue
+	}
+	return 0
+}
+
+func (x *CouponStats) GetTotalDiscount() int64 {
+	if x != nil {
+		return x.TotalDiscount
+	}
+	return 0
+}
+
+func (x *CouponStats) GetConversionRate() float32 {
+	if x != nil {
+		return x.ConversionRate
+	}
+	return 0
+}
+
 var File_marketing_proto protoreflect.FileDescriptor
 
 const file_marketing_proto_rawDesc = "" +
@@ -7014,7 +8642,147 @@ const file_marketing_proto_rawDesc = "" +
 	"\vcampaign_id\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\n" +
 	"campaignId\"l\n" +
 	"\x16ListCampaignTasksReply\x12R\n" +
-	"\x0ecampaign_tasks\x18\x01 \x03(\v2+.platform.marketing_service.v1.CampaignTaskR\rcampaignTasks2\xa51\n" +
+	"\x0ecampaign_tasks\x18\x01 \x03(\v2+.platform.marketing_service.v1.CampaignTaskR\rcampaignTasks\"\xee\x02\n" +
+	"\x06Coupon\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\x12\x15\n" +
+	"\x06app_id\x18\x02 \x01(\tR\x05appId\x12#\n" +
+	"\rdiscount_type\x18\x03 \x01(\tR\fdiscountType\x12%\n" +
+	"\x0ediscount_value\x18\x04 \x01(\x03R\rdiscountValue\x12\x1d\n" +
+	"\n" +
+	"valid_from\x18\x05 \x01(\x03R\tvalidFrom\x12\x1f\n" +
+	"\vvalid_until\x18\x06 \x01(\x03R\n" +
+	"validUntil\x12\x19\n" +
+	"\bmax_uses\x18\a \x01(\x05R\amaxUses\x12\x1d\n" +
+	"\n" +
+	"used_count\x18\b \x01(\x05R\tusedCount\x12\x1d\n" +
+	"\n" +
+	"min_amount\x18\t \x01(\x03R\tminAmount\x12\x16\n" +
+	"\x06status\x18\n" +
+	" \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\v \x01(\x03R\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\f \x01(\x03R\tupdatedAt\"\xc3\x02\n" +
+	"\x13CreateCouponRequest\x12\x1d\n" +
+	"\x04code\x18\x01 \x01(\tB\t\xfaB\x06r\x04\x10\x01\x182R\x04code\x12\x1e\n" +
+	"\x06app_id\x18\x02 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x05appId\x12:\n" +
+	"\rdiscount_type\x18\x03 \x01(\tB\x15\xfaB\x12r\x10R\apercentR\x05fixedR\fdiscountType\x12.\n" +
+	"\x0ediscount_value\x18\x04 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\rdiscountValue\x12\x1d\n" +
+	"\n" +
+	"valid_from\x18\x05 \x01(\x03R\tvalidFrom\x12\x1f\n" +
+	"\vvalid_until\x18\x06 \x01(\x03R\n" +
+	"validUntil\x12\"\n" +
+	"\bmax_uses\x18\a \x01(\x05B\a\xfaB\x04\x1a\x02 \x00R\amaxUses\x12\x1d\n" +
+	"\n" +
+	"min_amount\x18\b \x01(\x03R\tminAmount\"R\n" +
+	"\x11CreateCouponReply\x12=\n" +
+	"\x06coupon\x18\x01 \x01(\v2%.platform.marketing_service.v1.CouponR\x06coupon\"/\n" +
+	"\x10GetCouponRequest\x12\x1b\n" +
+	"\x04code\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04code\"O\n" +
+	"\x0eGetCouponReply\x12=\n" +
+	"\x06coupon\x18\x01 \x01(\v2%.platform.marketing_service.v1.CouponR\x06coupon\"t\n" +
+	"\x12ListCouponsRequest\x12\x15\n" +
+	"\x06app_id\x18\x01 \x01(\tR\x05appId\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"\x9a\x01\n" +
+	"\x10ListCouponsReply\x12?\n" +
+	"\acoupons\x18\x01 \x03(\v2%.platform.marketing_service.v1.CouponR\acoupons\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"\x90\x02\n" +
+	"\x13UpdateCouponRequest\x12\x1b\n" +
+	"\x04code\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04code\x12#\n" +
+	"\rdiscount_type\x18\x02 \x01(\tR\fdiscountType\x12%\n" +
+	"\x0ediscount_value\x18\x03 \x01(\x03R\rdiscountValue\x12\x1d\n" +
+	"\n" +
+	"valid_from\x18\x04 \x01(\x03R\tvalidFrom\x12\x1f\n" +
+	"\vvalid_until\x18\x05 \x01(\x03R\n" +
+	"validUntil\x12\x19\n" +
+	"\bmax_uses\x18\x06 \x01(\x05R\amaxUses\x12\x1d\n" +
+	"\n" +
+	"min_amount\x18\a \x01(\x03R\tminAmount\x12\x16\n" +
+	"\x06status\x18\b \x01(\tR\x06status\"R\n" +
+	"\x11UpdateCouponReply\x12=\n" +
+	"\x06coupon\x18\x01 \x01(\v2%.platform.marketing_service.v1.CouponR\x06coupon\"2\n" +
+	"\x13DeleteCouponRequest\x12\x1b\n" +
+	"\x04code\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04code\"-\n" +
+	"\x11DeleteCouponReply\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"u\n" +
+	"\x15ValidateCouponRequest\x12\x1b\n" +
+	"\x04code\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04code\x12\x1e\n" +
+	"\x06app_id\x18\x02 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x05appId\x12\x1f\n" +
+	"\x06amount\x18\x03 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x06amount\"\xd0\x01\n" +
+	"\x13ValidateCouponReply\x12\x14\n" +
+	"\x05valid\x18\x01 \x01(\bR\x05valid\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12'\n" +
+	"\x0fdiscount_amount\x18\x03 \x01(\x03R\x0ediscountAmount\x12!\n" +
+	"\ffinal_amount\x18\x04 \x01(\x03R\vfinalAmount\x12=\n" +
+	"\x06coupon\x18\x05 \x01(\v2%.platform.marketing_service.v1.CouponR\x06coupon\"\xad\x02\n" +
+	"\x10UseCouponRequest\x12\x1b\n" +
+	"\x04code\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04code\x12 \n" +
+	"\auser_id\x18\x02 \x01(\x04B\a\xfaB\x042\x02 \x00R\x06userId\x12\"\n" +
+	"\border_id\x18\x03 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\aorderId\x12&\n" +
+	"\n" +
+	"payment_id\x18\x04 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\tpaymentId\x120\n" +
+	"\x0foriginal_amount\x18\x05 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x0eoriginalAmount\x120\n" +
+	"\x0fdiscount_amount\x18\x06 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x0ediscountAmount\x12*\n" +
+	"\ffinal_amount\x18\a \x01(\x03B\a\xfaB\x04\"\x02 \x00R\vfinalAmount\"D\n" +
+	"\x0eUseCouponReply\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"4\n" +
+	"\x15GetCouponStatsRequest\x12\x1b\n" +
+	"\x04code\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04code\"\xe0\x01\n" +
+	"\x13GetCouponStatsReply\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\x12\x1d\n" +
+	"\n" +
+	"total_uses\x18\x02 \x01(\x05R\ttotalUses\x12!\n" +
+	"\ftotal_orders\x18\x03 \x01(\x05R\vtotalOrders\x12#\n" +
+	"\rtotal_revenue\x18\x04 \x01(\x03R\ftotalRevenue\x12%\n" +
+	"\x0etotal_discount\x18\x05 \x01(\x03R\rtotalDiscount\x12'\n" +
+	"\x0fconversion_rate\x18\x06 \x01(\x02R\x0econversionRate\"\x9f\x02\n" +
+	"\vCouponUsage\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
+	"\vcoupon_code\x18\x02 \x01(\tR\n" +
+	"couponCode\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\x04R\x06userId\x12\x19\n" +
+	"\border_id\x18\x04 \x01(\tR\aorderId\x12\x1d\n" +
+	"\n" +
+	"payment_id\x18\x05 \x01(\tR\tpaymentId\x12'\n" +
+	"\x0foriginal_amount\x18\x06 \x01(\x03R\x0eoriginalAmount\x12'\n" +
+	"\x0fdiscount_amount\x18\a \x01(\x03R\x0ediscountAmount\x12!\n" +
+	"\ffinal_amount\x18\b \x01(\x03R\vfinalAmount\x12\x17\n" +
+	"\aused_at\x18\t \x01(\x03R\x06usedAt\"g\n" +
+	"\x17ListCouponUsagesRequest\x12\x1b\n" +
+	"\x04code\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04code\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"\xa2\x01\n" +
+	"\x15ListCouponUsagesReply\x12B\n" +
+	"\x06usages\x18\x01 \x03(\v2*.platform.marketing_service.v1.CouponUsageR\x06usages\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"6\n" +
+	"\x1dGetCouponsSummaryStatsRequest\x12\x15\n" +
+	"\x06app_id\x18\x01 \x01(\tR\x05appId\"\xfc\x02\n" +
+	"\x1bGetCouponsSummaryStatsReply\x12#\n" +
+	"\rtotal_coupons\x18\x01 \x01(\x05R\ftotalCoupons\x12%\n" +
+	"\x0eactive_coupons\x18\x02 \x01(\x05R\ractiveCoupons\x12\x1d\n" +
+	"\n" +
+	"total_uses\x18\x03 \x01(\x05R\ttotalUses\x12!\n" +
+	"\ftotal_orders\x18\x04 \x01(\x05R\vtotalOrders\x12#\n" +
+	"\rtotal_revenue\x18\x05 \x01(\x03R\ftotalRevenue\x12%\n" +
+	"\x0etotal_discount\x18\x06 \x01(\x03R\rtotalDiscount\x126\n" +
+	"\x17average_conversion_rate\x18\a \x01(\x02R\x15averageConversionRate\x12K\n" +
+	"\vtop_coupons\x18\b \x03(\v2*.platform.marketing_service.v1.CouponStatsR\n" +
+	"topCoupons\"\xd8\x01\n" +
+	"\vCouponStats\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\x12\x1d\n" +
+	"\n" +
+	"total_uses\x18\x02 \x01(\x05R\ttotalUses\x12!\n" +
+	"\ftotal_orders\x18\x03 \x01(\x05R\vtotalOrders\x12#\n" +
+	"\rtotal_revenue\x18\x04 \x01(\x03R\ftotalRevenue\x12%\n" +
+	"\x0etotal_discount\x18\x05 \x01(\x03R\rtotalDiscount\x12'\n" +
+	"\x0fconversion_rate\x18\x06 \x01(\x02R\x0econversionRate2\x95=\n" +
 	"\tMarketing\x12\x94\x01\n" +
 	"\x0eCreateCampaign\x124.platform.marketing_service.v1.CreateCampaignRequest\x1a2.platform.marketing_service.v1.CreateCampaignReply\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/v1/campaigns\x12\x96\x01\n" +
 	"\vGetCampaign\x121.platform.marketing_service.v1.GetCampaignRequest\x1a/.platform.marketing_service.v1.GetCampaignReply\"#\x82\xd3\xe4\x93\x02\x1d\x12\x1b/v1/campaigns/{campaign_id}\x12\x8e\x01\n" +
@@ -7059,7 +8827,17 @@ const file_marketing_proto_rawDesc = "" +
 	"\x16GetTaskCompletionStats\x12<.platform.marketing_service.v1.GetTaskCompletionStatsRequest\x1a:.platform.marketing_service.v1.GetTaskCompletionStatsReply\",\x82\xd3\xe4\x93\x02&\x12$/v1/tasks/{task_id}/completion-stats\x12\xb1\x01\n" +
 	"\x11AddTaskToCampaign\x127.platform.marketing_service.v1.AddTaskToCampaignRequest\x1a5.platform.marketing_service.v1.AddTaskToCampaignReply\",\x82\xd3\xe4\x93\x02&:\x01*\"!/v1/campaigns/{campaign_id}/tasks\x12\xc7\x01\n" +
 	"\x16RemoveTaskFromCampaign\x12<.platform.marketing_service.v1.RemoveTaskFromCampaignRequest\x1a:.platform.marketing_service.v1.RemoveTaskFromCampaignReply\"3\x82\xd3\xe4\x93\x02-*+/v1/campaigns/{campaign_id}/tasks/{task_id}\x12\xae\x01\n" +
-	"\x11ListCampaignTasks\x127.platform.marketing_service.v1.ListCampaignTasksRequest\x1a5.platform.marketing_service.v1.ListCampaignTasksReply\")\x82\xd3\xe4\x93\x02#\x12!/v1/campaigns/{campaign_id}/tasksB/Z-marketing-service/api/marketing_service/v1;v1b\x06proto3"
+	"\x11ListCampaignTasks\x127.platform.marketing_service.v1.ListCampaignTasksRequest\x1a5.platform.marketing_service.v1.ListCampaignTasksReply\")\x82\xd3\xe4\x93\x02#\x12!/v1/campaigns/{campaign_id}/tasks\x12\x8c\x01\n" +
+	"\fCreateCoupon\x122.platform.marketing_service.v1.CreateCouponRequest\x1a0.platform.marketing_service.v1.CreateCouponReply\"\x16\x82\xd3\xe4\x93\x02\x10:\x01*\"\v/v1/coupons\x12\x87\x01\n" +
+	"\tGetCoupon\x12/.platform.marketing_service.v1.GetCouponRequest\x1a-.platform.marketing_service.v1.GetCouponReply\"\x1a\x82\xd3\xe4\x93\x02\x14\x12\x12/v1/coupons/{code}\x12\x86\x01\n" +
+	"\vListCoupons\x121.platform.marketing_service.v1.ListCouponsRequest\x1a/.platform.marketing_service.v1.ListCouponsReply\"\x13\x82\xd3\xe4\x93\x02\r\x12\v/v1/coupons\x12\x93\x01\n" +
+	"\fUpdateCoupon\x122.platform.marketing_service.v1.UpdateCouponRequest\x1a0.platform.marketing_service.v1.UpdateCouponReply\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\x1a\x12/v1/coupons/{code}\x12\x90\x01\n" +
+	"\fDeleteCoupon\x122.platform.marketing_service.v1.DeleteCouponRequest\x1a0.platform.marketing_service.v1.DeleteCouponReply\"\x1a\x82\xd3\xe4\x93\x02\x14*\x12/v1/coupons/{code}\x12\x9b\x01\n" +
+	"\x0eValidateCoupon\x124.platform.marketing_service.v1.ValidateCouponRequest\x1a2.platform.marketing_service.v1.ValidateCouponReply\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/coupons/validate\x12\x87\x01\n" +
+	"\tUseCoupon\x12/.platform.marketing_service.v1.UseCouponRequest\x1a-.platform.marketing_service.v1.UseCouponReply\"\x1a\x82\xd3\xe4\x93\x02\x14:\x01*\"\x0f/v1/coupons/use\x12\x9c\x01\n" +
+	"\x0eGetCouponStats\x124.platform.marketing_service.v1.GetCouponStatsRequest\x1a2.platform.marketing_service.v1.GetCouponStatsReply\" \x82\xd3\xe4\x93\x02\x1a\x12\x18/v1/coupons/{code}/stats\x12\xa3\x01\n" +
+	"\x10ListCouponUsages\x126.platform.marketing_service.v1.ListCouponUsagesRequest\x1a4.platform.marketing_service.v1.ListCouponUsagesReply\"!\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/coupons/{code}/usages\x12\xb5\x01\n" +
+	"\x16GetCouponsSummaryStats\x12<.platform.marketing_service.v1.GetCouponsSummaryStatsRequest\x1a:.platform.marketing_service.v1.GetCouponsSummaryStatsReply\"!\x82\xd3\xe4\x93\x02\x1b\x12\x19/v1/coupons/summary-statsB/Z-marketing-service/api/marketing_service/v1;v1b\x06proto3"
 
 var (
 	file_marketing_proto_rawDescOnce sync.Once
@@ -7073,7 +8851,7 @@ func file_marketing_proto_rawDescGZIP() []byte {
 	return file_marketing_proto_rawDescData
 }
 
-var file_marketing_proto_msgTypes = make([]protoimpl.MessageInfo, 99)
+var file_marketing_proto_msgTypes = make([]protoimpl.MessageInfo, 122)
 var file_marketing_proto_goTypes = []any{
 	(*Campaign)(nil),                         // 0: platform.marketing_service.v1.Campaign
 	(*RedeemCode)(nil),                       // 1: platform.marketing_service.v1.RedeemCode
@@ -7164,165 +8942,215 @@ var file_marketing_proto_goTypes = []any{
 	(*RemoveTaskFromCampaignReply)(nil),      // 86: platform.marketing_service.v1.RemoveTaskFromCampaignReply
 	(*ListCampaignTasksRequest)(nil),         // 87: platform.marketing_service.v1.ListCampaignTasksRequest
 	(*ListCampaignTasksReply)(nil),           // 88: platform.marketing_service.v1.ListCampaignTasksReply
-	nil,                                      // 89: platform.marketing_service.v1.Campaign.RuleConfigEntry
-	nil,                                      // 90: platform.marketing_service.v1.RedeemCode.RewardItemsEntry
-	nil,                                      // 91: platform.marketing_service.v1.CodeBatch.GenerateRuleEntry
-	nil,                                      // 92: platform.marketing_service.v1.RedemptionRecord.RewardDetailEntry
-	nil,                                      // 93: platform.marketing_service.v1.CreateCampaignRequest.RuleConfigEntry
-	nil,                                      // 94: platform.marketing_service.v1.UpdateCampaignRequest.RuleConfigEntry
-	nil,                                      // 95: platform.marketing_service.v1.GenerateRedeemCodesRequest.GenerateRuleEntry
-	nil,                                      // 96: platform.marketing_service.v1.GenerateRedeemCodesRequest.RewardItemsEntry
-	nil,                                      // 97: platform.marketing_service.v1.RedeemCodeReply.RewardDetailEntry
-	nil,                                      // 98: platform.marketing_service.v1.TriggerTaskEventRequest.EventDataEntry
-	(*timestamppb.Timestamp)(nil),            // 99: google.protobuf.Timestamp
+	(*Coupon)(nil),                           // 89: platform.marketing_service.v1.Coupon
+	(*CreateCouponRequest)(nil),              // 90: platform.marketing_service.v1.CreateCouponRequest
+	(*CreateCouponReply)(nil),                // 91: platform.marketing_service.v1.CreateCouponReply
+	(*GetCouponRequest)(nil),                 // 92: platform.marketing_service.v1.GetCouponRequest
+	(*GetCouponReply)(nil),                   // 93: platform.marketing_service.v1.GetCouponReply
+	(*ListCouponsRequest)(nil),               // 94: platform.marketing_service.v1.ListCouponsRequest
+	(*ListCouponsReply)(nil),                 // 95: platform.marketing_service.v1.ListCouponsReply
+	(*UpdateCouponRequest)(nil),              // 96: platform.marketing_service.v1.UpdateCouponRequest
+	(*UpdateCouponReply)(nil),                // 97: platform.marketing_service.v1.UpdateCouponReply
+	(*DeleteCouponRequest)(nil),              // 98: platform.marketing_service.v1.DeleteCouponRequest
+	(*DeleteCouponReply)(nil),                // 99: platform.marketing_service.v1.DeleteCouponReply
+	(*ValidateCouponRequest)(nil),            // 100: platform.marketing_service.v1.ValidateCouponRequest
+	(*ValidateCouponReply)(nil),              // 101: platform.marketing_service.v1.ValidateCouponReply
+	(*UseCouponRequest)(nil),                 // 102: platform.marketing_service.v1.UseCouponRequest
+	(*UseCouponReply)(nil),                   // 103: platform.marketing_service.v1.UseCouponReply
+	(*GetCouponStatsRequest)(nil),            // 104: platform.marketing_service.v1.GetCouponStatsRequest
+	(*GetCouponStatsReply)(nil),              // 105: platform.marketing_service.v1.GetCouponStatsReply
+	(*CouponUsage)(nil),                      // 106: platform.marketing_service.v1.CouponUsage
+	(*ListCouponUsagesRequest)(nil),          // 107: platform.marketing_service.v1.ListCouponUsagesRequest
+	(*ListCouponUsagesReply)(nil),            // 108: platform.marketing_service.v1.ListCouponUsagesReply
+	(*GetCouponsSummaryStatsRequest)(nil),    // 109: platform.marketing_service.v1.GetCouponsSummaryStatsRequest
+	(*GetCouponsSummaryStatsReply)(nil),      // 110: platform.marketing_service.v1.GetCouponsSummaryStatsReply
+	(*CouponStats)(nil),                      // 111: platform.marketing_service.v1.CouponStats
+	nil,                                      // 112: platform.marketing_service.v1.Campaign.RuleConfigEntry
+	nil,                                      // 113: platform.marketing_service.v1.RedeemCode.RewardItemsEntry
+	nil,                                      // 114: platform.marketing_service.v1.CodeBatch.GenerateRuleEntry
+	nil,                                      // 115: platform.marketing_service.v1.RedemptionRecord.RewardDetailEntry
+	nil,                                      // 116: platform.marketing_service.v1.CreateCampaignRequest.RuleConfigEntry
+	nil,                                      // 117: platform.marketing_service.v1.UpdateCampaignRequest.RuleConfigEntry
+	nil,                                      // 118: platform.marketing_service.v1.GenerateRedeemCodesRequest.GenerateRuleEntry
+	nil,                                      // 119: platform.marketing_service.v1.GenerateRedeemCodesRequest.RewardItemsEntry
+	nil,                                      // 120: platform.marketing_service.v1.RedeemCodeReply.RewardDetailEntry
+	nil,                                      // 121: platform.marketing_service.v1.TriggerTaskEventRequest.EventDataEntry
+	(*timestamppb.Timestamp)(nil),            // 122: google.protobuf.Timestamp
 }
 var file_marketing_proto_depIdxs = []int32{
-	89,  // 0: platform.marketing_service.v1.Campaign.rule_config:type_name -> platform.marketing_service.v1.Campaign.RuleConfigEntry
-	90,  // 1: platform.marketing_service.v1.RedeemCode.reward_items:type_name -> platform.marketing_service.v1.RedeemCode.RewardItemsEntry
-	99,  // 2: platform.marketing_service.v1.RedeemCode.valid_from:type_name -> google.protobuf.Timestamp
-	99,  // 3: platform.marketing_service.v1.RedeemCode.valid_until:type_name -> google.protobuf.Timestamp
-	99,  // 4: platform.marketing_service.v1.RedeemCode.redemption_at:type_name -> google.protobuf.Timestamp
-	99,  // 5: platform.marketing_service.v1.RedeemCode.created_at:type_name -> google.protobuf.Timestamp
-	99,  // 6: platform.marketing_service.v1.RedeemCode.updated_at:type_name -> google.protobuf.Timestamp
-	91,  // 7: platform.marketing_service.v1.CodeBatch.generate_rule:type_name -> platform.marketing_service.v1.CodeBatch.GenerateRuleEntry
-	92,  // 8: platform.marketing_service.v1.RedemptionRecord.reward_detail:type_name -> platform.marketing_service.v1.RedemptionRecord.RewardDetailEntry
-	93,  // 9: platform.marketing_service.v1.CreateCampaignRequest.rule_config:type_name -> platform.marketing_service.v1.CreateCampaignRequest.RuleConfigEntry
+	112, // 0: platform.marketing_service.v1.Campaign.rule_config:type_name -> platform.marketing_service.v1.Campaign.RuleConfigEntry
+	113, // 1: platform.marketing_service.v1.RedeemCode.reward_items:type_name -> platform.marketing_service.v1.RedeemCode.RewardItemsEntry
+	122, // 2: platform.marketing_service.v1.RedeemCode.valid_from:type_name -> google.protobuf.Timestamp
+	122, // 3: platform.marketing_service.v1.RedeemCode.valid_until:type_name -> google.protobuf.Timestamp
+	122, // 4: platform.marketing_service.v1.RedeemCode.redemption_at:type_name -> google.protobuf.Timestamp
+	122, // 5: platform.marketing_service.v1.RedeemCode.created_at:type_name -> google.protobuf.Timestamp
+	122, // 6: platform.marketing_service.v1.RedeemCode.updated_at:type_name -> google.protobuf.Timestamp
+	114, // 7: platform.marketing_service.v1.CodeBatch.generate_rule:type_name -> platform.marketing_service.v1.CodeBatch.GenerateRuleEntry
+	115, // 8: platform.marketing_service.v1.RedemptionRecord.reward_detail:type_name -> platform.marketing_service.v1.RedemptionRecord.RewardDetailEntry
+	116, // 9: platform.marketing_service.v1.CreateCampaignRequest.rule_config:type_name -> platform.marketing_service.v1.CreateCampaignRequest.RuleConfigEntry
 	0,   // 10: platform.marketing_service.v1.CreateCampaignReply.campaign:type_name -> platform.marketing_service.v1.Campaign
 	0,   // 11: platform.marketing_service.v1.GetCampaignReply.campaign:type_name -> platform.marketing_service.v1.Campaign
 	0,   // 12: platform.marketing_service.v1.ListCampaignsReply.campaigns:type_name -> platform.marketing_service.v1.Campaign
-	94,  // 13: platform.marketing_service.v1.UpdateCampaignRequest.rule_config:type_name -> platform.marketing_service.v1.UpdateCampaignRequest.RuleConfigEntry
+	117, // 13: platform.marketing_service.v1.UpdateCampaignRequest.rule_config:type_name -> platform.marketing_service.v1.UpdateCampaignRequest.RuleConfigEntry
 	0,   // 14: platform.marketing_service.v1.UpdateCampaignReply.campaign:type_name -> platform.marketing_service.v1.Campaign
-	95,  // 15: platform.marketing_service.v1.GenerateRedeemCodesRequest.generate_rule:type_name -> platform.marketing_service.v1.GenerateRedeemCodesRequest.GenerateRuleEntry
-	96,  // 16: platform.marketing_service.v1.GenerateRedeemCodesRequest.reward_items:type_name -> platform.marketing_service.v1.GenerateRedeemCodesRequest.RewardItemsEntry
-	97,  // 17: platform.marketing_service.v1.RedeemCodeReply.reward_detail:type_name -> platform.marketing_service.v1.RedeemCodeReply.RewardDetailEntry
+	118, // 15: platform.marketing_service.v1.GenerateRedeemCodesRequest.generate_rule:type_name -> platform.marketing_service.v1.GenerateRedeemCodesRequest.GenerateRuleEntry
+	119, // 16: platform.marketing_service.v1.GenerateRedeemCodesRequest.reward_items:type_name -> platform.marketing_service.v1.GenerateRedeemCodesRequest.RewardItemsEntry
+	120, // 17: platform.marketing_service.v1.RedeemCodeReply.reward_detail:type_name -> platform.marketing_service.v1.RedeemCodeReply.RewardDetailEntry
 	1,   // 18: platform.marketing_service.v1.RedeemCodeReply.code_info:type_name -> platform.marketing_service.v1.RedeemCode
 	1,   // 19: platform.marketing_service.v1.AssignRedeemCodeReply.code_info:type_name -> platform.marketing_service.v1.RedeemCode
 	1,   // 20: platform.marketing_service.v1.ListRedeemCodesReply.codes:type_name -> platform.marketing_service.v1.RedeemCode
 	1,   // 21: platform.marketing_service.v1.GetRedeemCodeReply.code:type_name -> platform.marketing_service.v1.RedeemCode
-	99,  // 22: platform.marketing_service.v1.Reward.created_at:type_name -> google.protobuf.Timestamp
-	99,  // 23: platform.marketing_service.v1.Reward.updated_at:type_name -> google.protobuf.Timestamp
+	122, // 22: platform.marketing_service.v1.Reward.created_at:type_name -> google.protobuf.Timestamp
+	122, // 23: platform.marketing_service.v1.Reward.updated_at:type_name -> google.protobuf.Timestamp
 	24,  // 24: platform.marketing_service.v1.CreateRewardReply.reward:type_name -> platform.marketing_service.v1.Reward
 	24,  // 25: platform.marketing_service.v1.GetRewardReply.reward:type_name -> platform.marketing_service.v1.Reward
 	24,  // 26: platform.marketing_service.v1.ListRewardsReply.rewards:type_name -> platform.marketing_service.v1.Reward
 	24,  // 27: platform.marketing_service.v1.UpdateRewardReply.reward:type_name -> platform.marketing_service.v1.Reward
-	99,  // 28: platform.marketing_service.v1.Task.created_at:type_name -> google.protobuf.Timestamp
-	99,  // 29: platform.marketing_service.v1.Task.updated_at:type_name -> google.protobuf.Timestamp
+	122, // 28: platform.marketing_service.v1.Task.created_at:type_name -> google.protobuf.Timestamp
+	122, // 29: platform.marketing_service.v1.Task.updated_at:type_name -> google.protobuf.Timestamp
 	35,  // 30: platform.marketing_service.v1.CreateTaskReply.task:type_name -> platform.marketing_service.v1.Task
 	35,  // 31: platform.marketing_service.v1.GetTaskReply.task:type_name -> platform.marketing_service.v1.Task
 	35,  // 32: platform.marketing_service.v1.ListTasksReply.tasks:type_name -> platform.marketing_service.v1.Task
 	35,  // 33: platform.marketing_service.v1.UpdateTaskReply.task:type_name -> platform.marketing_service.v1.Task
 	35,  // 34: platform.marketing_service.v1.ListTasksByCampaignReply.tasks:type_name -> platform.marketing_service.v1.Task
-	99,  // 35: platform.marketing_service.v1.Audience.created_at:type_name -> google.protobuf.Timestamp
-	99,  // 36: platform.marketing_service.v1.Audience.updated_at:type_name -> google.protobuf.Timestamp
+	122, // 35: platform.marketing_service.v1.Audience.created_at:type_name -> google.protobuf.Timestamp
+	122, // 36: platform.marketing_service.v1.Audience.updated_at:type_name -> google.protobuf.Timestamp
 	48,  // 37: platform.marketing_service.v1.CreateAudienceReply.audience:type_name -> platform.marketing_service.v1.Audience
 	48,  // 38: platform.marketing_service.v1.GetAudienceReply.audience:type_name -> platform.marketing_service.v1.Audience
 	48,  // 39: platform.marketing_service.v1.ListAudiencesReply.audiences:type_name -> platform.marketing_service.v1.Audience
 	48,  // 40: platform.marketing_service.v1.UpdateAudienceReply.audience:type_name -> platform.marketing_service.v1.Audience
-	99,  // 41: platform.marketing_service.v1.RewardGrant.reserved_at:type_name -> google.protobuf.Timestamp
-	99,  // 42: platform.marketing_service.v1.RewardGrant.distributed_at:type_name -> google.protobuf.Timestamp
-	99,  // 43: platform.marketing_service.v1.RewardGrant.used_at:type_name -> google.protobuf.Timestamp
-	99,  // 44: platform.marketing_service.v1.RewardGrant.expire_time:type_name -> google.protobuf.Timestamp
-	99,  // 45: platform.marketing_service.v1.RewardGrant.created_at:type_name -> google.protobuf.Timestamp
-	99,  // 46: platform.marketing_service.v1.RewardGrant.updated_at:type_name -> google.protobuf.Timestamp
+	122, // 41: platform.marketing_service.v1.RewardGrant.reserved_at:type_name -> google.protobuf.Timestamp
+	122, // 42: platform.marketing_service.v1.RewardGrant.distributed_at:type_name -> google.protobuf.Timestamp
+	122, // 43: platform.marketing_service.v1.RewardGrant.used_at:type_name -> google.protobuf.Timestamp
+	122, // 44: platform.marketing_service.v1.RewardGrant.expire_time:type_name -> google.protobuf.Timestamp
+	122, // 45: platform.marketing_service.v1.RewardGrant.created_at:type_name -> google.protobuf.Timestamp
+	122, // 46: platform.marketing_service.v1.RewardGrant.updated_at:type_name -> google.protobuf.Timestamp
 	59,  // 47: platform.marketing_service.v1.ListRewardGrantsReply.grants:type_name -> platform.marketing_service.v1.RewardGrant
 	59,  // 48: platform.marketing_service.v1.GetRewardGrantReply.grant:type_name -> platform.marketing_service.v1.RewardGrant
-	98,  // 49: platform.marketing_service.v1.TriggerTaskEventRequest.event_data:type_name -> platform.marketing_service.v1.TriggerTaskEventRequest.EventDataEntry
-	99,  // 50: platform.marketing_service.v1.InventoryReservation.expire_at:type_name -> google.protobuf.Timestamp
-	99,  // 51: platform.marketing_service.v1.InventoryReservation.created_at:type_name -> google.protobuf.Timestamp
-	99,  // 52: platform.marketing_service.v1.InventoryReservation.updated_at:type_name -> google.protobuf.Timestamp
+	121, // 49: platform.marketing_service.v1.TriggerTaskEventRequest.event_data:type_name -> platform.marketing_service.v1.TriggerTaskEventRequest.EventDataEntry
+	122, // 50: platform.marketing_service.v1.InventoryReservation.expire_at:type_name -> google.protobuf.Timestamp
+	122, // 51: platform.marketing_service.v1.InventoryReservation.created_at:type_name -> google.protobuf.Timestamp
+	122, // 52: platform.marketing_service.v1.InventoryReservation.updated_at:type_name -> google.protobuf.Timestamp
 	68,  // 53: platform.marketing_service.v1.ReserveInventoryReply.reservation:type_name -> platform.marketing_service.v1.InventoryReservation
 	68,  // 54: platform.marketing_service.v1.ListInventoryReservationsReply.reservations:type_name -> platform.marketing_service.v1.InventoryReservation
-	99,  // 55: platform.marketing_service.v1.TaskCompletionLog.completed_at:type_name -> google.protobuf.Timestamp
-	99,  // 56: platform.marketing_service.v1.TaskCompletionLog.created_at:type_name -> google.protobuf.Timestamp
-	99,  // 57: platform.marketing_service.v1.TaskCompletionLog.updated_at:type_name -> google.protobuf.Timestamp
+	122, // 55: platform.marketing_service.v1.TaskCompletionLog.completed_at:type_name -> google.protobuf.Timestamp
+	122, // 56: platform.marketing_service.v1.TaskCompletionLog.created_at:type_name -> google.protobuf.Timestamp
+	122, // 57: platform.marketing_service.v1.TaskCompletionLog.updated_at:type_name -> google.protobuf.Timestamp
 	77,  // 58: platform.marketing_service.v1.ListTaskCompletionLogsReply.logs:type_name -> platform.marketing_service.v1.TaskCompletionLog
-	99,  // 59: platform.marketing_service.v1.CampaignTask.created_at:type_name -> google.protobuf.Timestamp
-	99,  // 60: platform.marketing_service.v1.CampaignTask.updated_at:type_name -> google.protobuf.Timestamp
+	122, // 59: platform.marketing_service.v1.CampaignTask.created_at:type_name -> google.protobuf.Timestamp
+	122, // 60: platform.marketing_service.v1.CampaignTask.updated_at:type_name -> google.protobuf.Timestamp
 	82,  // 61: platform.marketing_service.v1.AddTaskToCampaignReply.campaign_task:type_name -> platform.marketing_service.v1.CampaignTask
 	82,  // 62: platform.marketing_service.v1.ListCampaignTasksReply.campaign_tasks:type_name -> platform.marketing_service.v1.CampaignTask
-	4,   // 63: platform.marketing_service.v1.Marketing.CreateCampaign:input_type -> platform.marketing_service.v1.CreateCampaignRequest
-	6,   // 64: platform.marketing_service.v1.Marketing.GetCampaign:input_type -> platform.marketing_service.v1.GetCampaignRequest
-	8,   // 65: platform.marketing_service.v1.Marketing.ListCampaigns:input_type -> platform.marketing_service.v1.ListCampaignsRequest
-	10,  // 66: platform.marketing_service.v1.Marketing.UpdateCampaign:input_type -> platform.marketing_service.v1.UpdateCampaignRequest
-	12,  // 67: platform.marketing_service.v1.Marketing.DeleteCampaign:input_type -> platform.marketing_service.v1.DeleteCampaignRequest
-	14,  // 68: platform.marketing_service.v1.Marketing.GenerateRedeemCodes:input_type -> platform.marketing_service.v1.GenerateRedeemCodesRequest
-	16,  // 69: platform.marketing_service.v1.Marketing.RedeemCode:input_type -> platform.marketing_service.v1.RedeemCodeRequest
-	18,  // 70: platform.marketing_service.v1.Marketing.AssignRedeemCode:input_type -> platform.marketing_service.v1.AssignRedeemCodeRequest
-	20,  // 71: platform.marketing_service.v1.Marketing.ListRedeemCodes:input_type -> platform.marketing_service.v1.ListRedeemCodesRequest
-	22,  // 72: platform.marketing_service.v1.Marketing.GetRedeemCode:input_type -> platform.marketing_service.v1.GetRedeemCodeRequest
-	25,  // 73: platform.marketing_service.v1.Marketing.CreateReward:input_type -> platform.marketing_service.v1.CreateRewardRequest
-	27,  // 74: platform.marketing_service.v1.Marketing.GetReward:input_type -> platform.marketing_service.v1.GetRewardRequest
-	29,  // 75: platform.marketing_service.v1.Marketing.ListRewards:input_type -> platform.marketing_service.v1.ListRewardsRequest
-	31,  // 76: platform.marketing_service.v1.Marketing.UpdateReward:input_type -> platform.marketing_service.v1.UpdateRewardRequest
-	33,  // 77: platform.marketing_service.v1.Marketing.DeleteReward:input_type -> platform.marketing_service.v1.DeleteRewardRequest
-	36,  // 78: platform.marketing_service.v1.Marketing.CreateTask:input_type -> platform.marketing_service.v1.CreateTaskRequest
-	38,  // 79: platform.marketing_service.v1.Marketing.GetTask:input_type -> platform.marketing_service.v1.GetTaskRequest
-	40,  // 80: platform.marketing_service.v1.Marketing.ListTasks:input_type -> platform.marketing_service.v1.ListTasksRequest
-	42,  // 81: platform.marketing_service.v1.Marketing.UpdateTask:input_type -> platform.marketing_service.v1.UpdateTaskRequest
-	44,  // 82: platform.marketing_service.v1.Marketing.DeleteTask:input_type -> platform.marketing_service.v1.DeleteTaskRequest
-	46,  // 83: platform.marketing_service.v1.Marketing.ListTasksByCampaign:input_type -> platform.marketing_service.v1.ListTasksByCampaignRequest
-	49,  // 84: platform.marketing_service.v1.Marketing.CreateAudience:input_type -> platform.marketing_service.v1.CreateAudienceRequest
-	51,  // 85: platform.marketing_service.v1.Marketing.GetAudience:input_type -> platform.marketing_service.v1.GetAudienceRequest
-	53,  // 86: platform.marketing_service.v1.Marketing.ListAudiences:input_type -> platform.marketing_service.v1.ListAudiencesRequest
-	55,  // 87: platform.marketing_service.v1.Marketing.UpdateAudience:input_type -> platform.marketing_service.v1.UpdateAudienceRequest
-	57,  // 88: platform.marketing_service.v1.Marketing.DeleteAudience:input_type -> platform.marketing_service.v1.DeleteAudienceRequest
-	60,  // 89: platform.marketing_service.v1.Marketing.ListRewardGrants:input_type -> platform.marketing_service.v1.ListRewardGrantsRequest
-	62,  // 90: platform.marketing_service.v1.Marketing.GetRewardGrant:input_type -> platform.marketing_service.v1.GetRewardGrantRequest
-	64,  // 91: platform.marketing_service.v1.Marketing.UpdateRewardGrantStatus:input_type -> platform.marketing_service.v1.UpdateRewardGrantStatusRequest
-	66,  // 92: platform.marketing_service.v1.Marketing.TriggerTaskEvent:input_type -> platform.marketing_service.v1.TriggerTaskEventRequest
-	69,  // 93: platform.marketing_service.v1.Marketing.ReserveInventory:input_type -> platform.marketing_service.v1.ReserveInventoryRequest
-	71,  // 94: platform.marketing_service.v1.Marketing.ConfirmInventory:input_type -> platform.marketing_service.v1.ConfirmInventoryRequest
-	73,  // 95: platform.marketing_service.v1.Marketing.CancelInventory:input_type -> platform.marketing_service.v1.CancelInventoryRequest
-	75,  // 96: platform.marketing_service.v1.Marketing.ListInventoryReservations:input_type -> platform.marketing_service.v1.ListInventoryReservationsRequest
-	78,  // 97: platform.marketing_service.v1.Marketing.ListTaskCompletionLogs:input_type -> platform.marketing_service.v1.ListTaskCompletionLogsRequest
-	80,  // 98: platform.marketing_service.v1.Marketing.GetTaskCompletionStats:input_type -> platform.marketing_service.v1.GetTaskCompletionStatsRequest
-	83,  // 99: platform.marketing_service.v1.Marketing.AddTaskToCampaign:input_type -> platform.marketing_service.v1.AddTaskToCampaignRequest
-	85,  // 100: platform.marketing_service.v1.Marketing.RemoveTaskFromCampaign:input_type -> platform.marketing_service.v1.RemoveTaskFromCampaignRequest
-	87,  // 101: platform.marketing_service.v1.Marketing.ListCampaignTasks:input_type -> platform.marketing_service.v1.ListCampaignTasksRequest
-	5,   // 102: platform.marketing_service.v1.Marketing.CreateCampaign:output_type -> platform.marketing_service.v1.CreateCampaignReply
-	7,   // 103: platform.marketing_service.v1.Marketing.GetCampaign:output_type -> platform.marketing_service.v1.GetCampaignReply
-	9,   // 104: platform.marketing_service.v1.Marketing.ListCampaigns:output_type -> platform.marketing_service.v1.ListCampaignsReply
-	11,  // 105: platform.marketing_service.v1.Marketing.UpdateCampaign:output_type -> platform.marketing_service.v1.UpdateCampaignReply
-	13,  // 106: platform.marketing_service.v1.Marketing.DeleteCampaign:output_type -> platform.marketing_service.v1.DeleteCampaignReply
-	15,  // 107: platform.marketing_service.v1.Marketing.GenerateRedeemCodes:output_type -> platform.marketing_service.v1.GenerateRedeemCodesReply
-	17,  // 108: platform.marketing_service.v1.Marketing.RedeemCode:output_type -> platform.marketing_service.v1.RedeemCodeReply
-	19,  // 109: platform.marketing_service.v1.Marketing.AssignRedeemCode:output_type -> platform.marketing_service.v1.AssignRedeemCodeReply
-	21,  // 110: platform.marketing_service.v1.Marketing.ListRedeemCodes:output_type -> platform.marketing_service.v1.ListRedeemCodesReply
-	23,  // 111: platform.marketing_service.v1.Marketing.GetRedeemCode:output_type -> platform.marketing_service.v1.GetRedeemCodeReply
-	26,  // 112: platform.marketing_service.v1.Marketing.CreateReward:output_type -> platform.marketing_service.v1.CreateRewardReply
-	28,  // 113: platform.marketing_service.v1.Marketing.GetReward:output_type -> platform.marketing_service.v1.GetRewardReply
-	30,  // 114: platform.marketing_service.v1.Marketing.ListRewards:output_type -> platform.marketing_service.v1.ListRewardsReply
-	32,  // 115: platform.marketing_service.v1.Marketing.UpdateReward:output_type -> platform.marketing_service.v1.UpdateRewardReply
-	34,  // 116: platform.marketing_service.v1.Marketing.DeleteReward:output_type -> platform.marketing_service.v1.DeleteRewardReply
-	37,  // 117: platform.marketing_service.v1.Marketing.CreateTask:output_type -> platform.marketing_service.v1.CreateTaskReply
-	39,  // 118: platform.marketing_service.v1.Marketing.GetTask:output_type -> platform.marketing_service.v1.GetTaskReply
-	41,  // 119: platform.marketing_service.v1.Marketing.ListTasks:output_type -> platform.marketing_service.v1.ListTasksReply
-	43,  // 120: platform.marketing_service.v1.Marketing.UpdateTask:output_type -> platform.marketing_service.v1.UpdateTaskReply
-	45,  // 121: platform.marketing_service.v1.Marketing.DeleteTask:output_type -> platform.marketing_service.v1.DeleteTaskReply
-	47,  // 122: platform.marketing_service.v1.Marketing.ListTasksByCampaign:output_type -> platform.marketing_service.v1.ListTasksByCampaignReply
-	50,  // 123: platform.marketing_service.v1.Marketing.CreateAudience:output_type -> platform.marketing_service.v1.CreateAudienceReply
-	52,  // 124: platform.marketing_service.v1.Marketing.GetAudience:output_type -> platform.marketing_service.v1.GetAudienceReply
-	54,  // 125: platform.marketing_service.v1.Marketing.ListAudiences:output_type -> platform.marketing_service.v1.ListAudiencesReply
-	56,  // 126: platform.marketing_service.v1.Marketing.UpdateAudience:output_type -> platform.marketing_service.v1.UpdateAudienceReply
-	58,  // 127: platform.marketing_service.v1.Marketing.DeleteAudience:output_type -> platform.marketing_service.v1.DeleteAudienceReply
-	61,  // 128: platform.marketing_service.v1.Marketing.ListRewardGrants:output_type -> platform.marketing_service.v1.ListRewardGrantsReply
-	63,  // 129: platform.marketing_service.v1.Marketing.GetRewardGrant:output_type -> platform.marketing_service.v1.GetRewardGrantReply
-	65,  // 130: platform.marketing_service.v1.Marketing.UpdateRewardGrantStatus:output_type -> platform.marketing_service.v1.UpdateRewardGrantStatusReply
-	67,  // 131: platform.marketing_service.v1.Marketing.TriggerTaskEvent:output_type -> platform.marketing_service.v1.TriggerTaskEventReply
-	70,  // 132: platform.marketing_service.v1.Marketing.ReserveInventory:output_type -> platform.marketing_service.v1.ReserveInventoryReply
-	72,  // 133: platform.marketing_service.v1.Marketing.ConfirmInventory:output_type -> platform.marketing_service.v1.ConfirmInventoryReply
-	74,  // 134: platform.marketing_service.v1.Marketing.CancelInventory:output_type -> platform.marketing_service.v1.CancelInventoryReply
-	76,  // 135: platform.marketing_service.v1.Marketing.ListInventoryReservations:output_type -> platform.marketing_service.v1.ListInventoryReservationsReply
-	79,  // 136: platform.marketing_service.v1.Marketing.ListTaskCompletionLogs:output_type -> platform.marketing_service.v1.ListTaskCompletionLogsReply
-	81,  // 137: platform.marketing_service.v1.Marketing.GetTaskCompletionStats:output_type -> platform.marketing_service.v1.GetTaskCompletionStatsReply
-	84,  // 138: platform.marketing_service.v1.Marketing.AddTaskToCampaign:output_type -> platform.marketing_service.v1.AddTaskToCampaignReply
-	86,  // 139: platform.marketing_service.v1.Marketing.RemoveTaskFromCampaign:output_type -> platform.marketing_service.v1.RemoveTaskFromCampaignReply
-	88,  // 140: platform.marketing_service.v1.Marketing.ListCampaignTasks:output_type -> platform.marketing_service.v1.ListCampaignTasksReply
-	102, // [102:141] is the sub-list for method output_type
-	63,  // [63:102] is the sub-list for method input_type
-	63,  // [63:63] is the sub-list for extension type_name
-	63,  // [63:63] is the sub-list for extension extendee
-	0,   // [0:63] is the sub-list for field type_name
+	89,  // 63: platform.marketing_service.v1.CreateCouponReply.coupon:type_name -> platform.marketing_service.v1.Coupon
+	89,  // 64: platform.marketing_service.v1.GetCouponReply.coupon:type_name -> platform.marketing_service.v1.Coupon
+	89,  // 65: platform.marketing_service.v1.ListCouponsReply.coupons:type_name -> platform.marketing_service.v1.Coupon
+	89,  // 66: platform.marketing_service.v1.UpdateCouponReply.coupon:type_name -> platform.marketing_service.v1.Coupon
+	89,  // 67: platform.marketing_service.v1.ValidateCouponReply.coupon:type_name -> platform.marketing_service.v1.Coupon
+	106, // 68: platform.marketing_service.v1.ListCouponUsagesReply.usages:type_name -> platform.marketing_service.v1.CouponUsage
+	111, // 69: platform.marketing_service.v1.GetCouponsSummaryStatsReply.top_coupons:type_name -> platform.marketing_service.v1.CouponStats
+	4,   // 70: platform.marketing_service.v1.Marketing.CreateCampaign:input_type -> platform.marketing_service.v1.CreateCampaignRequest
+	6,   // 71: platform.marketing_service.v1.Marketing.GetCampaign:input_type -> platform.marketing_service.v1.GetCampaignRequest
+	8,   // 72: platform.marketing_service.v1.Marketing.ListCampaigns:input_type -> platform.marketing_service.v1.ListCampaignsRequest
+	10,  // 73: platform.marketing_service.v1.Marketing.UpdateCampaign:input_type -> platform.marketing_service.v1.UpdateCampaignRequest
+	12,  // 74: platform.marketing_service.v1.Marketing.DeleteCampaign:input_type -> platform.marketing_service.v1.DeleteCampaignRequest
+	14,  // 75: platform.marketing_service.v1.Marketing.GenerateRedeemCodes:input_type -> platform.marketing_service.v1.GenerateRedeemCodesRequest
+	16,  // 76: platform.marketing_service.v1.Marketing.RedeemCode:input_type -> platform.marketing_service.v1.RedeemCodeRequest
+	18,  // 77: platform.marketing_service.v1.Marketing.AssignRedeemCode:input_type -> platform.marketing_service.v1.AssignRedeemCodeRequest
+	20,  // 78: platform.marketing_service.v1.Marketing.ListRedeemCodes:input_type -> platform.marketing_service.v1.ListRedeemCodesRequest
+	22,  // 79: platform.marketing_service.v1.Marketing.GetRedeemCode:input_type -> platform.marketing_service.v1.GetRedeemCodeRequest
+	25,  // 80: platform.marketing_service.v1.Marketing.CreateReward:input_type -> platform.marketing_service.v1.CreateRewardRequest
+	27,  // 81: platform.marketing_service.v1.Marketing.GetReward:input_type -> platform.marketing_service.v1.GetRewardRequest
+	29,  // 82: platform.marketing_service.v1.Marketing.ListRewards:input_type -> platform.marketing_service.v1.ListRewardsRequest
+	31,  // 83: platform.marketing_service.v1.Marketing.UpdateReward:input_type -> platform.marketing_service.v1.UpdateRewardRequest
+	33,  // 84: platform.marketing_service.v1.Marketing.DeleteReward:input_type -> platform.marketing_service.v1.DeleteRewardRequest
+	36,  // 85: platform.marketing_service.v1.Marketing.CreateTask:input_type -> platform.marketing_service.v1.CreateTaskRequest
+	38,  // 86: platform.marketing_service.v1.Marketing.GetTask:input_type -> platform.marketing_service.v1.GetTaskRequest
+	40,  // 87: platform.marketing_service.v1.Marketing.ListTasks:input_type -> platform.marketing_service.v1.ListTasksRequest
+	42,  // 88: platform.marketing_service.v1.Marketing.UpdateTask:input_type -> platform.marketing_service.v1.UpdateTaskRequest
+	44,  // 89: platform.marketing_service.v1.Marketing.DeleteTask:input_type -> platform.marketing_service.v1.DeleteTaskRequest
+	46,  // 90: platform.marketing_service.v1.Marketing.ListTasksByCampaign:input_type -> platform.marketing_service.v1.ListTasksByCampaignRequest
+	49,  // 91: platform.marketing_service.v1.Marketing.CreateAudience:input_type -> platform.marketing_service.v1.CreateAudienceRequest
+	51,  // 92: platform.marketing_service.v1.Marketing.GetAudience:input_type -> platform.marketing_service.v1.GetAudienceRequest
+	53,  // 93: platform.marketing_service.v1.Marketing.ListAudiences:input_type -> platform.marketing_service.v1.ListAudiencesRequest
+	55,  // 94: platform.marketing_service.v1.Marketing.UpdateAudience:input_type -> platform.marketing_service.v1.UpdateAudienceRequest
+	57,  // 95: platform.marketing_service.v1.Marketing.DeleteAudience:input_type -> platform.marketing_service.v1.DeleteAudienceRequest
+	60,  // 96: platform.marketing_service.v1.Marketing.ListRewardGrants:input_type -> platform.marketing_service.v1.ListRewardGrantsRequest
+	62,  // 97: platform.marketing_service.v1.Marketing.GetRewardGrant:input_type -> platform.marketing_service.v1.GetRewardGrantRequest
+	64,  // 98: platform.marketing_service.v1.Marketing.UpdateRewardGrantStatus:input_type -> platform.marketing_service.v1.UpdateRewardGrantStatusRequest
+	66,  // 99: platform.marketing_service.v1.Marketing.TriggerTaskEvent:input_type -> platform.marketing_service.v1.TriggerTaskEventRequest
+	69,  // 100: platform.marketing_service.v1.Marketing.ReserveInventory:input_type -> platform.marketing_service.v1.ReserveInventoryRequest
+	71,  // 101: platform.marketing_service.v1.Marketing.ConfirmInventory:input_type -> platform.marketing_service.v1.ConfirmInventoryRequest
+	73,  // 102: platform.marketing_service.v1.Marketing.CancelInventory:input_type -> platform.marketing_service.v1.CancelInventoryRequest
+	75,  // 103: platform.marketing_service.v1.Marketing.ListInventoryReservations:input_type -> platform.marketing_service.v1.ListInventoryReservationsRequest
+	78,  // 104: platform.marketing_service.v1.Marketing.ListTaskCompletionLogs:input_type -> platform.marketing_service.v1.ListTaskCompletionLogsRequest
+	80,  // 105: platform.marketing_service.v1.Marketing.GetTaskCompletionStats:input_type -> platform.marketing_service.v1.GetTaskCompletionStatsRequest
+	83,  // 106: platform.marketing_service.v1.Marketing.AddTaskToCampaign:input_type -> platform.marketing_service.v1.AddTaskToCampaignRequest
+	85,  // 107: platform.marketing_service.v1.Marketing.RemoveTaskFromCampaign:input_type -> platform.marketing_service.v1.RemoveTaskFromCampaignRequest
+	87,  // 108: platform.marketing_service.v1.Marketing.ListCampaignTasks:input_type -> platform.marketing_service.v1.ListCampaignTasksRequest
+	90,  // 109: platform.marketing_service.v1.Marketing.CreateCoupon:input_type -> platform.marketing_service.v1.CreateCouponRequest
+	92,  // 110: platform.marketing_service.v1.Marketing.GetCoupon:input_type -> platform.marketing_service.v1.GetCouponRequest
+	94,  // 111: platform.marketing_service.v1.Marketing.ListCoupons:input_type -> platform.marketing_service.v1.ListCouponsRequest
+	96,  // 112: platform.marketing_service.v1.Marketing.UpdateCoupon:input_type -> platform.marketing_service.v1.UpdateCouponRequest
+	98,  // 113: platform.marketing_service.v1.Marketing.DeleteCoupon:input_type -> platform.marketing_service.v1.DeleteCouponRequest
+	100, // 114: platform.marketing_service.v1.Marketing.ValidateCoupon:input_type -> platform.marketing_service.v1.ValidateCouponRequest
+	102, // 115: platform.marketing_service.v1.Marketing.UseCoupon:input_type -> platform.marketing_service.v1.UseCouponRequest
+	104, // 116: platform.marketing_service.v1.Marketing.GetCouponStats:input_type -> platform.marketing_service.v1.GetCouponStatsRequest
+	107, // 117: platform.marketing_service.v1.Marketing.ListCouponUsages:input_type -> platform.marketing_service.v1.ListCouponUsagesRequest
+	109, // 118: platform.marketing_service.v1.Marketing.GetCouponsSummaryStats:input_type -> platform.marketing_service.v1.GetCouponsSummaryStatsRequest
+	5,   // 119: platform.marketing_service.v1.Marketing.CreateCampaign:output_type -> platform.marketing_service.v1.CreateCampaignReply
+	7,   // 120: platform.marketing_service.v1.Marketing.GetCampaign:output_type -> platform.marketing_service.v1.GetCampaignReply
+	9,   // 121: platform.marketing_service.v1.Marketing.ListCampaigns:output_type -> platform.marketing_service.v1.ListCampaignsReply
+	11,  // 122: platform.marketing_service.v1.Marketing.UpdateCampaign:output_type -> platform.marketing_service.v1.UpdateCampaignReply
+	13,  // 123: platform.marketing_service.v1.Marketing.DeleteCampaign:output_type -> platform.marketing_service.v1.DeleteCampaignReply
+	15,  // 124: platform.marketing_service.v1.Marketing.GenerateRedeemCodes:output_type -> platform.marketing_service.v1.GenerateRedeemCodesReply
+	17,  // 125: platform.marketing_service.v1.Marketing.RedeemCode:output_type -> platform.marketing_service.v1.RedeemCodeReply
+	19,  // 126: platform.marketing_service.v1.Marketing.AssignRedeemCode:output_type -> platform.marketing_service.v1.AssignRedeemCodeReply
+	21,  // 127: platform.marketing_service.v1.Marketing.ListRedeemCodes:output_type -> platform.marketing_service.v1.ListRedeemCodesReply
+	23,  // 128: platform.marketing_service.v1.Marketing.GetRedeemCode:output_type -> platform.marketing_service.v1.GetRedeemCodeReply
+	26,  // 129: platform.marketing_service.v1.Marketing.CreateReward:output_type -> platform.marketing_service.v1.CreateRewardReply
+	28,  // 130: platform.marketing_service.v1.Marketing.GetReward:output_type -> platform.marketing_service.v1.GetRewardReply
+	30,  // 131: platform.marketing_service.v1.Marketing.ListRewards:output_type -> platform.marketing_service.v1.ListRewardsReply
+	32,  // 132: platform.marketing_service.v1.Marketing.UpdateReward:output_type -> platform.marketing_service.v1.UpdateRewardReply
+	34,  // 133: platform.marketing_service.v1.Marketing.DeleteReward:output_type -> platform.marketing_service.v1.DeleteRewardReply
+	37,  // 134: platform.marketing_service.v1.Marketing.CreateTask:output_type -> platform.marketing_service.v1.CreateTaskReply
+	39,  // 135: platform.marketing_service.v1.Marketing.GetTask:output_type -> platform.marketing_service.v1.GetTaskReply
+	41,  // 136: platform.marketing_service.v1.Marketing.ListTasks:output_type -> platform.marketing_service.v1.ListTasksReply
+	43,  // 137: platform.marketing_service.v1.Marketing.UpdateTask:output_type -> platform.marketing_service.v1.UpdateTaskReply
+	45,  // 138: platform.marketing_service.v1.Marketing.DeleteTask:output_type -> platform.marketing_service.v1.DeleteTaskReply
+	47,  // 139: platform.marketing_service.v1.Marketing.ListTasksByCampaign:output_type -> platform.marketing_service.v1.ListTasksByCampaignReply
+	50,  // 140: platform.marketing_service.v1.Marketing.CreateAudience:output_type -> platform.marketing_service.v1.CreateAudienceReply
+	52,  // 141: platform.marketing_service.v1.Marketing.GetAudience:output_type -> platform.marketing_service.v1.GetAudienceReply
+	54,  // 142: platform.marketing_service.v1.Marketing.ListAudiences:output_type -> platform.marketing_service.v1.ListAudiencesReply
+	56,  // 143: platform.marketing_service.v1.Marketing.UpdateAudience:output_type -> platform.marketing_service.v1.UpdateAudienceReply
+	58,  // 144: platform.marketing_service.v1.Marketing.DeleteAudience:output_type -> platform.marketing_service.v1.DeleteAudienceReply
+	61,  // 145: platform.marketing_service.v1.Marketing.ListRewardGrants:output_type -> platform.marketing_service.v1.ListRewardGrantsReply
+	63,  // 146: platform.marketing_service.v1.Marketing.GetRewardGrant:output_type -> platform.marketing_service.v1.GetRewardGrantReply
+	65,  // 147: platform.marketing_service.v1.Marketing.UpdateRewardGrantStatus:output_type -> platform.marketing_service.v1.UpdateRewardGrantStatusReply
+	67,  // 148: platform.marketing_service.v1.Marketing.TriggerTaskEvent:output_type -> platform.marketing_service.v1.TriggerTaskEventReply
+	70,  // 149: platform.marketing_service.v1.Marketing.ReserveInventory:output_type -> platform.marketing_service.v1.ReserveInventoryReply
+	72,  // 150: platform.marketing_service.v1.Marketing.ConfirmInventory:output_type -> platform.marketing_service.v1.ConfirmInventoryReply
+	74,  // 151: platform.marketing_service.v1.Marketing.CancelInventory:output_type -> platform.marketing_service.v1.CancelInventoryReply
+	76,  // 152: platform.marketing_service.v1.Marketing.ListInventoryReservations:output_type -> platform.marketing_service.v1.ListInventoryReservationsReply
+	79,  // 153: platform.marketing_service.v1.Marketing.ListTaskCompletionLogs:output_type -> platform.marketing_service.v1.ListTaskCompletionLogsReply
+	81,  // 154: platform.marketing_service.v1.Marketing.GetTaskCompletionStats:output_type -> platform.marketing_service.v1.GetTaskCompletionStatsReply
+	84,  // 155: platform.marketing_service.v1.Marketing.AddTaskToCampaign:output_type -> platform.marketing_service.v1.AddTaskToCampaignReply
+	86,  // 156: platform.marketing_service.v1.Marketing.RemoveTaskFromCampaign:output_type -> platform.marketing_service.v1.RemoveTaskFromCampaignReply
+	88,  // 157: platform.marketing_service.v1.Marketing.ListCampaignTasks:output_type -> platform.marketing_service.v1.ListCampaignTasksReply
+	91,  // 158: platform.marketing_service.v1.Marketing.CreateCoupon:output_type -> platform.marketing_service.v1.CreateCouponReply
+	93,  // 159: platform.marketing_service.v1.Marketing.GetCoupon:output_type -> platform.marketing_service.v1.GetCouponReply
+	95,  // 160: platform.marketing_service.v1.Marketing.ListCoupons:output_type -> platform.marketing_service.v1.ListCouponsReply
+	97,  // 161: platform.marketing_service.v1.Marketing.UpdateCoupon:output_type -> platform.marketing_service.v1.UpdateCouponReply
+	99,  // 162: platform.marketing_service.v1.Marketing.DeleteCoupon:output_type -> platform.marketing_service.v1.DeleteCouponReply
+	101, // 163: platform.marketing_service.v1.Marketing.ValidateCoupon:output_type -> platform.marketing_service.v1.ValidateCouponReply
+	103, // 164: platform.marketing_service.v1.Marketing.UseCoupon:output_type -> platform.marketing_service.v1.UseCouponReply
+	105, // 165: platform.marketing_service.v1.Marketing.GetCouponStats:output_type -> platform.marketing_service.v1.GetCouponStatsReply
+	108, // 166: platform.marketing_service.v1.Marketing.ListCouponUsages:output_type -> platform.marketing_service.v1.ListCouponUsagesReply
+	110, // 167: platform.marketing_service.v1.Marketing.GetCouponsSummaryStats:output_type -> platform.marketing_service.v1.GetCouponsSummaryStatsReply
+	119, // [119:168] is the sub-list for method output_type
+	70,  // [70:119] is the sub-list for method input_type
+	70,  // [70:70] is the sub-list for extension type_name
+	70,  // [70:70] is the sub-list for extension extendee
+	0,   // [0:70] is the sub-list for field type_name
 }
 
 func init() { file_marketing_proto_init() }
@@ -7336,7 +9164,7 @@ func file_marketing_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_marketing_proto_rawDesc), len(file_marketing_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   99,
+			NumMessages:   122,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -142,6 +142,21 @@ const (
 	EventTypeUserSignIn   = "USER_SIGN_IN"  // 用户签到
 )
 
+// ========== Coupon 相关常量 ==========
+
+// CouponDiscountType 优惠券折扣类型
+const (
+	CouponDiscountTypePercent = "percent" // 百分比折扣
+	CouponDiscountTypeFixed   = "fixed"   // 固定金额折扣
+)
+
+// CouponStatus 优惠券状态
+const (
+	CouponStatusActive   = "active"   // 激活
+	CouponStatusInactive = "inactive" // 未激活
+	CouponStatusExpired  = "expired"  // 已过期
+)
+
 // ========== RocketMQ 相关常量 ==========
 
 // RocketMQTopic RocketMQ Topic 名称

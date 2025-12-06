@@ -13,6 +13,7 @@ var ProviderSet = wire.NewSet(
 	NewInventoryReservationUseCase,
 	NewTaskCompletionLogUseCase,
 	NewCampaignTaskUseCase,
+	NewCouponUseCase,
 	NewGeneratorService,
 	NewDistributorService,
 	NewNotificationService,

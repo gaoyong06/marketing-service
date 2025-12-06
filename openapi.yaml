@@ -422,6 +422,283 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /v1/coupons:
+        get:
+            tags:
+                - Marketing
+            description: ListCoupons 列出优惠券
+            operationId: Marketing_ListCoupons
+            parameters:
+                - name: appId
+                  in: query
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListCouponsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Marketing
+            description: |-
+                ========== Coupon Management API (供开发者控制台使用) ==========
+                 CreateCoupon 创建优惠券
+            operationId: Marketing_CreateCoupon
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateCouponRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateCouponReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/coupons/summary-stats:
+        get:
+            tags:
+                - Marketing
+            description: GetCouponsSummaryStats 获取所有优惠券汇总统计（供营销效果仪表板使用）
+            operationId: Marketing_GetCouponsSummaryStats
+            parameters:
+                - name: appId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetCouponsSummaryStatsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/coupons/use:
+        post:
+            tags:
+                - Marketing
+            description: UseCoupon 使用优惠券 (供 Payment Service 调用)
+            operationId: Marketing_UseCoupon
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UseCouponRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UseCouponReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/coupons/validate:
+        post:
+            tags:
+                - Marketing
+            description: ValidateCoupon 验证优惠券 (供 Payment Service 调用)
+            operationId: Marketing_ValidateCoupon
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ValidateCouponRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ValidateCouponReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/coupons/{code}:
+        get:
+            tags:
+                - Marketing
+            description: GetCoupon 获取优惠券
+            operationId: Marketing_GetCoupon
+            parameters:
+                - name: code
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetCouponReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - Marketing
+            description: UpdateCoupon 更新优惠券
+            operationId: Marketing_UpdateCoupon
+            parameters:
+                - name: code
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateCouponRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateCouponReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - Marketing
+            description: DeleteCoupon 删除优惠券
+            operationId: Marketing_DeleteCoupon
+            parameters:
+                - name: code
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteCouponReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/coupons/{code}/stats:
+        get:
+            tags:
+                - Marketing
+            description: GetCouponStats 获取优惠券统计
+            operationId: Marketing_GetCouponStats
+            parameters:
+                - name: code
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetCouponStatsReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /v1/coupons/{code}/usages:
+        get:
+            tags:
+                - Marketing
+            description: ListCouponUsages 列出优惠券使用记录
+            operationId: Marketing_ListCouponUsages
+            parameters:
+                - name: code
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListCouponUsagesReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /v1/inventory/reservations:
         get:
             tags:
@@ -1361,6 +1638,79 @@ components:
                 reservationId:
                     type: string
             description: ConfirmInventoryRequest 确认库存请求
+        Coupon:
+            type: object
+            properties:
+                code:
+                    type: string
+                appId:
+                    type: string
+                discountType:
+                    type: string
+                discountValue:
+                    type: string
+                validFrom:
+                    type: string
+                validUntil:
+                    type: string
+                maxUses:
+                    type: integer
+                    format: int32
+                usedCount:
+                    type: integer
+                    format: int32
+                minAmount:
+                    type: string
+                status:
+                    type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: |-
+                ========== Coupon Messages (供开发者控制台使用) ==========
+                 Coupon 优惠券
+        CouponStats:
+            type: object
+            properties:
+                code:
+                    type: string
+                totalUses:
+                    type: integer
+                    format: int32
+                totalOrders:
+                    type: integer
+                    format: int32
+                totalRevenue:
+                    type: string
+                totalDiscount:
+                    type: string
+                conversionRate:
+                    type: number
+                    format: float
+            description: CouponStats 优惠券统计（用于汇总统计响应）
+        CouponUsage:
+            type: object
+            properties:
+                id:
+                    type: string
+                couponCode:
+                    type: string
+                userId:
+                    type: string
+                orderId:
+                    type: string
+                paymentId:
+                    type: string
+                originalAmount:
+                    type: string
+                discountAmount:
+                    type: string
+                finalAmount:
+                    type: string
+                usedAt:
+                    type: string
+            description: CouponUsage 优惠券使用记录
         CreateAudienceReply:
             type: object
             properties:
@@ -1416,6 +1766,33 @@ components:
                 createdBy:
                     type: string
             description: CreateCampaignRequest 创建营销活动请求
+        CreateCouponReply:
+            type: object
+            properties:
+                coupon:
+                    $ref: '#/components/schemas/Coupon'
+            description: CreateCouponReply 创建优惠券响应
+        CreateCouponRequest:
+            type: object
+            properties:
+                code:
+                    type: string
+                appId:
+                    type: string
+                discountType:
+                    type: string
+                discountValue:
+                    type: string
+                validFrom:
+                    type: string
+                validUntil:
+                    type: string
+                maxUses:
+                    type: integer
+                    format: int32
+                minAmount:
+                    type: string
+            description: CreateCouponRequest 创建优惠券请求
         CreateRewardReply:
             type: object
             properties:
@@ -1496,6 +1873,12 @@ components:
                 success:
                     type: boolean
             description: DeleteCampaignReply 删除营销活动响应
+        DeleteCouponReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+            description: DeleteCouponReply 删除优惠券响应
         DeleteRewardReply:
             type: object
             properties:
@@ -1564,6 +1947,58 @@ components:
                 campaign:
                     $ref: '#/components/schemas/Campaign'
             description: GetCampaignReply 获取营销活动响应
+        GetCouponReply:
+            type: object
+            properties:
+                coupon:
+                    $ref: '#/components/schemas/Coupon'
+            description: GetCouponReply 获取优惠券响应
+        GetCouponStatsReply:
+            type: object
+            properties:
+                code:
+                    type: string
+                totalUses:
+                    type: integer
+                    format: int32
+                totalOrders:
+                    type: integer
+                    format: int32
+                totalRevenue:
+                    type: string
+                totalDiscount:
+                    type: string
+                conversionRate:
+                    type: number
+                    format: float
+            description: GetCouponStatsReply 获取优惠券统计响应
+        GetCouponsSummaryStatsReply:
+            type: object
+            properties:
+                totalCoupons:
+                    type: integer
+                    format: int32
+                activeCoupons:
+                    type: integer
+                    format: int32
+                totalUses:
+                    type: integer
+                    format: int32
+                totalOrders:
+                    type: integer
+                    format: int32
+                totalRevenue:
+                    type: string
+                totalDiscount:
+                    type: string
+                averageConversionRate:
+                    type: number
+                    format: float
+                topCoupons:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CouponStats'
+            description: GetCouponsSummaryStatsReply 获取所有优惠券汇总统计响应
         GetRedeemCodeReply:
             type: object
             properties:
@@ -1668,6 +2103,40 @@ components:
                     type: integer
                     format: int32
             description: ListCampaignsReply 列出营销活动响应
+        ListCouponUsagesReply:
+            type: object
+            properties:
+                usages:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/CouponUsage'
+                total:
+                    type: integer
+                    format: int32
+                page:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+            description: ListCouponUsagesReply 列出优惠券使用记录响应
+        ListCouponsReply:
+            type: object
+            properties:
+                coupons:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Coupon'
+                total:
+                    type: integer
+                    format: int32
+                page:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+            description: ListCouponsReply 列出优惠券响应
         ListInventoryReservationsReply:
             type: object
             properties:
@@ -2127,6 +2596,33 @@ components:
                     type: integer
                     format: int32
             description: UpdateCampaignRequest 更新营销活动请求
+        UpdateCouponReply:
+            type: object
+            properties:
+                coupon:
+                    $ref: '#/components/schemas/Coupon'
+            description: UpdateCouponReply 更新优惠券响应
+        UpdateCouponRequest:
+            type: object
+            properties:
+                code:
+                    type: string
+                discountType:
+                    type: string
+                discountValue:
+                    type: string
+                validFrom:
+                    type: string
+                validUntil:
+                    type: string
+                maxUses:
+                    type: integer
+                    format: int32
+                minAmount:
+                    type: string
+                status:
+                    type: string
+            description: UpdateCouponRequest 更新优惠券请求
         UpdateRewardGrantStatusReply:
             type: object
             properties:
@@ -2201,5 +2697,55 @@ components:
                 description:
                     type: string
             description: UpdateTaskRequest 更新任务请求
+        UseCouponReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+            description: UseCouponReply 使用优惠券响应
+        UseCouponRequest:
+            type: object
+            properties:
+                code:
+                    type: string
+                userId:
+                    type: string
+                orderId:
+                    type: string
+                paymentId:
+                    type: string
+                originalAmount:
+                    type: string
+                discountAmount:
+                    type: string
+                finalAmount:
+                    type: string
+            description: UseCouponRequest 使用优惠券请求 (供 Payment Service 调用)
+        ValidateCouponReply:
+            type: object
+            properties:
+                valid:
+                    type: boolean
+                message:
+                    type: string
+                discountAmount:
+                    type: string
+                finalAmount:
+                    type: string
+                coupon:
+                    $ref: '#/components/schemas/Coupon'
+            description: ValidateCouponReply 验证优惠券响应
+        ValidateCouponRequest:
+            type: object
+            properties:
+                code:
+                    type: string
+                appId:
+                    type: string
+                amount:
+                    type: string
+            description: ValidateCouponRequest 验证优惠券请求 (供 Payment Service 调用)
 tags:
     - name: Marketing

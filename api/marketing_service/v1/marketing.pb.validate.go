@@ -12044,3 +12044,2914 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListCampaignTasksReplyValidationError{}
+
+// Validate checks the field values on Coupon with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Coupon) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Coupon with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in CouponMultiError, or nil if none found.
+func (m *Coupon) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Coupon) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Code
+
+	// no validation rules for AppId
+
+	// no validation rules for DiscountType
+
+	// no validation rules for DiscountValue
+
+	// no validation rules for ValidFrom
+
+	// no validation rules for ValidUntil
+
+	// no validation rules for MaxUses
+
+	// no validation rules for UsedCount
+
+	// no validation rules for MinAmount
+
+	// no validation rules for Status
+
+	// no validation rules for CreatedAt
+
+	// no validation rules for UpdatedAt
+
+	if len(errors) > 0 {
+		return CouponMultiError(errors)
+	}
+
+	return nil
+}
+
+// CouponMultiError is an error wrapping multiple validation errors returned by
+// Coupon.ValidateAll() if the designated constraints aren't met.
+type CouponMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CouponMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CouponMultiError) AllErrors() []error { return m }
+
+// CouponValidationError is the validation error returned by Coupon.Validate if
+// the designated constraints aren't met.
+type CouponValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CouponValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CouponValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CouponValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CouponValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CouponValidationError) ErrorName() string { return "CouponValidationError" }
+
+// Error satisfies the builtin error interface
+func (e CouponValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCoupon.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CouponValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CouponValidationError{}
+
+// Validate checks the field values on CreateCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CreateCouponRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CreateCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CreateCouponRequestMultiError, or nil if none found.
+func (m *CreateCouponRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateCouponRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if l := utf8.RuneCountInString(m.GetCode()); l < 1 || l > 50 {
+		err := CreateCouponRequestValidationError{
+			field:  "Code",
+			reason: "value length must be between 1 and 50 runes, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetAppId()) < 1 {
+		err := CreateCouponRequestValidationError{
+			field:  "AppId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if _, ok := _CreateCouponRequest_DiscountType_InLookup[m.GetDiscountType()]; !ok {
+		err := CreateCouponRequestValidationError{
+			field:  "DiscountType",
+			reason: "value must be in list [percent fixed]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetDiscountValue() <= 0 {
+		err := CreateCouponRequestValidationError{
+			field:  "DiscountValue",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for ValidFrom
+
+	// no validation rules for ValidUntil
+
+	if m.GetMaxUses() <= 0 {
+		err := CreateCouponRequestValidationError{
+			field:  "MaxUses",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for MinAmount
+
+	if len(errors) > 0 {
+		return CreateCouponRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// CreateCouponRequestMultiError is an error wrapping multiple validation
+// errors returned by CreateCouponRequest.ValidateAll() if the designated
+// constraints aren't met.
+type CreateCouponRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateCouponRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateCouponRequestMultiError) AllErrors() []error { return m }
+
+// CreateCouponRequestValidationError is the validation error returned by
+// CreateCouponRequest.Validate if the designated constraints aren't met.
+type CreateCouponRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CreateCouponRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CreateCouponRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CreateCouponRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CreateCouponRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CreateCouponRequestValidationError) ErrorName() string {
+	return "CreateCouponRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CreateCouponRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCreateCouponRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CreateCouponRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CreateCouponRequestValidationError{}
+
+var _CreateCouponRequest_DiscountType_InLookup = map[string]struct{}{
+	"percent": {},
+	"fixed":   {},
+}
+
+// Validate checks the field values on CreateCouponReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *CreateCouponReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CreateCouponReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CreateCouponReplyMultiError, or nil if none found.
+func (m *CreateCouponReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateCouponReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetCoupon()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, CreateCouponReplyValidationError{
+					field:  "Coupon",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, CreateCouponReplyValidationError{
+					field:  "Coupon",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCoupon()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return CreateCouponReplyValidationError{
+				field:  "Coupon",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return CreateCouponReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// CreateCouponReplyMultiError is an error wrapping multiple validation errors
+// returned by CreateCouponReply.ValidateAll() if the designated constraints
+// aren't met.
+type CreateCouponReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateCouponReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateCouponReplyMultiError) AllErrors() []error { return m }
+
+// CreateCouponReplyValidationError is the validation error returned by
+// CreateCouponReply.Validate if the designated constraints aren't met.
+type CreateCouponReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CreateCouponReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CreateCouponReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CreateCouponReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CreateCouponReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CreateCouponReplyValidationError) ErrorName() string {
+	return "CreateCouponReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CreateCouponReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCreateCouponReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CreateCouponReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CreateCouponReplyValidationError{}
+
+// Validate checks the field values on GetCouponRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *GetCouponRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetCouponRequestMultiError, or nil if none found.
+func (m *GetCouponRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetCouponRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetCode()) < 1 {
+		err := GetCouponRequestValidationError{
+			field:  "Code",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return GetCouponRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetCouponRequestMultiError is an error wrapping multiple validation errors
+// returned by GetCouponRequest.ValidateAll() if the designated constraints
+// aren't met.
+type GetCouponRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetCouponRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetCouponRequestMultiError) AllErrors() []error { return m }
+
+// GetCouponRequestValidationError is the validation error returned by
+// GetCouponRequest.Validate if the designated constraints aren't met.
+type GetCouponRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetCouponRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetCouponRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetCouponRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetCouponRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetCouponRequestValidationError) ErrorName() string { return "GetCouponRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e GetCouponRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetCouponRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetCouponRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetCouponRequestValidationError{}
+
+// Validate checks the field values on GetCouponReply with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *GetCouponReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetCouponReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in GetCouponReplyMultiError,
+// or nil if none found.
+func (m *GetCouponReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetCouponReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetCoupon()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, GetCouponReplyValidationError{
+					field:  "Coupon",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, GetCouponReplyValidationError{
+					field:  "Coupon",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCoupon()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return GetCouponReplyValidationError{
+				field:  "Coupon",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return GetCouponReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetCouponReplyMultiError is an error wrapping multiple validation errors
+// returned by GetCouponReply.ValidateAll() if the designated constraints
+// aren't met.
+type GetCouponReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetCouponReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetCouponReplyMultiError) AllErrors() []error { return m }
+
+// GetCouponReplyValidationError is the validation error returned by
+// GetCouponReply.Validate if the designated constraints aren't met.
+type GetCouponReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetCouponReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetCouponReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetCouponReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetCouponReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetCouponReplyValidationError) ErrorName() string { return "GetCouponReplyValidationError" }
+
+// Error satisfies the builtin error interface
+func (e GetCouponReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetCouponReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetCouponReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetCouponReplyValidationError{}
+
+// Validate checks the field values on ListCouponsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListCouponsRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListCouponsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListCouponsRequestMultiError, or nil if none found.
+func (m *ListCouponsRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListCouponsRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for AppId
+
+	// no validation rules for Status
+
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
+	if len(errors) > 0 {
+		return ListCouponsRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListCouponsRequestMultiError is an error wrapping multiple validation errors
+// returned by ListCouponsRequest.ValidateAll() if the designated constraints
+// aren't met.
+type ListCouponsRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListCouponsRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListCouponsRequestMultiError) AllErrors() []error { return m }
+
+// ListCouponsRequestValidationError is the validation error returned by
+// ListCouponsRequest.Validate if the designated constraints aren't met.
+type ListCouponsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListCouponsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListCouponsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListCouponsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListCouponsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListCouponsRequestValidationError) ErrorName() string {
+	return "ListCouponsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListCouponsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListCouponsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListCouponsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListCouponsRequestValidationError{}
+
+// Validate checks the field values on ListCouponsReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *ListCouponsReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListCouponsReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListCouponsReplyMultiError, or nil if none found.
+func (m *ListCouponsReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListCouponsReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetCoupons() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListCouponsReplyValidationError{
+						field:  fmt.Sprintf("Coupons[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListCouponsReplyValidationError{
+						field:  fmt.Sprintf("Coupons[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListCouponsReplyValidationError{
+					field:  fmt.Sprintf("Coupons[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for Total
+
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
+	if len(errors) > 0 {
+		return ListCouponsReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListCouponsReplyMultiError is an error wrapping multiple validation errors
+// returned by ListCouponsReply.ValidateAll() if the designated constraints
+// aren't met.
+type ListCouponsReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListCouponsReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListCouponsReplyMultiError) AllErrors() []error { return m }
+
+// ListCouponsReplyValidationError is the validation error returned by
+// ListCouponsReply.Validate if the designated constraints aren't met.
+type ListCouponsReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListCouponsReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListCouponsReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListCouponsReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListCouponsReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListCouponsReplyValidationError) ErrorName() string { return "ListCouponsReplyValidationError" }
+
+// Error satisfies the builtin error interface
+func (e ListCouponsReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListCouponsReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListCouponsReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListCouponsReplyValidationError{}
+
+// Validate checks the field values on UpdateCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UpdateCouponRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateCouponRequestMultiError, or nil if none found.
+func (m *UpdateCouponRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateCouponRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetCode()) < 1 {
+		err := UpdateCouponRequestValidationError{
+			field:  "Code",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for DiscountType
+
+	// no validation rules for DiscountValue
+
+	// no validation rules for ValidFrom
+
+	// no validation rules for ValidUntil
+
+	// no validation rules for MaxUses
+
+	// no validation rules for MinAmount
+
+	// no validation rules for Status
+
+	if len(errors) > 0 {
+		return UpdateCouponRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UpdateCouponRequestMultiError is an error wrapping multiple validation
+// errors returned by UpdateCouponRequest.ValidateAll() if the designated
+// constraints aren't met.
+type UpdateCouponRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateCouponRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateCouponRequestMultiError) AllErrors() []error { return m }
+
+// UpdateCouponRequestValidationError is the validation error returned by
+// UpdateCouponRequest.Validate if the designated constraints aren't met.
+type UpdateCouponRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateCouponRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateCouponRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateCouponRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateCouponRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateCouponRequestValidationError) ErrorName() string {
+	return "UpdateCouponRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateCouponRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateCouponRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateCouponRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateCouponRequestValidationError{}
+
+// Validate checks the field values on UpdateCouponReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *UpdateCouponReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateCouponReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateCouponReplyMultiError, or nil if none found.
+func (m *UpdateCouponReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateCouponReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetCoupon()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, UpdateCouponReplyValidationError{
+					field:  "Coupon",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, UpdateCouponReplyValidationError{
+					field:  "Coupon",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCoupon()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return UpdateCouponReplyValidationError{
+				field:  "Coupon",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return UpdateCouponReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// UpdateCouponReplyMultiError is an error wrapping multiple validation errors
+// returned by UpdateCouponReply.ValidateAll() if the designated constraints
+// aren't met.
+type UpdateCouponReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateCouponReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateCouponReplyMultiError) AllErrors() []error { return m }
+
+// UpdateCouponReplyValidationError is the validation error returned by
+// UpdateCouponReply.Validate if the designated constraints aren't met.
+type UpdateCouponReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateCouponReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateCouponReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateCouponReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateCouponReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateCouponReplyValidationError) ErrorName() string {
+	return "UpdateCouponReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateCouponReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateCouponReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateCouponReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateCouponReplyValidationError{}
+
+// Validate checks the field values on DeleteCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteCouponRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteCouponRequestMultiError, or nil if none found.
+func (m *DeleteCouponRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteCouponRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetCode()) < 1 {
+		err := DeleteCouponRequestValidationError{
+			field:  "Code",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return DeleteCouponRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteCouponRequestMultiError is an error wrapping multiple validation
+// errors returned by DeleteCouponRequest.ValidateAll() if the designated
+// constraints aren't met.
+type DeleteCouponRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteCouponRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteCouponRequestMultiError) AllErrors() []error { return m }
+
+// DeleteCouponRequestValidationError is the validation error returned by
+// DeleteCouponRequest.Validate if the designated constraints aren't met.
+type DeleteCouponRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteCouponRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteCouponRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteCouponRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteCouponRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteCouponRequestValidationError) ErrorName() string {
+	return "DeleteCouponRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteCouponRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteCouponRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteCouponRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteCouponRequestValidationError{}
+
+// Validate checks the field values on DeleteCouponReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *DeleteCouponReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteCouponReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteCouponReplyMultiError, or nil if none found.
+func (m *DeleteCouponReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteCouponReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	if len(errors) > 0 {
+		return DeleteCouponReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteCouponReplyMultiError is an error wrapping multiple validation errors
+// returned by DeleteCouponReply.ValidateAll() if the designated constraints
+// aren't met.
+type DeleteCouponReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteCouponReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteCouponReplyMultiError) AllErrors() []error { return m }
+
+// DeleteCouponReplyValidationError is the validation error returned by
+// DeleteCouponReply.Validate if the designated constraints aren't met.
+type DeleteCouponReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteCouponReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteCouponReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteCouponReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteCouponReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteCouponReplyValidationError) ErrorName() string {
+	return "DeleteCouponReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteCouponReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteCouponReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteCouponReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteCouponReplyValidationError{}
+
+// Validate checks the field values on ValidateCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ValidateCouponRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ValidateCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ValidateCouponRequestMultiError, or nil if none found.
+func (m *ValidateCouponRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ValidateCouponRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetCode()) < 1 {
+		err := ValidateCouponRequestValidationError{
+			field:  "Code",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetAppId()) < 1 {
+		err := ValidateCouponRequestValidationError{
+			field:  "AppId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetAmount() <= 0 {
+		err := ValidateCouponRequestValidationError{
+			field:  "Amount",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return ValidateCouponRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ValidateCouponRequestMultiError is an error wrapping multiple validation
+// errors returned by ValidateCouponRequest.ValidateAll() if the designated
+// constraints aren't met.
+type ValidateCouponRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ValidateCouponRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ValidateCouponRequestMultiError) AllErrors() []error { return m }
+
+// ValidateCouponRequestValidationError is the validation error returned by
+// ValidateCouponRequest.Validate if the designated constraints aren't met.
+type ValidateCouponRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ValidateCouponRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ValidateCouponRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ValidateCouponRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ValidateCouponRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ValidateCouponRequestValidationError) ErrorName() string {
+	return "ValidateCouponRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ValidateCouponRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sValidateCouponRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ValidateCouponRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ValidateCouponRequestValidationError{}
+
+// Validate checks the field values on ValidateCouponReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ValidateCouponReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ValidateCouponReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ValidateCouponReplyMultiError, or nil if none found.
+func (m *ValidateCouponReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ValidateCouponReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Valid
+
+	// no validation rules for Message
+
+	// no validation rules for DiscountAmount
+
+	// no validation rules for FinalAmount
+
+	if all {
+		switch v := interface{}(m.GetCoupon()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ValidateCouponReplyValidationError{
+					field:  "Coupon",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ValidateCouponReplyValidationError{
+					field:  "Coupon",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCoupon()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ValidateCouponReplyValidationError{
+				field:  "Coupon",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return ValidateCouponReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// ValidateCouponReplyMultiError is an error wrapping multiple validation
+// errors returned by ValidateCouponReply.ValidateAll() if the designated
+// constraints aren't met.
+type ValidateCouponReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ValidateCouponReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ValidateCouponReplyMultiError) AllErrors() []error { return m }
+
+// ValidateCouponReplyValidationError is the validation error returned by
+// ValidateCouponReply.Validate if the designated constraints aren't met.
+type ValidateCouponReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ValidateCouponReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ValidateCouponReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ValidateCouponReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ValidateCouponReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ValidateCouponReplyValidationError) ErrorName() string {
+	return "ValidateCouponReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ValidateCouponReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sValidateCouponReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ValidateCouponReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ValidateCouponReplyValidationError{}
+
+// Validate checks the field values on UseCouponRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *UseCouponRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UseCouponRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UseCouponRequestMultiError, or nil if none found.
+func (m *UseCouponRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UseCouponRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetCode()) < 1 {
+		err := UseCouponRequestValidationError{
+			field:  "Code",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetUserId() <= 0 {
+		err := UseCouponRequestValidationError{
+			field:  "UserId",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetOrderId()) < 1 {
+		err := UseCouponRequestValidationError{
+			field:  "OrderId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetPaymentId()) < 1 {
+		err := UseCouponRequestValidationError{
+			field:  "PaymentId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetOriginalAmount() <= 0 {
+		err := UseCouponRequestValidationError{
+			field:  "OriginalAmount",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetDiscountAmount() <= 0 {
+		err := UseCouponRequestValidationError{
+			field:  "DiscountAmount",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.GetFinalAmount() <= 0 {
+		err := UseCouponRequestValidationError{
+			field:  "FinalAmount",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return UseCouponRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UseCouponRequestMultiError is an error wrapping multiple validation errors
+// returned by UseCouponRequest.ValidateAll() if the designated constraints
+// aren't met.
+type UseCouponRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UseCouponRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UseCouponRequestMultiError) AllErrors() []error { return m }
+
+// UseCouponRequestValidationError is the validation error returned by
+// UseCouponRequest.Validate if the designated constraints aren't met.
+type UseCouponRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UseCouponRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UseCouponRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UseCouponRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UseCouponRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UseCouponRequestValidationError) ErrorName() string { return "UseCouponRequestValidationError" }
+
+// Error satisfies the builtin error interface
+func (e UseCouponRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUseCouponRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UseCouponRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UseCouponRequestValidationError{}
+
+// Validate checks the field values on UseCouponReply with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *UseCouponReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UseCouponReply with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in UseCouponReplyMultiError,
+// or nil if none found.
+func (m *UseCouponReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UseCouponReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Success
+
+	// no validation rules for Message
+
+	if len(errors) > 0 {
+		return UseCouponReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// UseCouponReplyMultiError is an error wrapping multiple validation errors
+// returned by UseCouponReply.ValidateAll() if the designated constraints
+// aren't met.
+type UseCouponReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UseCouponReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UseCouponReplyMultiError) AllErrors() []error { return m }
+
+// UseCouponReplyValidationError is the validation error returned by
+// UseCouponReply.Validate if the designated constraints aren't met.
+type UseCouponReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UseCouponReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UseCouponReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UseCouponReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UseCouponReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UseCouponReplyValidationError) ErrorName() string { return "UseCouponReplyValidationError" }
+
+// Error satisfies the builtin error interface
+func (e UseCouponReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUseCouponReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UseCouponReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UseCouponReplyValidationError{}
+
+// Validate checks the field values on GetCouponStatsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetCouponStatsRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetCouponStatsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetCouponStatsRequestMultiError, or nil if none found.
+func (m *GetCouponStatsRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetCouponStatsRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetCode()) < 1 {
+		err := GetCouponStatsRequestValidationError{
+			field:  "Code",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if len(errors) > 0 {
+		return GetCouponStatsRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetCouponStatsRequestMultiError is an error wrapping multiple validation
+// errors returned by GetCouponStatsRequest.ValidateAll() if the designated
+// constraints aren't met.
+type GetCouponStatsRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetCouponStatsRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetCouponStatsRequestMultiError) AllErrors() []error { return m }
+
+// GetCouponStatsRequestValidationError is the validation error returned by
+// GetCouponStatsRequest.Validate if the designated constraints aren't met.
+type GetCouponStatsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetCouponStatsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetCouponStatsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetCouponStatsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetCouponStatsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetCouponStatsRequestValidationError) ErrorName() string {
+	return "GetCouponStatsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetCouponStatsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetCouponStatsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetCouponStatsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetCouponStatsRequestValidationError{}
+
+// Validate checks the field values on GetCouponStatsReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetCouponStatsReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetCouponStatsReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetCouponStatsReplyMultiError, or nil if none found.
+func (m *GetCouponStatsReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetCouponStatsReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Code
+
+	// no validation rules for TotalUses
+
+	// no validation rules for TotalOrders
+
+	// no validation rules for TotalRevenue
+
+	// no validation rules for TotalDiscount
+
+	// no validation rules for ConversionRate
+
+	if len(errors) > 0 {
+		return GetCouponStatsReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetCouponStatsReplyMultiError is an error wrapping multiple validation
+// errors returned by GetCouponStatsReply.ValidateAll() if the designated
+// constraints aren't met.
+type GetCouponStatsReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetCouponStatsReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetCouponStatsReplyMultiError) AllErrors() []error { return m }
+
+// GetCouponStatsReplyValidationError is the validation error returned by
+// GetCouponStatsReply.Validate if the designated constraints aren't met.
+type GetCouponStatsReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetCouponStatsReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetCouponStatsReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetCouponStatsReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetCouponStatsReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetCouponStatsReplyValidationError) ErrorName() string {
+	return "GetCouponStatsReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetCouponStatsReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetCouponStatsReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetCouponStatsReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetCouponStatsReplyValidationError{}
+
+// Validate checks the field values on CouponUsage with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *CouponUsage) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CouponUsage with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in CouponUsageMultiError, or
+// nil if none found.
+func (m *CouponUsage) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CouponUsage) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for CouponCode
+
+	// no validation rules for UserId
+
+	// no validation rules for OrderId
+
+	// no validation rules for PaymentId
+
+	// no validation rules for OriginalAmount
+
+	// no validation rules for DiscountAmount
+
+	// no validation rules for FinalAmount
+
+	// no validation rules for UsedAt
+
+	if len(errors) > 0 {
+		return CouponUsageMultiError(errors)
+	}
+
+	return nil
+}
+
+// CouponUsageMultiError is an error wrapping multiple validation errors
+// returned by CouponUsage.ValidateAll() if the designated constraints aren't met.
+type CouponUsageMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CouponUsageMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CouponUsageMultiError) AllErrors() []error { return m }
+
+// CouponUsageValidationError is the validation error returned by
+// CouponUsage.Validate if the designated constraints aren't met.
+type CouponUsageValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CouponUsageValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CouponUsageValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CouponUsageValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CouponUsageValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CouponUsageValidationError) ErrorName() string { return "CouponUsageValidationError" }
+
+// Error satisfies the builtin error interface
+func (e CouponUsageValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCouponUsage.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CouponUsageValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CouponUsageValidationError{}
+
+// Validate checks the field values on ListCouponUsagesRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListCouponUsagesRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListCouponUsagesRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListCouponUsagesRequestMultiError, or nil if none found.
+func (m *ListCouponUsagesRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListCouponUsagesRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if utf8.RuneCountInString(m.GetCode()) < 1 {
+		err := ListCouponUsagesRequestValidationError{
+			field:  "Code",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
+	if len(errors) > 0 {
+		return ListCouponUsagesRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListCouponUsagesRequestMultiError is an error wrapping multiple validation
+// errors returned by ListCouponUsagesRequest.ValidateAll() if the designated
+// constraints aren't met.
+type ListCouponUsagesRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListCouponUsagesRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListCouponUsagesRequestMultiError) AllErrors() []error { return m }
+
+// ListCouponUsagesRequestValidationError is the validation error returned by
+// ListCouponUsagesRequest.Validate if the designated constraints aren't met.
+type ListCouponUsagesRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListCouponUsagesRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListCouponUsagesRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListCouponUsagesRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListCouponUsagesRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListCouponUsagesRequestValidationError) ErrorName() string {
+	return "ListCouponUsagesRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListCouponUsagesRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListCouponUsagesRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListCouponUsagesRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListCouponUsagesRequestValidationError{}
+
+// Validate checks the field values on ListCouponUsagesReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListCouponUsagesReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListCouponUsagesReply with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListCouponUsagesReplyMultiError, or nil if none found.
+func (m *ListCouponUsagesReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListCouponUsagesReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetUsages() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListCouponUsagesReplyValidationError{
+						field:  fmt.Sprintf("Usages[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListCouponUsagesReplyValidationError{
+						field:  fmt.Sprintf("Usages[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListCouponUsagesReplyValidationError{
+					field:  fmt.Sprintf("Usages[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	// no validation rules for Total
+
+	// no validation rules for Page
+
+	// no validation rules for PageSize
+
+	if len(errors) > 0 {
+		return ListCouponUsagesReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListCouponUsagesReplyMultiError is an error wrapping multiple validation
+// errors returned by ListCouponUsagesReply.ValidateAll() if the designated
+// constraints aren't met.
+type ListCouponUsagesReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListCouponUsagesReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListCouponUsagesReplyMultiError) AllErrors() []error { return m }
+
+// ListCouponUsagesReplyValidationError is the validation error returned by
+// ListCouponUsagesReply.Validate if the designated constraints aren't met.
+type ListCouponUsagesReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListCouponUsagesReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListCouponUsagesReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListCouponUsagesReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListCouponUsagesReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListCouponUsagesReplyValidationError) ErrorName() string {
+	return "ListCouponUsagesReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListCouponUsagesReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListCouponUsagesReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListCouponUsagesReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListCouponUsagesReplyValidationError{}
+
+// Validate checks the field values on GetCouponsSummaryStatsRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetCouponsSummaryStatsRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetCouponsSummaryStatsRequest with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// GetCouponsSummaryStatsRequestMultiError, or nil if none found.
+func (m *GetCouponsSummaryStatsRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetCouponsSummaryStatsRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for AppId
+
+	if len(errors) > 0 {
+		return GetCouponsSummaryStatsRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetCouponsSummaryStatsRequestMultiError is an error wrapping multiple
+// validation errors returned by GetCouponsSummaryStatsRequest.ValidateAll()
+// if the designated constraints aren't met.
+type GetCouponsSummaryStatsRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetCouponsSummaryStatsRequestMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetCouponsSummaryStatsRequestMultiError) AllErrors() []error { return m }
+
+// GetCouponsSummaryStatsRequestValidationError is the validation error
+// returned by GetCouponsSummaryStatsRequest.Validate if the designated
+// constraints aren't met.
+type GetCouponsSummaryStatsRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetCouponsSummaryStatsRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetCouponsSummaryStatsRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetCouponsSummaryStatsRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetCouponsSummaryStatsRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetCouponsSummaryStatsRequestValidationError) ErrorName() string {
+	return "GetCouponsSummaryStatsRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetCouponsSummaryStatsRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetCouponsSummaryStatsRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetCouponsSummaryStatsRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetCouponsSummaryStatsRequestValidationError{}
+
+// Validate checks the field values on GetCouponsSummaryStatsReply with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *GetCouponsSummaryStatsReply) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on GetCouponsSummaryStatsReply with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// GetCouponsSummaryStatsReplyMultiError, or nil if none found.
+func (m *GetCouponsSummaryStatsReply) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *GetCouponsSummaryStatsReply) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for TotalCoupons
+
+	// no validation rules for ActiveCoupons
+
+	// no validation rules for TotalUses
+
+	// no validation rules for TotalOrders
+
+	// no validation rules for TotalRevenue
+
+	// no validation rules for TotalDiscount
+
+	// no validation rules for AverageConversionRate
+
+	for idx, item := range m.GetTopCoupons() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, GetCouponsSummaryStatsReplyValidationError{
+						field:  fmt.Sprintf("TopCoupons[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, GetCouponsSummaryStatsReplyValidationError{
+						field:  fmt.Sprintf("TopCoupons[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return GetCouponsSummaryStatsReplyValidationError{
+					field:  fmt.Sprintf("TopCoupons[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return GetCouponsSummaryStatsReplyMultiError(errors)
+	}
+
+	return nil
+}
+
+// GetCouponsSummaryStatsReplyMultiError is an error wrapping multiple
+// validation errors returned by GetCouponsSummaryStatsReply.ValidateAll() if
+// the designated constraints aren't met.
+type GetCouponsSummaryStatsReplyMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m GetCouponsSummaryStatsReplyMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m GetCouponsSummaryStatsReplyMultiError) AllErrors() []error { return m }
+
+// GetCouponsSummaryStatsReplyValidationError is the validation error returned
+// by GetCouponsSummaryStatsReply.Validate if the designated constraints
+// aren't met.
+type GetCouponsSummaryStatsReplyValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e GetCouponsSummaryStatsReplyValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e GetCouponsSummaryStatsReplyValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e GetCouponsSummaryStatsReplyValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e GetCouponsSummaryStatsReplyValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e GetCouponsSummaryStatsReplyValidationError) ErrorName() string {
+	return "GetCouponsSummaryStatsReplyValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e GetCouponsSummaryStatsReplyValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sGetCouponsSummaryStatsReply.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = GetCouponsSummaryStatsReplyValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = GetCouponsSummaryStatsReplyValidationError{}
+
+// Validate checks the field values on CouponStats with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *CouponStats) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CouponStats with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in CouponStatsMultiError, or
+// nil if none found.
+func (m *CouponStats) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CouponStats) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Code
+
+	// no validation rules for TotalUses
+
+	// no validation rules for TotalOrders
+
+	// no validation rules for TotalRevenue
+
+	// no validation rules for TotalDiscount
+
+	// no validation rules for ConversionRate
+
+	if len(errors) > 0 {
+		return CouponStatsMultiError(errors)
+	}
+
+	return nil
+}
+
+// CouponStatsMultiError is an error wrapping multiple validation errors
+// returned by CouponStats.ValidateAll() if the designated constraints aren't met.
+type CouponStatsMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CouponStatsMultiError) Error() string {
+	msgs := make([]string, 0, len(m))
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CouponStatsMultiError) AllErrors() []error { return m }
+
+// CouponStatsValidationError is the validation error returned by
+// CouponStats.Validate if the designated constraints aren't met.
+type CouponStatsValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CouponStatsValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CouponStatsValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CouponStatsValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CouponStatsValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CouponStatsValidationError) ErrorName() string { return "CouponStatsValidationError" }
+
+// Error satisfies the builtin error interface
+func (e CouponStatsValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCouponStats.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CouponStatsValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CouponStatsValidationError{}

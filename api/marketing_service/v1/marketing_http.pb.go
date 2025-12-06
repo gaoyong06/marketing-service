@@ -25,15 +25,20 @@ const OperationMarketingCancelInventory = "/platform.marketing_service.v1.Market
 const OperationMarketingConfirmInventory = "/platform.marketing_service.v1.Marketing/ConfirmInventory"
 const OperationMarketingCreateAudience = "/platform.marketing_service.v1.Marketing/CreateAudience"
 const OperationMarketingCreateCampaign = "/platform.marketing_service.v1.Marketing/CreateCampaign"
+const OperationMarketingCreateCoupon = "/platform.marketing_service.v1.Marketing/CreateCoupon"
 const OperationMarketingCreateReward = "/platform.marketing_service.v1.Marketing/CreateReward"
 const OperationMarketingCreateTask = "/platform.marketing_service.v1.Marketing/CreateTask"
 const OperationMarketingDeleteAudience = "/platform.marketing_service.v1.Marketing/DeleteAudience"
 const OperationMarketingDeleteCampaign = "/platform.marketing_service.v1.Marketing/DeleteCampaign"
+const OperationMarketingDeleteCoupon = "/platform.marketing_service.v1.Marketing/DeleteCoupon"
 const OperationMarketingDeleteReward = "/platform.marketing_service.v1.Marketing/DeleteReward"
 const OperationMarketingDeleteTask = "/platform.marketing_service.v1.Marketing/DeleteTask"
 const OperationMarketingGenerateRedeemCodes = "/platform.marketing_service.v1.Marketing/GenerateRedeemCodes"
 const OperationMarketingGetAudience = "/platform.marketing_service.v1.Marketing/GetAudience"
 const OperationMarketingGetCampaign = "/platform.marketing_service.v1.Marketing/GetCampaign"
+const OperationMarketingGetCoupon = "/platform.marketing_service.v1.Marketing/GetCoupon"
+const OperationMarketingGetCouponStats = "/platform.marketing_service.v1.Marketing/GetCouponStats"
+const OperationMarketingGetCouponsSummaryStats = "/platform.marketing_service.v1.Marketing/GetCouponsSummaryStats"
 const OperationMarketingGetRedeemCode = "/platform.marketing_service.v1.Marketing/GetRedeemCode"
 const OperationMarketingGetReward = "/platform.marketing_service.v1.Marketing/GetReward"
 const OperationMarketingGetRewardGrant = "/platform.marketing_service.v1.Marketing/GetRewardGrant"
@@ -42,6 +47,8 @@ const OperationMarketingGetTaskCompletionStats = "/platform.marketing_service.v1
 const OperationMarketingListAudiences = "/platform.marketing_service.v1.Marketing/ListAudiences"
 const OperationMarketingListCampaignTasks = "/platform.marketing_service.v1.Marketing/ListCampaignTasks"
 const OperationMarketingListCampaigns = "/platform.marketing_service.v1.Marketing/ListCampaigns"
+const OperationMarketingListCouponUsages = "/platform.marketing_service.v1.Marketing/ListCouponUsages"
+const OperationMarketingListCoupons = "/platform.marketing_service.v1.Marketing/ListCoupons"
 const OperationMarketingListInventoryReservations = "/platform.marketing_service.v1.Marketing/ListInventoryReservations"
 const OperationMarketingListRedeemCodes = "/platform.marketing_service.v1.Marketing/ListRedeemCodes"
 const OperationMarketingListRewardGrants = "/platform.marketing_service.v1.Marketing/ListRewardGrants"
@@ -55,9 +62,12 @@ const OperationMarketingReserveInventory = "/platform.marketing_service.v1.Marke
 const OperationMarketingTriggerTaskEvent = "/platform.marketing_service.v1.Marketing/TriggerTaskEvent"
 const OperationMarketingUpdateAudience = "/platform.marketing_service.v1.Marketing/UpdateAudience"
 const OperationMarketingUpdateCampaign = "/platform.marketing_service.v1.Marketing/UpdateCampaign"
+const OperationMarketingUpdateCoupon = "/platform.marketing_service.v1.Marketing/UpdateCoupon"
 const OperationMarketingUpdateReward = "/platform.marketing_service.v1.Marketing/UpdateReward"
 const OperationMarketingUpdateRewardGrantStatus = "/platform.marketing_service.v1.Marketing/UpdateRewardGrantStatus"
 const OperationMarketingUpdateTask = "/platform.marketing_service.v1.Marketing/UpdateTask"
+const OperationMarketingUseCoupon = "/platform.marketing_service.v1.Marketing/UseCoupon"
+const OperationMarketingValidateCoupon = "/platform.marketing_service.v1.Marketing/ValidateCoupon"
 
 type MarketingHTTPServer interface {
 	// AddTaskToCampaign ========== Campaign Task Management API ==========
@@ -74,6 +84,9 @@ type MarketingHTTPServer interface {
 	CreateAudience(context.Context, *CreateAudienceRequest) (*CreateAudienceReply, error)
 	// CreateCampaign CreateCampaign 创建营销活动
 	CreateCampaign(context.Context, *CreateCampaignRequest) (*CreateCampaignReply, error)
+	// CreateCoupon ========== Coupon Management API (供开发者控制台使用) ==========
+	// CreateCoupon 创建优惠券
+	CreateCoupon(context.Context, *CreateCouponRequest) (*CreateCouponReply, error)
 	// CreateReward ========== Reward API ==========
 	// CreateReward 创建奖励
 	CreateReward(context.Context, *CreateRewardRequest) (*CreateRewardReply, error)
@@ -84,6 +97,8 @@ type MarketingHTTPServer interface {
 	DeleteAudience(context.Context, *DeleteAudienceRequest) (*DeleteAudienceReply, error)
 	// DeleteCampaign DeleteCampaign 删除营销活动
 	DeleteCampaign(context.Context, *DeleteCampaignRequest) (*DeleteCampaignReply, error)
+	// DeleteCoupon DeleteCoupon 删除优惠券
+	DeleteCoupon(context.Context, *DeleteCouponRequest) (*DeleteCouponReply, error)
 	// DeleteReward DeleteReward 删除奖励
 	DeleteReward(context.Context, *DeleteRewardRequest) (*DeleteRewardReply, error)
 	// DeleteTask DeleteTask 删除任务
@@ -94,6 +109,12 @@ type MarketingHTTPServer interface {
 	GetAudience(context.Context, *GetAudienceRequest) (*GetAudienceReply, error)
 	// GetCampaign GetCampaign 获取营销活动
 	GetCampaign(context.Context, *GetCampaignRequest) (*GetCampaignReply, error)
+	// GetCoupon GetCoupon 获取优惠券
+	GetCoupon(context.Context, *GetCouponRequest) (*GetCouponReply, error)
+	// GetCouponStats GetCouponStats 获取优惠券统计
+	GetCouponStats(context.Context, *GetCouponStatsRequest) (*GetCouponStatsReply, error)
+	// GetCouponsSummaryStats GetCouponsSummaryStats 获取所有优惠券汇总统计（供营销效果仪表板使用）
+	GetCouponsSummaryStats(context.Context, *GetCouponsSummaryStatsRequest) (*GetCouponsSummaryStatsReply, error)
 	// GetRedeemCode GetRedeemCode 获取兑换码
 	GetRedeemCode(context.Context, *GetRedeemCodeRequest) (*GetRedeemCodeReply, error)
 	// GetReward GetReward 获取奖励
@@ -110,6 +131,10 @@ type MarketingHTTPServer interface {
 	ListCampaignTasks(context.Context, *ListCampaignTasksRequest) (*ListCampaignTasksReply, error)
 	// ListCampaigns ListCampaigns 列出营销活动
 	ListCampaigns(context.Context, *ListCampaignsRequest) (*ListCampaignsReply, error)
+	// ListCouponUsages ListCouponUsages 列出优惠券使用记录
+	ListCouponUsages(context.Context, *ListCouponUsagesRequest) (*ListCouponUsagesReply, error)
+	// ListCoupons ListCoupons 列出优惠券
+	ListCoupons(context.Context, *ListCouponsRequest) (*ListCouponsReply, error)
 	// ListInventoryReservations ListInventoryReservations 列出库存预占记录
 	ListInventoryReservations(context.Context, *ListInventoryReservationsRequest) (*ListInventoryReservationsReply, error)
 	// ListRedeemCodes ListRedeemCodes 列出兑换码
@@ -140,12 +165,18 @@ type MarketingHTTPServer interface {
 	UpdateAudience(context.Context, *UpdateAudienceRequest) (*UpdateAudienceReply, error)
 	// UpdateCampaign UpdateCampaign 更新营销活动
 	UpdateCampaign(context.Context, *UpdateCampaignRequest) (*UpdateCampaignReply, error)
+	// UpdateCoupon UpdateCoupon 更新优惠券
+	UpdateCoupon(context.Context, *UpdateCouponRequest) (*UpdateCouponReply, error)
 	// UpdateReward UpdateReward 更新奖励
 	UpdateReward(context.Context, *UpdateRewardRequest) (*UpdateRewardReply, error)
 	// UpdateRewardGrantStatus UpdateRewardGrantStatus 更新发放状态
 	UpdateRewardGrantStatus(context.Context, *UpdateRewardGrantStatusRequest) (*UpdateRewardGrantStatusReply, error)
 	// UpdateTask UpdateTask 更新任务
 	UpdateTask(context.Context, *UpdateTaskRequest) (*UpdateTaskReply, error)
+	// UseCoupon UseCoupon 使用优惠券 (供 Payment Service 调用)
+	UseCoupon(context.Context, *UseCouponRequest) (*UseCouponReply, error)
+	// ValidateCoupon ValidateCoupon 验证优惠券 (供 Payment Service 调用)
+	ValidateCoupon(context.Context, *ValidateCouponRequest) (*ValidateCouponReply, error)
 }
 
 func RegisterMarketingHTTPServer(s *http.Server, srv MarketingHTTPServer) {
@@ -189,6 +220,16 @@ func RegisterMarketingHTTPServer(s *http.Server, srv MarketingHTTPServer) {
 	r.POST("/v1/campaigns/{campaign_id}/tasks", _Marketing_AddTaskToCampaign0_HTTP_Handler(srv))
 	r.DELETE("/v1/campaigns/{campaign_id}/tasks/{task_id}", _Marketing_RemoveTaskFromCampaign0_HTTP_Handler(srv))
 	r.GET("/v1/campaigns/{campaign_id}/tasks", _Marketing_ListCampaignTasks0_HTTP_Handler(srv))
+	r.POST("/v1/coupons", _Marketing_CreateCoupon0_HTTP_Handler(srv))
+	r.GET("/v1/coupons/{code}", _Marketing_GetCoupon0_HTTP_Handler(srv))
+	r.GET("/v1/coupons", _Marketing_ListCoupons0_HTTP_Handler(srv))
+	r.PUT("/v1/coupons/{code}", _Marketing_UpdateCoupon0_HTTP_Handler(srv))
+	r.DELETE("/v1/coupons/{code}", _Marketing_DeleteCoupon0_HTTP_Handler(srv))
+	r.POST("/v1/coupons/validate", _Marketing_ValidateCoupon0_HTTP_Handler(srv))
+	r.POST("/v1/coupons/use", _Marketing_UseCoupon0_HTTP_Handler(srv))
+	r.GET("/v1/coupons/{code}/stats", _Marketing_GetCouponStats0_HTTP_Handler(srv))
+	r.GET("/v1/coupons/{code}/usages", _Marketing_ListCouponUsages0_HTTP_Handler(srv))
+	r.GET("/v1/coupons/summary-stats", _Marketing_GetCouponsSummaryStats0_HTTP_Handler(srv))
 }
 
 func _Marketing_CreateCampaign0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
@@ -1055,6 +1096,223 @@ func _Marketing_ListCampaignTasks0_HTTP_Handler(srv MarketingHTTPServer) func(ct
 	}
 }
 
+func _Marketing_CreateCoupon0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateCouponRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingCreateCoupon)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateCoupon(ctx, req.(*CreateCouponRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateCouponReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_GetCoupon0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetCouponRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingGetCoupon)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetCoupon(ctx, req.(*GetCouponRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetCouponReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_ListCoupons0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ListCouponsRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingListCoupons)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListCoupons(ctx, req.(*ListCouponsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ListCouponsReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_UpdateCoupon0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateCouponRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingUpdateCoupon)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateCoupon(ctx, req.(*UpdateCouponRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UpdateCouponReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_DeleteCoupon0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in DeleteCouponRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingDeleteCoupon)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.DeleteCoupon(ctx, req.(*DeleteCouponRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*DeleteCouponReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_ValidateCoupon0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ValidateCouponRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingValidateCoupon)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ValidateCoupon(ctx, req.(*ValidateCouponRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ValidateCouponReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_UseCoupon0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UseCouponRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingUseCoupon)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UseCoupon(ctx, req.(*UseCouponRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UseCouponReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_GetCouponStats0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetCouponStatsRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingGetCouponStats)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetCouponStats(ctx, req.(*GetCouponStatsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetCouponStatsReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_ListCouponUsages0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ListCouponUsagesRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingListCouponUsages)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.ListCouponUsages(ctx, req.(*ListCouponUsagesRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*ListCouponUsagesReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Marketing_GetCouponsSummaryStats0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetCouponsSummaryStatsRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationMarketingGetCouponsSummaryStats)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetCouponsSummaryStats(ctx, req.(*GetCouponsSummaryStatsRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetCouponsSummaryStatsReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type MarketingHTTPClient interface {
 	// AddTaskToCampaign ========== Campaign Task Management API ==========
 	// AddTaskToCampaign 将任务添加到活动
@@ -1070,6 +1328,9 @@ type MarketingHTTPClient interface {
 	CreateAudience(ctx context.Context, req *CreateAudienceRequest, opts ...http.CallOption) (rsp *CreateAudienceReply, err error)
 	// CreateCampaign CreateCampaign 创建营销活动
 	CreateCampaign(ctx context.Context, req *CreateCampaignRequest, opts ...http.CallOption) (rsp *CreateCampaignReply, err error)
+	// CreateCoupon ========== Coupon Management API (供开发者控制台使用) ==========
+	// CreateCoupon 创建优惠券
+	CreateCoupon(ctx context.Context, req *CreateCouponRequest, opts ...http.CallOption) (rsp *CreateCouponReply, err error)
 	// CreateReward ========== Reward API ==========
 	// CreateReward 创建奖励
 	CreateReward(ctx context.Context, req *CreateRewardRequest, opts ...http.CallOption) (rsp *CreateRewardReply, err error)
@@ -1080,6 +1341,8 @@ type MarketingHTTPClient interface {
 	DeleteAudience(ctx context.Context, req *DeleteAudienceRequest, opts ...http.CallOption) (rsp *DeleteAudienceReply, err error)
 	// DeleteCampaign DeleteCampaign 删除营销活动
 	DeleteCampaign(ctx context.Context, req *DeleteCampaignRequest, opts ...http.CallOption) (rsp *DeleteCampaignReply, err error)
+	// DeleteCoupon DeleteCoupon 删除优惠券
+	DeleteCoupon(ctx context.Context, req *DeleteCouponRequest, opts ...http.CallOption) (rsp *DeleteCouponReply, err error)
 	// DeleteReward DeleteReward 删除奖励
 	DeleteReward(ctx context.Context, req *DeleteRewardRequest, opts ...http.CallOption) (rsp *DeleteRewardReply, err error)
 	// DeleteTask DeleteTask 删除任务
@@ -1090,6 +1353,12 @@ type MarketingHTTPClient interface {
 	GetAudience(ctx context.Context, req *GetAudienceRequest, opts ...http.CallOption) (rsp *GetAudienceReply, err error)
 	// GetCampaign GetCampaign 获取营销活动
 	GetCampaign(ctx context.Context, req *GetCampaignRequest, opts ...http.CallOption) (rsp *GetCampaignReply, err error)
+	// GetCoupon GetCoupon 获取优惠券
+	GetCoupon(ctx context.Context, req *GetCouponRequest, opts ...http.CallOption) (rsp *GetCouponReply, err error)
+	// GetCouponStats GetCouponStats 获取优惠券统计
+	GetCouponStats(ctx context.Context, req *GetCouponStatsRequest, opts ...http.CallOption) (rsp *GetCouponStatsReply, err error)
+	// GetCouponsSummaryStats GetCouponsSummaryStats 获取所有优惠券汇总统计（供营销效果仪表板使用）
+	GetCouponsSummaryStats(ctx context.Context, req *GetCouponsSummaryStatsRequest, opts ...http.CallOption) (rsp *GetCouponsSummaryStatsReply, err error)
 	// GetRedeemCode GetRedeemCode 获取兑换码
 	GetRedeemCode(ctx context.Context, req *GetRedeemCodeRequest, opts ...http.CallOption) (rsp *GetRedeemCodeReply, err error)
 	// GetReward GetReward 获取奖励
@@ -1106,6 +1375,10 @@ type MarketingHTTPClient interface {
 	ListCampaignTasks(ctx context.Context, req *ListCampaignTasksRequest, opts ...http.CallOption) (rsp *ListCampaignTasksReply, err error)
 	// ListCampaigns ListCampaigns 列出营销活动
 	ListCampaigns(ctx context.Context, req *ListCampaignsRequest, opts ...http.CallOption) (rsp *ListCampaignsReply, err error)
+	// ListCouponUsages ListCouponUsages 列出优惠券使用记录
+	ListCouponUsages(ctx context.Context, req *ListCouponUsagesRequest, opts ...http.CallOption) (rsp *ListCouponUsagesReply, err error)
+	// ListCoupons ListCoupons 列出优惠券
+	ListCoupons(ctx context.Context, req *ListCouponsRequest, opts ...http.CallOption) (rsp *ListCouponsReply, err error)
 	// ListInventoryReservations ListInventoryReservations 列出库存预占记录
 	ListInventoryReservations(ctx context.Context, req *ListInventoryReservationsRequest, opts ...http.CallOption) (rsp *ListInventoryReservationsReply, err error)
 	// ListRedeemCodes ListRedeemCodes 列出兑换码
@@ -1136,12 +1409,18 @@ type MarketingHTTPClient interface {
 	UpdateAudience(ctx context.Context, req *UpdateAudienceRequest, opts ...http.CallOption) (rsp *UpdateAudienceReply, err error)
 	// UpdateCampaign UpdateCampaign 更新营销活动
 	UpdateCampaign(ctx context.Context, req *UpdateCampaignRequest, opts ...http.CallOption) (rsp *UpdateCampaignReply, err error)
+	// UpdateCoupon UpdateCoupon 更新优惠券
+	UpdateCoupon(ctx context.Context, req *UpdateCouponRequest, opts ...http.CallOption) (rsp *UpdateCouponReply, err error)
 	// UpdateReward UpdateReward 更新奖励
 	UpdateReward(ctx context.Context, req *UpdateRewardRequest, opts ...http.CallOption) (rsp *UpdateRewardReply, err error)
 	// UpdateRewardGrantStatus UpdateRewardGrantStatus 更新发放状态
 	UpdateRewardGrantStatus(ctx context.Context, req *UpdateRewardGrantStatusRequest, opts ...http.CallOption) (rsp *UpdateRewardGrantStatusReply, err error)
 	// UpdateTask UpdateTask 更新任务
 	UpdateTask(ctx context.Context, req *UpdateTaskRequest, opts ...http.CallOption) (rsp *UpdateTaskReply, err error)
+	// UseCoupon UseCoupon 使用优惠券 (供 Payment Service 调用)
+	UseCoupon(ctx context.Context, req *UseCouponRequest, opts ...http.CallOption) (rsp *UseCouponReply, err error)
+	// ValidateCoupon ValidateCoupon 验证优惠券 (供 Payment Service 调用)
+	ValidateCoupon(ctx context.Context, req *ValidateCouponRequest, opts ...http.CallOption) (rsp *ValidateCouponReply, err error)
 }
 
 type MarketingHTTPClientImpl struct {
@@ -1238,6 +1517,21 @@ func (c *MarketingHTTPClientImpl) CreateCampaign(ctx context.Context, in *Create
 	return &out, nil
 }
 
+// CreateCoupon ========== Coupon Management API (供开发者控制台使用) ==========
+// CreateCoupon 创建优惠券
+func (c *MarketingHTTPClientImpl) CreateCoupon(ctx context.Context, in *CreateCouponRequest, opts ...http.CallOption) (*CreateCouponReply, error) {
+	var out CreateCouponReply
+	pattern := "/v1/coupons"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationMarketingCreateCoupon))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // CreateReward ========== Reward API ==========
 // CreateReward 创建奖励
 func (c *MarketingHTTPClientImpl) CreateReward(ctx context.Context, in *CreateRewardRequest, opts ...http.CallOption) (*CreateRewardReply, error) {
@@ -1288,6 +1582,20 @@ func (c *MarketingHTTPClientImpl) DeleteCampaign(ctx context.Context, in *Delete
 	pattern := "/v1/campaigns/{campaign_id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingDeleteCampaign))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// DeleteCoupon DeleteCoupon 删除优惠券
+func (c *MarketingHTTPClientImpl) DeleteCoupon(ctx context.Context, in *DeleteCouponRequest, opts ...http.CallOption) (*DeleteCouponReply, error) {
+	var out DeleteCouponReply
+	pattern := "/v1/coupons/{code}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationMarketingDeleteCoupon))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
@@ -1358,6 +1666,48 @@ func (c *MarketingHTTPClientImpl) GetCampaign(ctx context.Context, in *GetCampai
 	pattern := "/v1/campaigns/{campaign_id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingGetCampaign))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetCoupon GetCoupon 获取优惠券
+func (c *MarketingHTTPClientImpl) GetCoupon(ctx context.Context, in *GetCouponRequest, opts ...http.CallOption) (*GetCouponReply, error) {
+	var out GetCouponReply
+	pattern := "/v1/coupons/{code}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationMarketingGetCoupon))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetCouponStats GetCouponStats 获取优惠券统计
+func (c *MarketingHTTPClientImpl) GetCouponStats(ctx context.Context, in *GetCouponStatsRequest, opts ...http.CallOption) (*GetCouponStatsReply, error) {
+	var out GetCouponStatsReply
+	pattern := "/v1/coupons/{code}/stats"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationMarketingGetCouponStats))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// GetCouponsSummaryStats GetCouponsSummaryStats 获取所有优惠券汇总统计（供营销效果仪表板使用）
+func (c *MarketingHTTPClientImpl) GetCouponsSummaryStats(ctx context.Context, in *GetCouponsSummaryStatsRequest, opts ...http.CallOption) (*GetCouponsSummaryStatsReply, error) {
+	var out GetCouponsSummaryStatsReply
+	pattern := "/v1/coupons/summary-stats"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationMarketingGetCouponsSummaryStats))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -1470,6 +1820,34 @@ func (c *MarketingHTTPClientImpl) ListCampaigns(ctx context.Context, in *ListCam
 	pattern := "/v1/campaigns"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingListCampaigns))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// ListCouponUsages ListCouponUsages 列出优惠券使用记录
+func (c *MarketingHTTPClientImpl) ListCouponUsages(ctx context.Context, in *ListCouponUsagesRequest, opts ...http.CallOption) (*ListCouponUsagesReply, error) {
+	var out ListCouponUsagesReply
+	pattern := "/v1/coupons/{code}/usages"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationMarketingListCouponUsages))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// ListCoupons ListCoupons 列出优惠券
+func (c *MarketingHTTPClientImpl) ListCoupons(ctx context.Context, in *ListCouponsRequest, opts ...http.CallOption) (*ListCouponsReply, error) {
+	var out ListCouponsReply
+	pattern := "/v1/coupons"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationMarketingListCoupons))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -1664,6 +2042,20 @@ func (c *MarketingHTTPClientImpl) UpdateCampaign(ctx context.Context, in *Update
 	return &out, nil
 }
 
+// UpdateCoupon UpdateCoupon 更新优惠券
+func (c *MarketingHTTPClientImpl) UpdateCoupon(ctx context.Context, in *UpdateCouponRequest, opts ...http.CallOption) (*UpdateCouponReply, error) {
+	var out UpdateCouponReply
+	pattern := "/v1/coupons/{code}"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationMarketingUpdateCoupon))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 // UpdateReward UpdateReward 更新奖励
 func (c *MarketingHTTPClientImpl) UpdateReward(ctx context.Context, in *UpdateRewardRequest, opts ...http.CallOption) (*UpdateRewardReply, error) {
 	var out UpdateRewardReply
@@ -1700,6 +2092,34 @@ func (c *MarketingHTTPClientImpl) UpdateTask(ctx context.Context, in *UpdateTask
 	opts = append(opts, http.Operation(OperationMarketingUpdateTask))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// UseCoupon UseCoupon 使用优惠券 (供 Payment Service 调用)
+func (c *MarketingHTTPClientImpl) UseCoupon(ctx context.Context, in *UseCouponRequest, opts ...http.CallOption) (*UseCouponReply, error) {
+	var out UseCouponReply
+	pattern := "/v1/coupons/use"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationMarketingUseCoupon))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+// ValidateCoupon ValidateCoupon 验证优惠券 (供 Payment Service 调用)
+func (c *MarketingHTTPClientImpl) ValidateCoupon(ctx context.Context, in *ValidateCouponRequest, opts ...http.CallOption) (*ValidateCouponReply, error) {
+	var out ValidateCouponReply
+	pattern := "/v1/coupons/validate"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationMarketingValidateCoupon))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
