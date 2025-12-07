@@ -157,6 +157,20 @@ const (
 	CouponStatusExpired  = "expired"  // 已过期
 )
 
+// CouponCurrency 优惠券货币单位（与数据库 enum 保持一致）
+const (
+	CouponCurrencyCNY = "CNY" // 人民币
+	CouponCurrencyUSD = "USD" // 美元
+	CouponCurrencyEUR = "EUR" // 欧元
+)
+
+// ValidCouponCurrencies 有效的货币单位列表（用于验证）
+var ValidCouponCurrencies = []string{
+	CouponCurrencyCNY,
+	CouponCurrencyUSD,
+	CouponCurrencyEUR,
+}
+
 // ========== RocketMQ 相关常量 ==========
 
 // RocketMQTopic RocketMQ Topic 名称

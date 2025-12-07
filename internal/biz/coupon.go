@@ -13,23 +13,24 @@ import (
 
 // Coupon 优惠券领域对象
 type Coupon struct {
-	Code          string
+	CouponCode    string
 	AppID         string
 	DiscountType  string
 	DiscountValue int64
-	ValidFrom     int64 // timestamp
-	ValidUntil    int64 // timestamp
+	Currency      string    // 货币单位: CNY, USD, EUR 等，仅固定金额类型需要
+	ValidFrom     time.Time // 生效时间
+	ValidUntil    time.Time // 过期时间
 	MaxUses       int32
 	UsedCount     int32
 	MinAmount     int64
 	Status        string
-	CreatedAt     int64 // timestamp
-	UpdatedAt     int64 // timestamp
+	CreatedAt     time.Time // 创建时间
+	UpdatedAt     time.Time // 更新时间
 }
 
 // CouponUsage 优惠券使用记录领域对象
 type CouponUsage struct {
-	ID             string
+	CouponUsageID  string
 	CouponCode     string
 	UserID         uint64
 	OrderID        string
@@ -37,8 +38,8 @@ type CouponUsage struct {
 	OriginalAmount int64
 	DiscountAmount int64
 	FinalAmount    int64
-	UsedAt         int64 // timestamp
-	CreatedAt      int64 // timestamp
+	UsedAt         time.Time // 使用时间
+	CreatedAt      time.Time // 创建时间
 }
 
 // CouponRepo 优惠券仓储接口
@@ -58,7 +59,7 @@ type CouponRepo interface {
 
 // CouponStats 优惠券统计信息
 type CouponStats struct {
-	Code           string
+	CouponCode     string
 	TotalUses      int32
 	TotalOrders    int32
 	TotalRevenue   int64
@@ -97,14 +98,36 @@ func (uc *CouponUseCase) Create(ctx context.Context, c *Coupon) (*Coupon, error)
 	if c.Status == "" {
 		c.Status = constants.CouponStatusActive
 	}
-	now := time.Now().Unix()
-	if c.CreatedAt == 0 {
+	// 确保创建时 UsedCount 为 0
+	if c.UsedCount == 0 {
+		c.UsedCount = 0
+	}
+	// 如果货币单位为空，设置默认值为 CNY
+	if c.Currency == "" {
+		c.Currency = constants.CouponCurrencyCNY
+	}
+	// 验证货币单位是否有效（数据库 enum 会再次验证，但这里可以提前发现问题）
+	if !isValidCurrency(c.Currency) {
+		return nil, errors.NewBizError(errors.ErrCodeInvalidArgument, "zh-CN")
+	}
+	now := time.Now()
+	if c.CreatedAt.IsZero() {
 		c.CreatedAt = now
 	}
-	if c.UpdatedAt == 0 {
+	if c.UpdatedAt.IsZero() {
 		c.UpdatedAt = now
 	}
 	return uc.repo.Save(ctx, c)
+}
+
+// isValidCurrency 验证货币单位是否有效
+func isValidCurrency(currency string) bool {
+	for _, validCurrency := range constants.ValidCouponCurrencies {
+		if currency == validCurrency {
+			return true
+		}
+	}
+	return false
 }
 
 // Get 获取优惠券
@@ -120,7 +143,7 @@ func (uc *CouponUseCase) List(ctx context.Context, appID, status string, page, p
 // Update 更新优惠券
 func (uc *CouponUseCase) Update(ctx context.Context, c *Coupon) (*Coupon, error) {
 	// 业务规则验证
-	if c.ValidFrom > 0 && c.ValidUntil > 0 && c.ValidFrom >= c.ValidUntil {
+	if !c.ValidFrom.IsZero() && !c.ValidUntil.IsZero() && !c.ValidFrom.Before(c.ValidUntil) {
 		return nil, errors.NewBizError(errors.ErrCodeBusinessRuleViolation, "zh-CN")
 	}
 	if c.DiscountValue <= 0 {
@@ -129,8 +152,12 @@ func (uc *CouponUseCase) Update(ctx context.Context, c *Coupon) (*Coupon, error)
 	if c.DiscountType == constants.CouponDiscountTypePercent && c.DiscountValue > 100 {
 		return nil, errors.NewBizError(errors.ErrCodeBusinessRuleViolation, "zh-CN")
 	}
+	// 验证货币单位是否有效（如果提供了货币单位）
+	if c.Currency != "" && !isValidCurrency(c.Currency) {
+		return nil, errors.NewBizError(errors.ErrCodeInvalidArgument, "zh-CN")
+	}
 
-	c.UpdatedAt = time.Now().Unix()
+	c.UpdatedAt = time.Now()
 	return uc.repo.Update(ctx, c)
 }
 
@@ -160,8 +187,8 @@ func (uc *CouponUseCase) Validate(ctx context.Context, code, appID string, amoun
 	}
 
 	// 检查有效期
-	now := time.Now().Unix()
-	if now < coupon.ValidFrom || now > coupon.ValidUntil {
+	now := time.Now()
+	if now.Before(coupon.ValidFrom) || now.After(coupon.ValidUntil) {
 		return nil, 0, nil
 	}
 

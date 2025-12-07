@@ -1,4 +1,7 @@
 {
+  "100301": "Resource not found",
+  "100302": "Resource already exists",
+  "100201": "Internal error",
   "120101": "Campaign not found",
   "120102": "Campaign creation failed",
   "120103": "Campaign update failed",

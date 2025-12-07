@@ -2,12 +2,15 @@ package data
 
 import (
 	"context"
+	"errors"
 	"marketing-service/internal/biz"
 	"marketing-service/internal/data/model"
+	"strings"
 	"time"
 
-	"github.com/gaoyong06/go-pkg/errors"
+	pkgErrors "github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-sql-driver/mysql"
 	"gorm.io/gorm"
 )
 
@@ -31,10 +34,11 @@ func (r *couponRepo) toBizModel(m *model.Coupon) *biz.Coupon {
 		return nil
 	}
 	return &biz.Coupon{
-		Code:          m.Code,
+		CouponCode:    m.CouponCode,
 		AppID:         m.AppID,
 		DiscountType:  m.DiscountType,
 		DiscountValue: m.DiscountValue,
+		Currency:      m.Currency,
 		ValidFrom:     m.ValidFrom,
 		ValidUntil:    m.ValidUntil,
 		MaxUses:       m.MaxUses,
@@ -51,11 +55,17 @@ func (r *couponRepo) toDataModel(b *biz.Coupon) *model.Coupon {
 	if b == nil {
 		return nil
 	}
+	// 如果货币单位为空，设置默认值为 CNY
+	currency := b.Currency
+	if currency == "" {
+		currency = "CNY"
+	}
 	return &model.Coupon{
-		Code:          b.Code,
+		CouponCode:    b.CouponCode,
 		AppID:         b.AppID,
 		DiscountType:  b.DiscountType,
 		DiscountValue: b.DiscountValue,
+		Currency:      currency,
 		ValidFrom:     b.ValidFrom,
 		ValidUntil:    b.ValidUntil,
 		MaxUses:       b.MaxUses,
@@ -73,7 +83,7 @@ func (r *couponRepo) toBizUsageModel(m *model.CouponUsage) *biz.CouponUsage {
 		return nil
 	}
 	return &biz.CouponUsage{
-		ID:             m.ID,
+		CouponUsageID:  m.CouponUsageID,
 		CouponCode:     m.CouponCode,
 		UserID:         m.UserID,
 		OrderID:        m.OrderID,
@@ -92,7 +102,7 @@ func (r *couponRepo) toDataUsageModel(b *biz.CouponUsage) *model.CouponUsage {
 		return nil
 	}
 	return &model.CouponUsage{
-		ID:             b.ID,
+		CouponUsageID:  b.CouponUsageID,
 		CouponCode:     b.CouponCode,
 		UserID:         b.UserID,
 		OrderID:        b.OrderID,
@@ -105,12 +115,35 @@ func (r *couponRepo) toDataUsageModel(b *biz.CouponUsage) *model.CouponUsage {
 	}
 }
 
+// isDuplicateEntryError 检查是否是 MySQL 唯一约束冲突错误
+func isDuplicateEntryError(err error) bool {
+	if err == nil {
+		return false
+	}
+	var mysqlErr *mysql.MySQLError
+	if errors.As(err, &mysqlErr) {
+		return mysqlErr.Number == 1062 // Duplicate entry
+	}
+	// 也检查错误字符串
+	errStr := err.Error()
+	return strings.Contains(errStr, "Duplicate entry") ||
+		strings.Contains(errStr, "1062") ||
+		strings.Contains(errStr, "UNIQUE constraint")
+}
+
 // Save 保存优惠券（创建或更新）
 func (r *couponRepo) Save(ctx context.Context, coupon *biz.Coupon) (*biz.Coupon, error) {
 	m := r.toDataModel(coupon)
-	if err := r.data.db.WithContext(ctx).Save(m).Error; err != nil {
-		r.log.Errorf("failed to save coupon: %v", err)
-		return nil, err
+	// 使用 Create 而不是 Save，因为 Save 会在主键存在时更新，不会触发重复键错误
+	// 对于创建操作，应该使用 Create，这样在优惠码已存在时会返回重复键错误
+	if err := r.data.db.WithContext(ctx).Create(m).Error; err != nil {
+		r.log.Errorf("failed to save coupon: %v, coupon data: coupon_code=%s, app_id=%s, discount_type=%s, discount_value=%d, valid_from=%d, valid_until=%d, max_uses=%d, used_count=%d, min_amount=%d, status=%s, created_at=%d, updated_at=%d",
+			err, m.CouponCode, m.AppID, m.DiscountType, m.DiscountValue, m.ValidFrom, m.ValidUntil, m.MaxUses, m.UsedCount, m.MinAmount, m.Status, m.CreatedAt, m.UpdatedAt)
+		// 检查是否是重复键错误（优惠码已存在）
+		if isDuplicateEntryError(err) {
+			return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeAlreadyExists, "zh-CN")
+		}
+		return nil, pkgErrors.WrapErrorWithLang(ctx, err, pkgErrors.ErrCodeInternalError)
 	}
 	return r.toBizModel(m), nil
 }
@@ -129,20 +162,20 @@ func (r *couponRepo) Update(ctx context.Context, coupon *biz.Coupon) (*biz.Coupo
 		"updated_at":     m.UpdatedAt,
 	}
 	if err := r.data.db.WithContext(ctx).Model(&model.Coupon{}).
-		Where("code = ?", m.Code).Updates(updateFields).Error; err != nil {
+		Where("coupon_code = ?", m.CouponCode).Updates(updateFields).Error; err != nil {
 		r.log.Errorf("failed to update coupon: %v", err)
 		return nil, err
 	}
 	// 重新查询以获取最新数据
-	return r.FindByCode(ctx, m.Code)
+	return r.FindByCode(ctx, m.CouponCode)
 }
 
 // FindByCode 根据优惠码查找优惠券
 func (r *couponRepo) FindByCode(ctx context.Context, code string) (*biz.Coupon, error) {
 	var m model.Coupon
-	if err := r.data.db.WithContext(ctx).Where("code = ?", code).First(&m).Error; err != nil {
+	if err := r.data.db.WithContext(ctx).Where("coupon_code = ?", code).First(&m).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, errors.NewBizError(errors.ErrCodeNotFound, "zh-CN")
+			return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeNotFound, "zh-CN")
 		}
 		r.log.Errorf("failed to find coupon by code: %v", err)
 		return nil, err
@@ -169,16 +202,16 @@ func (r *couponRepo) List(ctx context.Context, appID, status string, page, pageS
 	// 统计总数
 	if err := query.Count(&total).Error; err != nil {
 		r.log.Errorf("failed to count coupons: %v", err)
-		return nil, 0, err
+		return nil, 0, pkgErrors.WrapErrorWithLang(ctx, err, pkgErrors.ErrCodeInternalError)
 	}
 
 	// 分页查询
 	offset := (page - 1) * pageSize
 	if err := query.Offset(offset).Limit(pageSize).
-		Order("created_at DESC, code DESC").
+		Order("created_at DESC, coupon_code DESC").
 		Find(&models).Error; err != nil {
 		r.log.Errorf("failed to list coupons: %v", err)
-		return nil, 0, err
+		return nil, 0, pkgErrors.WrapErrorWithLang(ctx, err, pkgErrors.ErrCodeInternalError)
 	}
 
 	// 转换为业务模型
@@ -190,9 +223,11 @@ func (r *couponRepo) List(ctx context.Context, appID, status string, page, pageS
 	return result, total, nil
 }
 
-// Delete 删除优惠券
+// Delete 删除优惠券（软删除）
 func (r *couponRepo) Delete(ctx context.Context, code string) error {
-	if err := r.data.db.WithContext(ctx).Where("code = ?", code).
+	// GORM 的软删除：使用 Delete 方法会自动设置 deleted_at 字段
+	// 查询时会自动过滤 deleted_at IS NULL 的记录
+	if err := r.data.db.WithContext(ctx).Where("coupon_code = ?", code).
 		Delete(&model.Coupon{}).Error; err != nil {
 		r.log.Errorf("failed to delete coupon: %v", err)
 		return err
@@ -205,7 +240,7 @@ func (r *couponRepo) IncrementUsedCount(ctx context.Context, code string) error 
 	// 使用数据库的原子操作，同时检查是否超过最大使用次数
 	// 注意：max_uses = 0 表示无限制，所以条件为 (max_uses = 0 OR used_count < max_uses)
 	result := r.data.db.WithContext(ctx).Model(&model.Coupon{}).
-		Where("code = ? AND (max_uses = 0 OR used_count < max_uses)", code).
+		Where("coupon_code = ? AND (max_uses = 0 OR used_count < max_uses)", code).
 		Update("used_count", gorm.Expr("used_count + 1"))
 
 	if result.Error != nil {
@@ -214,7 +249,7 @@ func (r *couponRepo) IncrementUsedCount(ctx context.Context, code string) error 
 	}
 
 	if result.RowsAffected == 0 {
-		return errors.NewBizError(errors.ErrCodeBusinessRuleViolation, "zh-CN")
+		return pkgErrors.NewBizError(pkgErrors.ErrCodeBusinessRuleViolation, "zh-CN")
 	}
 
 	return nil
@@ -236,7 +271,7 @@ func (r *couponRepo) UseCoupon(ctx context.Context, code string, userID uint64, 
 	return r.data.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// 1. 原子性增加使用次数
 		result := tx.Model(&model.Coupon{}).
-			Where("code = ? AND (max_uses = 0 OR used_count < max_uses)", code).
+			Where("coupon_code = ? AND (max_uses = 0 OR used_count < max_uses)", code).
 			Update("used_count", gorm.Expr("used_count + 1"))
 
 		if result.Error != nil {
@@ -245,12 +280,13 @@ func (r *couponRepo) UseCoupon(ctx context.Context, code string, userID uint64, 
 		}
 
 		if result.RowsAffected == 0 {
-			return errors.NewBizError(errors.ErrCodeBusinessRuleViolation, "zh-CN")
+			return pkgErrors.NewBizError(pkgErrors.ErrCodeBusinessRuleViolation, "zh-CN")
 		}
 
 		// 2. 创建使用记录
+		now := time.Now()
 		usage := &model.CouponUsage{
-			ID:             biz.GenerateShortID(),
+			CouponUsageID:  biz.GenerateShortID(),
 			CouponCode:     code,
 			UserID:         userID,
 			OrderID:        orderID,
@@ -258,8 +294,8 @@ func (r *couponRepo) UseCoupon(ctx context.Context, code string, userID uint64, 
 			OriginalAmount: originalAmount,
 			DiscountAmount: discountAmount,
 			FinalAmount:    finalAmount,
-			UsedAt:         time.Now().Unix(),
-			CreatedAt:      time.Now().Unix(),
+			UsedAt:         now,
+			CreatedAt:      now,
 		}
 
 		if err := tx.Create(usage).Error; err != nil {
@@ -308,7 +344,7 @@ func (r *couponRepo) ListUsages(ctx context.Context, couponCode string, page, pa
 // GetStats 获取优惠券统计
 func (r *couponRepo) GetStats(ctx context.Context, code string) (*biz.CouponStats, error) {
 	var stats biz.CouponStats
-	stats.Code = code
+	stats.CouponCode = code
 
 	// 统计使用次数和订单数
 	var countResult struct {
@@ -342,7 +378,7 @@ func (r *couponRepo) GetStats(ctx context.Context, code string) (*biz.CouponStat
 
 	// 计算转化率（如果有优惠券信息）
 	var coupon model.Coupon
-	if err := r.data.db.WithContext(ctx).Where("code = ?", code).First(&coupon).Error; err == nil {
+	if err := r.data.db.WithContext(ctx).Where("coupon_code = ?", code).First(&coupon).Error; err == nil {
 		if coupon.MaxUses > 0 {
 			stats.ConversionRate = float32(stats.TotalUses) / float32(coupon.MaxUses) * 100
 		}
@@ -361,7 +397,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 
 	if appID != "" {
 		couponQuery = couponQuery.Where("app_id = ?", appID)
-		usageQuery = usageQuery.Where("coupon_code IN (SELECT code FROM coupon WHERE app_id = ?)", appID)
+		usageQuery = usageQuery.Where("coupon_code IN (SELECT coupon_code FROM coupon WHERE app_id = ? AND deleted_at IS NULL)", appID)
 	}
 
 	// 统计优惠券总数和激活数
@@ -380,7 +416,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 	// 统计总使用次数和订单数（需要重新构建查询）
 	usageCountsQuery := r.data.db.WithContext(ctx).Model(&model.CouponUsage{})
 	if appID != "" {
-		usageCountsQuery = usageCountsQuery.Where("coupon_code IN (SELECT code FROM coupon WHERE app_id = ?)", appID)
+		usageCountsQuery = usageCountsQuery.Where("coupon_code IN (SELECT coupon_code FROM coupon WHERE app_id = ? AND deleted_at IS NULL)", appID)
 	}
 	var usageCounts struct {
 		TotalUses   int32
@@ -397,7 +433,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 	// 统计总收入和总折扣（需要重新构建查询）
 	amountsQuery := r.data.db.WithContext(ctx).Model(&model.CouponUsage{})
 	if appID != "" {
-		amountsQuery = amountsQuery.Where("coupon_code IN (SELECT code FROM coupon WHERE app_id = ?)", appID)
+		amountsQuery = amountsQuery.Where("coupon_code IN (SELECT coupon_code FROM coupon WHERE app_id = ? AND deleted_at IS NULL)", appID)
 	}
 	var amounts struct {
 		TotalRevenue  int64
@@ -414,7 +450,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 	// 批量获取所有优惠券的统计信息（优化：避免 N+1 查询）
 	// 使用 JOIN 查询一次性获取所有优惠券的统计
 	type CouponStatsResult struct {
-		Code           string
+		CouponCode     string
 		MaxUses        int32
 		TotalUses      int32
 		TotalOrders    int32
@@ -427,7 +463,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 	statsQuery := r.data.db.WithContext(ctx).
 		Table("coupon c").
 		Select(`
-			c.code,
+			c.coupon_code,
 			c.max_uses,
 			COALESCE(COUNT(cu.id), 0) as total_uses,
 			COALESCE(COUNT(DISTINCT cu.order_id), 0) as total_orders,
@@ -438,13 +474,15 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 				ELSE 0
 			END as conversion_rate
 		`).
-		Joins("LEFT JOIN coupon_usage cu ON c.code = cu.coupon_code")
+		Joins("LEFT JOIN coupon_usage cu ON c.coupon_code = cu.coupon_code")
 
 	if appID != "" {
-		statsQuery = statsQuery.Where("c.app_id = ?", appID)
+		statsQuery = statsQuery.Where("c.app_id = ? AND c.deleted_at IS NULL", appID)
+	} else {
+		statsQuery = statsQuery.Where("c.deleted_at IS NULL")
 	}
 
-	statsQuery = statsQuery.Group("c.code, c.max_uses").
+	statsQuery = statsQuery.Group("c.coupon_code, c.max_uses").
 		Order("total_uses DESC").
 		Limit(10) // 只取前10个
 
@@ -460,7 +498,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 
 	for _, sr := range statsResults {
 		couponStats := &biz.CouponStats{
-			Code:           sr.Code,
+			CouponCode:     sr.CouponCode,
 			TotalUses:      sr.TotalUses,
 			TotalOrders:    sr.TotalOrders,
 			TotalRevenue:   sr.TotalRevenue,
