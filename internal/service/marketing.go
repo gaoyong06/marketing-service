@@ -35,7 +35,7 @@ func NewMarketingService(
 // CreateCoupon 创建优惠券
 func (s *MarketingService) CreateCoupon(ctx context.Context, req *v1.CreateCouponRequest) (*v1.CreateCouponReply, error) {
 	coupon := &biz.Coupon{
-		CouponCode:    req.Code,
+		Code:          req.Code,
 		AppID:         req.AppId,
 		DiscountType:  req.DiscountType,
 		DiscountValue: req.DiscountValue,
@@ -219,7 +219,7 @@ func (s *MarketingService) GetCouponStats(ctx context.Context, req *v1.GetCoupon
 	}
 
 	return &v1.GetCouponStatsReply{
-		Code:           stats.CouponCode,
+		Code:           stats.Code,
 		TotalUses:      stats.TotalUses,
 		TotalOrders:    stats.TotalOrders,
 		TotalRevenue:   stats.TotalRevenue,
@@ -269,7 +269,7 @@ func (s *MarketingService) GetCouponsSummaryStats(ctx context.Context, req *v1.G
 	protoTopCoupons := make([]*v1.CouponStats, 0, len(stats.TopCoupons))
 	for _, cs := range stats.TopCoupons {
 		protoTopCoupons = append(protoTopCoupons, &v1.CouponStats{
-			Code:           cs.CouponCode,
+			Code:           cs.Code,
 			TotalUses:      cs.TotalUses,
 			TotalOrders:    cs.TotalOrders,
 			TotalRevenue:   cs.TotalRevenue,
@@ -306,8 +306,7 @@ func (s *MarketingService) toProtoCoupon(c *biz.Coupon) *v1.Coupon {
 		updatedAt = c.UpdatedAt.Unix()
 	}
 	return &v1.Coupon{
-		CouponId:      c.CouponID,
-		Code:          c.CouponCode,
+		Code:          c.Code,
 		AppId:         c.AppID,
 		DiscountType:  c.DiscountType,
 		DiscountValue: c.DiscountValue,

@@ -13,8 +13,7 @@ import (
 
 // Coupon 优惠券领域对象
 type Coupon struct {
-	CouponID      uint64    // 优惠券ID（自增主键）
-	CouponCode    string    // 优惠码（业务唯一标识）
+	Code          string
 	AppID         string
 	DiscountType  string
 	DiscountValue int64
@@ -60,7 +59,7 @@ type CouponRepo interface {
 
 // CouponStats 优惠券统计信息
 type CouponStats struct {
-	CouponCode     string
+	Code           string
 	TotalUses      int32
 	TotalOrders    int32
 	TotalRevenue   int64

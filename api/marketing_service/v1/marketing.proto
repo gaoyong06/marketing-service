@@ -89,9 +89,8 @@ service Marketing {
 
 // Coupon 优惠券
 message Coupon {
-  uint64 coupon_id = 14;              // 优惠券ID（自增主键）
-  string code = 1;                     // 优惠码（业务唯一标识）
-  string app_id = 2;                   // 应用ID
+  string code = 1;                    // 优惠码
+  string app_id = 2;                  // 应用ID
   string discount_type = 3;           // 折扣类型: percent/fixed
   int64 discount_value = 4;           // 折扣值(百分比或分)
   string currency = 13;               // 货币单位: CNY/USD/EUR 等，仅固定金额类型需要，默认 CNY
