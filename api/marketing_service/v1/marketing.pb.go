@@ -26,7 +26,8 @@ const (
 // Coupon 优惠券
 type Coupon struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`                                         // 优惠码
+	CouponId      uint64                 `protobuf:"varint,14,opt,name=coupon_id,json=couponId,proto3" json:"coupon_id,omitempty"`               // 优惠券ID（自增主键）
+	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`                                         // 优惠码（业务唯一标识）
 	AppId         string                 `protobuf:"bytes,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`                          // 应用ID
 	DiscountType  string                 `protobuf:"bytes,3,opt,name=discount_type,json=discountType,proto3" json:"discount_type,omitempty"`     // 折扣类型: percent/fixed
 	DiscountValue int64                  `protobuf:"varint,4,opt,name=discount_value,json=discountValue,proto3" json:"discount_value,omitempty"` // 折扣值(百分比或分)
@@ -71,6 +72,13 @@ func (x *Coupon) ProtoReflect() protoreflect.Message {
 // Deprecated: Use Coupon.ProtoReflect.Descriptor instead.
 func (*Coupon) Descriptor() ([]byte, []int) {
 	return file_marketing_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Coupon) GetCouponId() uint64 {
+	if x != nil {
+		return x.CouponId
+	}
+	return 0
 }
 
 func (x *Coupon) GetCode() string {
@@ -1678,8 +1686,9 @@ var File_marketing_proto protoreflect.FileDescriptor
 
 const file_marketing_proto_rawDesc = "" +
 	"\n" +
-	"\x0fmarketing.proto\x12\x1dplatform.marketing_service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x17validate/validate.proto\"\x8a\x03\n" +
-	"\x06Coupon\x12\x12\n" +
+	"\x0fmarketing.proto\x12\x1dplatform.marketing_service.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x17validate/validate.proto\"\xa7\x03\n" +
+	"\x06Coupon\x12\x1b\n" +
+	"\tcoupon_id\x18\x0e \x01(\x04R\bcouponId\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x15\n" +
 	"\x06app_id\x18\x02 \x01(\tR\x05appId\x12#\n" +
 	"\rdiscount_type\x18\x03 \x01(\tR\fdiscountType\x12%\n" +

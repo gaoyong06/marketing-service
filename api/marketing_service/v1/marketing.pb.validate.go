@@ -56,6 +56,8 @@ func (m *Coupon) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for CouponId
+
 	// no validation rules for Code
 
 	// no validation rules for AppId

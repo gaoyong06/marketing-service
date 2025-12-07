@@ -8,7 +8,8 @@ import (
 
 // Coupon 优惠券表
 type Coupon struct {
-	CouponCode    string         `gorm:"column:coupon_code;primaryKey;type:varchar(50);comment:优惠码（唯一标识）"`
+	CouponID      uint64         `gorm:"column:coupon_id;primaryKey;autoIncrement;type:bigint(20);comment:优惠券ID（自增主键）"`
+	CouponCode    string         `gorm:"column:coupon_code;type:varchar(50);not null;uniqueIndex:uk_coupon_code_deleted_at;comment:优惠码（业务唯一标识）"`
 	AppID         string         `gorm:"column:app_id;type:varchar(64);not null;index:idx_app_id;comment:应用ID"`
 	DiscountType  string         `gorm:"column:discount_type;type:varchar(16);not null;comment:折扣类型: percent(百分比)/fixed(固定金额)"`
 	DiscountValue int64          `gorm:"column:discount_value;type:bigint(20);not null;comment:折扣值(百分比或分)"`
@@ -18,10 +19,10 @@ type Coupon struct {
 	MaxUses       int32          `gorm:"column:max_uses;type:int(11);not null;default:1;comment:最大使用次数"`
 	UsedCount     int32          `gorm:"column:used_count;type:int(11);not null;default:0;comment:已使用次数"`
 	MinAmount     int64          `gorm:"column:min_amount;type:bigint(20);not null;default:0;comment:最低消费金额(分)"`
-	Status        string         `gorm:"column:status;type:enum('active','inactive','expired');not null;default:'active';index:idx_status;comment:优惠券状态: active(激活-可使用)/inactive(禁用-不可使用)/expired(已过期-系统自动标记)"`
+	Status        string         `gorm:"column:status;type:enum('active','inactive','expired');not null;default:'active';index:idx_status;comment:优惠券状态: active(激活-可使用)/inactive(停用-不可使用)/expired(已过期-系统自动标记)"`
 	CreatedAt     time.Time      `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP;comment:创建时间"`
 	UpdatedAt     time.Time      `gorm:"column:updated_at;type:datetime;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;comment:更新时间"`
-	DeletedAt     gorm.DeletedAt `gorm:"column:deleted_at;type:datetime;index:idx_deleted_at;comment:删除时间（软删除）"`
+	DeletedAt     gorm.DeletedAt `gorm:"column:deleted_at;type:datetime;uniqueIndex:uk_coupon_code_deleted_at;index:idx_deleted_at;comment:删除时间（软删除）"`
 }
 
 // TableName 指定表名

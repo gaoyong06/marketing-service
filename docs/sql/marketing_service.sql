@@ -14,7 +14,8 @@ USE `marketing_service`;
 
 -- 优惠券表（供开发者控制台使用，用于支付场景的优惠券管理）
 CREATE TABLE `coupon` (
-  `coupon_code` varchar(50) NOT NULL COMMENT '优惠码（唯一标识）',
+  `coupon_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '优惠券ID（自增主键）',
+  `coupon_code` varchar(50) NOT NULL COMMENT '优惠码（业务唯一标识）',
   `app_id` varchar(64) NOT NULL COMMENT '应用ID',
   `discount_type` varchar(16) NOT NULL COMMENT '折扣类型: percent(百分比)/fixed(固定金额)',
   `discount_value` bigint(20) NOT NULL COMMENT '折扣值(百分比或分)',
@@ -24,11 +25,12 @@ CREATE TABLE `coupon` (
   `max_uses` int(11) NOT NULL DEFAULT 1 COMMENT '最大使用次数',
   `used_count` int(11) NOT NULL DEFAULT 0 COMMENT '已使用次数',
   `min_amount` bigint(20) NOT NULL DEFAULT 0 COMMENT '最低消费金额(分)',
-  `status` enum('active','inactive','expired') NOT NULL DEFAULT 'active' COMMENT '优惠券状态: active(激活-可使用)/inactive(禁用-不可使用)/expired(已过期-系统自动标记)',
+  `status` enum('active','inactive','expired') NOT NULL DEFAULT 'active' COMMENT '优惠券状态: active(激活-可使用)/inactive(停用-不可使用)/expired(已过期-系统自动标记)',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `deleted_at` datetime DEFAULT NULL COMMENT '删除时间（软删除）',
-  PRIMARY KEY (`coupon_code`),
+  PRIMARY KEY (`coupon_id`),
+  UNIQUE KEY `uk_coupon_code_deleted_at` (`coupon_code`, `deleted_at`),
   KEY `idx_app_id` (`app_id`),
   KEY `idx_status` (`status`),
   KEY `idx_valid_time` (`valid_from`, `valid_until`),

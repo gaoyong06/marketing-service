@@ -4,10 +4,11 @@ import (
 	"context"
 	"time"
 
-	pkgErrors "github.com/gaoyong06/go-pkg/errors"
-	"github.com/go-kratos/kratos/v2/log"
 	v1 "marketing-service/api/marketing_service/v1"
 	"marketing-service/internal/biz"
+
+	pkgErrors "github.com/gaoyong06/go-pkg/errors"
+	"github.com/go-kratos/kratos/v2/log"
 )
 
 // MarketingService 营销服务（极简重构版：仅保留优惠券功能）
@@ -305,6 +306,7 @@ func (s *MarketingService) toProtoCoupon(c *biz.Coupon) *v1.Coupon {
 		updatedAt = c.UpdatedAt.Unix()
 	}
 	return &v1.Coupon{
+		CouponId:      c.CouponID,
 		Code:          c.CouponCode,
 		AppId:         c.AppID,
 		DiscountType:  c.DiscountType,
@@ -339,4 +341,3 @@ func (s *MarketingService) toProtoCouponUsage(u *biz.CouponUsage) *v1.CouponUsag
 		UsedAt:         usedAt,
 	}
 }
-

@@ -34,6 +34,7 @@ func (r *couponRepo) toBizModel(m *model.Coupon) *biz.Coupon {
 		return nil
 	}
 	return &biz.Coupon{
+		CouponID:      m.CouponID,
 		CouponCode:    m.CouponCode,
 		AppID:         m.AppID,
 		DiscountType:  m.DiscountType,
@@ -61,6 +62,7 @@ func (r *couponRepo) toDataModel(b *biz.Coupon) *model.Coupon {
 		currency = "CNY"
 	}
 	return &model.Coupon{
+		CouponID:      b.CouponID,
 		CouponCode:    b.CouponCode,
 		AppID:         b.AppID,
 		DiscountType:  b.DiscountType,
@@ -134,13 +136,15 @@ func isDuplicateEntryError(err error) bool {
 // Save 保存优惠券（创建或更新）
 func (r *couponRepo) Save(ctx context.Context, coupon *biz.Coupon) (*biz.Coupon, error) {
 	m := r.toDataModel(coupon)
-	// 使用 Create 而不是 Save，因为 Save 会在主键存在时更新，不会触发重复键错误
-	// 对于创建操作，应该使用 Create，这样在优惠码已存在时会返回重复键错误
+	// 使用 Create 创建新记录
+	// 由于有唯一索引 (coupon_code, deleted_at)，同一个 coupon_code 只能有一个 deleted_at IS NULL 的记录
+	// 如果存在已软删除的记录（deleted_at IS NOT NULL），可以创建新的记录
 	if err := r.data.db.WithContext(ctx).Create(m).Error; err != nil {
-		r.log.Errorf("failed to save coupon: %v, coupon data: coupon_code=%s, app_id=%s, discount_type=%s, discount_value=%d, valid_from=%d, valid_until=%d, max_uses=%d, used_count=%d, min_amount=%d, status=%s, created_at=%d, updated_at=%d",
+		r.log.Errorf("failed to save coupon: %v, coupon data: coupon_code=%s, app_id=%s, discount_type=%s, discount_value=%d, valid_from=%s, valid_until=%s, max_uses=%d, used_count=%d, min_amount=%d, status=%s, created_at=%s, updated_at=%s",
 			err, m.CouponCode, m.AppID, m.DiscountType, m.DiscountValue, m.ValidFrom, m.ValidUntil, m.MaxUses, m.UsedCount, m.MinAmount, m.Status, m.CreatedAt, m.UpdatedAt)
-		// 检查是否是重复键错误（优惠码已存在）
+		// 检查是否是唯一索引冲突错误（优惠码已存在且未删除）
 		if isDuplicateEntryError(err) {
+			// 唯一索引冲突说明存在未删除的记录（deleted_at IS NULL）
 			return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeAlreadyExists, "zh-CN")
 		}
 		return nil, pkgErrors.WrapErrorWithLang(ctx, err, pkgErrors.ErrCodeInternalError)
@@ -154,6 +158,7 @@ func (r *couponRepo) Update(ctx context.Context, coupon *biz.Coupon) (*biz.Coupo
 	updateFields := map[string]interface{}{
 		"discount_type":  m.DiscountType,
 		"discount_value": m.DiscountValue,
+		"currency":       m.Currency,
 		"valid_from":     m.ValidFrom,
 		"valid_until":    m.ValidUntil,
 		"max_uses":       m.MaxUses,
@@ -161,6 +166,7 @@ func (r *couponRepo) Update(ctx context.Context, coupon *biz.Coupon) (*biz.Coupo
 		"status":         m.Status,
 		"updated_at":     m.UpdatedAt,
 	}
+	// 使用 coupon_code 查询（因为业务层使用 coupon_code 作为标识）
 	if err := r.data.db.WithContext(ctx).Model(&model.Coupon{}).
 		Where("coupon_code = ?", m.CouponCode).Updates(updateFields).Error; err != nil {
 		r.log.Errorf("failed to update coupon: %v", err)
@@ -326,7 +332,7 @@ func (r *couponRepo) ListUsages(ctx context.Context, couponCode string, page, pa
 	// 分页查询
 	offset := (page - 1) * pageSize
 	if err := query.Offset(offset).Limit(pageSize).
-		Order("used_at DESC, id DESC").
+		Order("used_at DESC, coupon_usage_id DESC").
 		Find(&models).Error; err != nil {
 		r.log.Errorf("failed to list coupon usages: %v", err)
 		return nil, 0, err
@@ -465,12 +471,12 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 		Select(`
 			c.coupon_code,
 			c.max_uses,
-			COALESCE(COUNT(cu.id), 0) as total_uses,
+			COALESCE(COUNT(cu.coupon_usage_id), 0) as total_uses,
 			COALESCE(COUNT(DISTINCT cu.order_id), 0) as total_orders,
 			COALESCE(SUM(cu.final_amount), 0) as total_revenue,
 			COALESCE(SUM(cu.discount_amount), 0) as total_discount,
 			CASE 
-				WHEN c.max_uses > 0 THEN (COALESCE(COUNT(cu.id), 0) * 100.0 / c.max_uses)
+				WHEN c.max_uses > 0 THEN (COALESCE(COUNT(cu.coupon_usage_id), 0) * 100.0 / c.max_uses)
 				ELSE 0
 			END as conversion_rate
 		`).
