@@ -22,7 +22,7 @@ service Marketing {
   // GetCoupon 获取优惠券
   rpc GetCoupon(GetCouponRequest) returns (GetCouponReply) {
     option (google.api.http) = {
-      get: "/v1/coupons/{coupon_code}"
+      get: "/v1/coupons/{couponCode}"
     };
   }
 
@@ -36,7 +36,7 @@ service Marketing {
   // UpdateCoupon 更新优惠券
   rpc UpdateCoupon(UpdateCouponRequest) returns (UpdateCouponReply) {
     option (google.api.http) = {
-      put: "/v1/coupons/{coupon_code}"
+      put: "/v1/coupons/{couponCode}"
       body: "*"
     };
   }
@@ -44,7 +44,7 @@ service Marketing {
   // DeleteCoupon 删除优惠券
   rpc DeleteCoupon(DeleteCouponRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/v1/coupons/{coupon_code}"
+      delete: "/v1/coupons/{couponCode}"
     };
   }
 
@@ -67,14 +67,14 @@ service Marketing {
   // GetCouponStats 获取优惠券统计
   rpc GetCouponStats(GetCouponStatsRequest) returns (GetCouponStatsReply) {
     option (google.api.http) = {
-      get: "/v1/coupons/{coupon_code}/stats"
+      get: "/v1/coupons/{couponCode}/stats"
     };
   }
 
   // ListCouponUsages 列出优惠券使用记录
   rpc ListCouponUsages(ListCouponUsagesRequest) returns (ListCouponUsagesReply) {
     option (google.api.http) = {
-      get: "/v1/coupons/{coupon_code}/usages"
+      get: "/v1/coupons/{couponCode}/usages"
     };
   }
 
@@ -90,32 +90,32 @@ service Marketing {
 
 // Coupon 优惠券
 message Coupon {
-  string coupon_code = 1;             // 优惠码
-  string app_id = 2;                  // 应用ID
-  string discount_type = 3;           // 折扣类型: percent/fixed
-  int64 discount_value = 4;           // 折扣值(百分比或分)
+  string couponCode = 1;             // 优惠码
+  string appId = 2;                  // 应用ID
+  string discountType = 3;           // 折扣类型: percent/fixed
+  int64 discountValue = 4;           // 折扣值(百分比或分)
   string currency = 13;               // 货币单位: CNY/USD/EUR 等，仅固定金额类型需要，默认 CNY
-  int64 valid_from = 5;               // 生效时间(timestamp)
-  int64 valid_until = 6;              // 过期时间(timestamp)
-  int32 max_uses = 7;                 // 最大使用次数
-  int32 used_count = 8;               // 已使用次数
-  int64 min_amount = 9;               // 最低消费金额(分)
+  int64 validFrom = 5;               // 生效时间(timestamp)
+  int64 validUntil = 6;              // 过期时间(timestamp)
+  int32 maxUses = 7;                 // 最大使用次数
+  int32 usedCount = 8;               // 已使用次数
+  int64 minAmount = 9;               // 最低消费金额(分)
   string status = 10;                 // 状态: active/inactive/expired
-  int64 created_at = 11;              // 创建时间(timestamp)
-  int64 updated_at = 12;              // 更新时间(timestamp)
+  int64 createdAt = 11;              // 创建时间(timestamp)
+  int64 updatedAt = 12;              // 更新时间(timestamp)
 }
 
 // CreateCouponRequest 创建优惠券请求
 message CreateCouponRequest {
-  string coupon_code = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
-  string app_id = 2 [(validate.rules).string.min_len = 1];
-  string discount_type = 3 [(validate.rules).string = {in: ["percent", "fixed"]}];
-  int64 discount_value = 4 [(validate.rules).int64.gt = 0];
+  string couponCode = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
+  string appId = 2 [(validate.rules).string.min_len = 1];
+  string discountType = 3 [(validate.rules).string = {in: ["percent", "fixed"]}];
+  int64 discountValue = 4 [(validate.rules).int64.gt = 0];
   string currency = 9;                 // 货币单位: CNY/USD/EUR 等，仅固定金额类型需要，默认 CNY
-  int64 valid_from = 5;
-  int64 valid_until = 6;
-  int32 max_uses = 7 [(validate.rules).int32.gt = 0];
-  int64 min_amount = 8;
+  int64 validFrom = 5;
+  int64 validUntil = 6;
+  int32 maxUses = 7 [(validate.rules).int32.gt = 0];
+  int64 minAmount = 8;
 }
 
 // CreateCouponReply 创建优惠券响应
@@ -125,7 +125,7 @@ message CreateCouponReply {
 
 // GetCouponRequest 获取优惠券请求
 message GetCouponRequest {
-  string coupon_code = 1 [(validate.rules).string.min_len = 1];
+  string couponCode = 1 [(validate.rules).string.min_len = 1];
 }
 
 // GetCouponReply 获取优惠券响应
@@ -135,10 +135,10 @@ message GetCouponReply {
 
 // ListCouponsRequest 列出优惠券请求
 message ListCouponsRequest {
-  string app_id = 1;
+  string appId = 1;
   string status = 2;
   int32 page = 3;
-  int32 page_size = 4;
+  int32 pageSize = 4;
 }
 
 // ListCouponsReply 列出优惠券响应
@@ -146,19 +146,19 @@ message ListCouponsReply {
   repeated Coupon coupons = 1;
   int32 total = 2;
   int32 page = 3;
-  int32 page_size = 4;
+  int32 pageSize = 4;
 }
 
 // UpdateCouponRequest 更新优惠券请求
 message UpdateCouponRequest {
-  string coupon_code = 1 [(validate.rules).string.min_len = 1];
-  string discount_type = 2;
-  int64 discount_value = 3;
+  string couponCode = 1 [(validate.rules).string.min_len = 1];
+  string discountType = 2;
+  int64 discountValue = 3;
   string currency = 10;                 // 货币单位: CNY/USD/EUR 等，仅固定金额类型需要
-  int64 valid_from = 4;
-  int64 valid_until = 5;
-  int32 max_uses = 6;
-  int64 min_amount = 7;
+  int64 validFrom = 4;
+  int64 validUntil = 5;
+  int32 maxUses = 6;
+  int64 minAmount = 7;
   string status = 8;
 }
 
@@ -169,13 +169,13 @@ message UpdateCouponReply {
 
 // DeleteCouponRequest 删除优惠券请求
 message DeleteCouponRequest {
-  string coupon_code = 1 [(validate.rules).string.min_len = 1];
+  string couponCode = 1 [(validate.rules).string.min_len = 1];
 }
 
 // ValidateCouponRequest 验证优惠券请求 (供 Payment Service 调用)
 message ValidateCouponRequest {
-  string coupon_code = 1 [(validate.rules).string.min_len = 1];
-  string app_id = 2 [(validate.rules).string.min_len = 1];
+  string couponCode = 1 [(validate.rules).string.min_len = 1];
+  string appId = 2 [(validate.rules).string.min_len = 1];
   int64 amount = 3 [(validate.rules).int64.gt = 0];  // 订单金额(分)
 }
 
@@ -183,20 +183,20 @@ message ValidateCouponRequest {
 message ValidateCouponReply {
   bool valid = 1;
   string message = 2;
-  int64 discount_amount = 3;          // 折扣金额(分)
-  int64 final_amount = 4;             // 最终金额(分)
+  int64 discountAmount = 3;          // 折扣金额(分)
+  int64 finalAmount = 4;             // 最终金额(分)
   Coupon coupon = 5;
 }
 
 // UseCouponRequest 使用优惠券请求 (供 Payment Service 调用)
 message UseCouponRequest {
-  string coupon_code = 1 [(validate.rules).string.min_len = 1];
-  uint64 user_id = 2 [(validate.rules).uint64.gt = 0];
-  string order_id = 3 [(validate.rules).string.min_len = 1];
-  string payment_id = 4 [(validate.rules).string.min_len = 1];
-  int64 original_amount = 5 [(validate.rules).int64.gt = 0];
-  int64 discount_amount = 6 [(validate.rules).int64.gt = 0];
-  int64 final_amount = 7 [(validate.rules).int64.gt = 0];
+  string couponCode = 1 [(validate.rules).string.min_len = 1];
+  uint64 userId = 2 [(validate.rules).uint64.gt = 0];
+  string paymentOrderId = 3 [(validate.rules).string.min_len = 1]; // 支付订单ID（payment-service的业务订单号orderId）
+  string paymentId = 4 [(validate.rules).string.min_len = 1];
+  int64 originalAmount = 5 [(validate.rules).int64.gt = 0];
+  int64 discountAmount = 6 [(validate.rules).int64.gt = 0];
+  int64 finalAmount = 7 [(validate.rules).int64.gt = 0];
 }
 
 // UseCouponReply 使用优惠券响应
@@ -207,37 +207,37 @@ message UseCouponReply {
 
 // GetCouponStatsRequest 获取优惠券统计请求
 message GetCouponStatsRequest {
-  string coupon_code = 1 [(validate.rules).string.min_len = 1];
+  string couponCode = 1 [(validate.rules).string.min_len = 1];
 }
 
 // GetCouponStatsReply 获取优惠券统计响应
 message GetCouponStatsReply {
-  string coupon_code = 1;
-  int32 total_uses = 2;               // 使用次数
-  int32 total_orders = 3;             // 订单数
-  int64 total_revenue = 4;            // 产生收入(分)
-  int64 total_discount = 5;           // 折扣金额(分)
-  float conversion_rate = 6;          // 转化率
+  string couponCode = 1;
+  int32 totalUses = 2;               // 使用次数
+  int32 totalOrders = 3;             // 订单数
+  int64 totalRevenue = 4;            // 产生收入(分)
+  int64 totalDiscount = 5;           // 折扣金额(分)
+  float conversionRate = 6;          // 转化率
 }
 
 // CouponUsage 优惠券使用记录
 message CouponUsage {
-  string id = 1;
-  string coupon_code = 2;
-  uint64 user_id = 3;
-  string order_id = 4;
-  string payment_id = 5;
-  int64 original_amount = 6;          // 原价(分)
-  int64 discount_amount = 7;          // 折扣金额(分)
-  int64 final_amount = 8;             // 实付金额(分)
-  int64 used_at = 9;                  // 使用时间(timestamp)
+  string couponUsageId = 1;
+  string couponCode = 2;
+  uint64 userId = 3;
+  string paymentOrderId = 4; // 支付订单ID（payment-service的业务订单号orderId）
+  string paymentId = 5;
+  int64 originalAmount = 6;          // 原价(分)
+  int64 discountAmount = 7;          // 折扣金额(分)
+  int64 finalAmount = 8;             // 实付金额(分)
+  int64 usedAt = 9;                  // 使用时间(timestamp)
 }
 
 // ListCouponUsagesRequest 列出优惠券使用记录请求
 message ListCouponUsagesRequest {
-  string coupon_code = 1 [(validate.rules).string.min_len = 1];
+  string couponCode = 1 [(validate.rules).string.min_len = 1];
   int32 page = 2;
-  int32 page_size = 3;
+  int32 pageSize = 3;
 }
 
 // ListCouponUsagesReply 列出优惠券使用记录响应
@@ -245,33 +245,33 @@ message ListCouponUsagesReply {
   repeated CouponUsage usages = 1;
   int32 total = 2;
   int32 page = 3;
-  int32 page_size = 4;
+  int32 pageSize = 4;
 }
 
 // GetCouponsSummaryStatsRequest 获取所有优惠券汇总统计请求
 message GetCouponsSummaryStatsRequest {
-  string app_id = 1;  // 应用ID（可选，如果提供则只统计该应用的优惠券）
+  string appId = 1;  // 应用ID（可选，如果提供则只统计该应用的优惠券）
 }
 
 // GetCouponsSummaryStatsReply 获取所有优惠券汇总统计响应
 message GetCouponsSummaryStatsReply {
-  int32 total_coupons = 1;          // 优惠券总数
-  int32 active_coupons = 2;         // 激活的优惠券数
-  int32 total_uses = 3;             // 总使用次数
-  int32 total_orders = 4;           // 总订单数
-  int64 total_revenue = 5;          // 总收入(分)
-  int64 total_discount = 6;          // 总折扣金额(分)
-  float average_conversion_rate = 7; // 平均转化率
-  repeated CouponStats top_coupons = 8; // 前N个优惠券的详细统计（按使用次数排序）
+  int32 totalCoupons = 1;          // 优惠券总数
+  int32 activeCoupons = 2;         // 激活的优惠券数
+  int32 totalUses = 3;             // 总使用次数
+  int32 totalOrders = 4;           // 总订单数
+  int64 totalRevenue = 5;          // 总收入(分)
+  int64 totalDiscount = 6;          // 总折扣金额(分)
+  float averageConversionRate = 7; // 平均转化率
+  repeated CouponStats topCoupons = 8; // 前N个优惠券的详细统计（按使用次数排序）
 }
 
 // CouponStats 优惠券统计（用于汇总统计响应）
 message CouponStats {
-  string coupon_code = 1;
-  int32 total_uses = 2;
-  int32 total_orders = 3;
-  int64 total_revenue = 4;
-  int64 total_discount = 5;
-  float conversion_rate = 6;
+  string couponCode = 1;
+  int32 totalUses = 2;
+  int32 totalOrders = 3;
+  int64 totalRevenue = 4;
+  int64 totalDiscount = 5;
+  float conversionRate = 6;
 }
 

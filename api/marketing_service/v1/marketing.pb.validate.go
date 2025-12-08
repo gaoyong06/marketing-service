@@ -1641,9 +1641,9 @@ func (m *UseCouponRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if utf8.RuneCountInString(m.GetOrderId()) < 1 {
+	if utf8.RuneCountInString(m.GetPaymentOrderId()) < 1 {
 		err := UseCouponRequestValidationError{
-			field:  "OrderId",
+			field:  "PaymentOrderId",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -2127,13 +2127,13 @@ func (m *CouponUsage) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	// no validation rules for CouponUsageId
 
 	// no validation rules for CouponCode
 
 	// no validation rules for UserId
 
-	// no validation rules for OrderId
+	// no validation rules for PaymentOrderId
 
 	// no validation rules for PaymentId
 

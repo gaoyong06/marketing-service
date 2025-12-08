@@ -87,8 +87,8 @@ func (r *couponRepo) toBizUsageModel(m *model.CouponUsage) *biz.CouponUsage {
 	return &biz.CouponUsage{
 		CouponUsageID:  m.CouponUsageID,
 		CouponCode:     m.CouponCode,
-		UserID:         m.UserID,
-		OrderID:        m.OrderID,
+		UID:            m.UID,
+		PaymentOrderID: m.PaymentOrderID,
 		PaymentID:      m.PaymentID,
 		OriginalAmount: m.OriginalAmount,
 		DiscountAmount: m.DiscountAmount,
@@ -106,8 +106,8 @@ func (r *couponRepo) toDataUsageModel(b *biz.CouponUsage) *model.CouponUsage {
 	return &model.CouponUsage{
 		CouponUsageID:  b.CouponUsageID,
 		CouponCode:     b.CouponCode,
-		UserID:         b.UserID,
-		OrderID:        b.OrderID,
+		UID:            b.UID,
+		PaymentOrderID: b.PaymentOrderID,
 		PaymentID:      b.PaymentID,
 		OriginalAmount: b.OriginalAmount,
 		DiscountAmount: b.DiscountAmount,
@@ -285,7 +285,7 @@ func (r *couponRepo) CreateUsage(ctx context.Context, usage *biz.CouponUsage) er
 }
 
 // UseCoupon 使用优惠券（事务操作：原子性增加使用次数 + 创建使用记录）
-func (r *couponRepo) UseCoupon(ctx context.Context, code string, userID uint64, orderID, paymentID string, originalAmount, discountAmount, finalAmount int64) error {
+func (r *couponRepo) UseCoupon(ctx context.Context, code string, userID uint64, paymentOrderID, paymentID string, originalAmount, discountAmount, finalAmount int64) error {
 	// 使用事务确保原子性
 	return r.data.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// 1. 原子性增加使用次数
@@ -307,8 +307,8 @@ func (r *couponRepo) UseCoupon(ctx context.Context, code string, userID uint64, 
 		usage := &model.CouponUsage{
 			CouponUsageID:  biz.GenerateShortID(),
 			CouponCode:     code,
-			UserID:         userID,
-			OrderID:        orderID,
+			UID:            userID,
+			PaymentOrderID: orderID,
 			PaymentID:      paymentID,
 			OriginalAmount: originalAmount,
 			DiscountAmount: discountAmount,
@@ -371,7 +371,7 @@ func (r *couponRepo) GetStats(ctx context.Context, code string) (*biz.CouponStat
 		TotalOrders int32
 	}
 	if err := r.data.db.WithContext(ctx).Model(&model.CouponUsage{}).
-		Select("COUNT(*) as total_uses, COUNT(DISTINCT order_id) as total_orders").
+		Select("COUNT(*) as total_uses, COUNT(DISTINCT payment_order_id) as total_orders").
 		Where("coupon_code = ?", code).
 		Scan(&countResult).Error; err != nil {
 		r.log.Errorf("failed to count coupon stats: %v", err)
@@ -441,7 +441,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 		TotalUses   int32
 		TotalOrders int32
 	}
-	if err := usageCountsQuery.Select("COUNT(*) as total_uses, COUNT(DISTINCT order_id) as total_orders").
+	if err := usageCountsQuery.Select("COUNT(*) as total_uses, COUNT(DISTINCT payment_order_id) as total_orders").
 		Scan(&usageCounts).Error; err != nil {
 		r.log.Errorf("failed to count usages: %v", err)
 		return nil, err
@@ -485,7 +485,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 			c.coupon_code,
 			c.max_uses,
 			COALESCE(COUNT(cu.id), 0) as total_uses,
-			COALESCE(COUNT(DISTINCT cu.order_id), 0) as total_orders,
+			COALESCE(COUNT(DISTINCT cu.payment_order_id), 0) as total_orders,
 			COALESCE(SUM(cu.final_amount), 0) as total_revenue,
 			COALESCE(SUM(cu.discount_amount), 0) as total_discount,
 			CASE 

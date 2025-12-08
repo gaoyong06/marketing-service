@@ -195,7 +195,7 @@ func (s *MarketingService) ValidateCoupon(ctx context.Context, req *v1.ValidateC
 
 // UseCoupon 使用优惠券（供 Payment Service 调用）
 func (s *MarketingService) UseCoupon(ctx context.Context, req *v1.UseCouponRequest) (*v1.UseCouponReply, error) {
-	err := s.cuc.Use(ctx, req.CouponCode, req.UserId, req.OrderId, req.PaymentId, req.OriginalAmount, req.DiscountAmount, req.FinalAmount)
+	err := s.cuc.Use(ctx, req.CouponCode, req.UserId, req.PaymentOrderId, req.PaymentId, req.OriginalAmount, req.DiscountAmount, req.FinalAmount)
 	if err != nil {
 		s.log.Errorf("failed to use coupon: %v", err)
 		return &v1.UseCouponReply{
@@ -329,10 +329,10 @@ func (s *MarketingService) toProtoCouponUsage(u *biz.CouponUsage) *v1.CouponUsag
 		usedAt = u.UsedAt.Unix()
 	}
 	return &v1.CouponUsage{
-		Id:             u.CouponUsageID,
+		CouponUsageId:  u.CouponUsageID,
 		CouponCode:     u.CouponCode,
-		UserId:         u.UserID,
-		OrderId:        u.OrderID,
+		UserId:         u.UID,
+		PaymentOrderId: u.PaymentOrderID,
 		PaymentId:      u.PaymentID,
 		OriginalAmount: u.OriginalAmount,
 		DiscountAmount: u.DiscountAmount,

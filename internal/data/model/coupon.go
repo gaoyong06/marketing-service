@@ -34,8 +34,8 @@ func (Coupon) TableName() string {
 type CouponUsage struct {
 	CouponUsageID  string    `gorm:"column:coupon_usage_id;primaryKey;type:varchar(32);comment:使用记录ID（唯一标识）"`
 	CouponCode     string    `gorm:"column:coupon_code;type:varchar(50);not null;index:idx_coupon_code;comment:优惠券码"`
-	UserID         uint64    `gorm:"column:user_id;type:bigint(20);not null;index:idx_user_id;comment:用户ID"`
-	OrderID        string    `gorm:"column:order_id;type:varchar(64);not null;index:idx_order_id;comment:订单ID"`
+	UID            uint64    `gorm:"column:uid;type:bigint(20);not null;index:idx_uid;comment:用户ID"`
+	PaymentOrderID string    `gorm:"column:payment_order_id;type:varchar(64);not null;index:idx_payment_order_id;comment:支付订单ID（payment-service的业务订单号orderId）"`
 	PaymentID      string    `gorm:"column:payment_id;type:varchar(64);not null;index:idx_payment_id;comment:支付ID"`
 	OriginalAmount int64     `gorm:"column:original_amount;type:bigint(20);not null;comment:原价(分)"`
 	DiscountAmount int64     `gorm:"column:discount_amount;type:bigint(20);not null;comment:折扣金额(分)"`

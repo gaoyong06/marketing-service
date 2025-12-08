@@ -337,13 +337,13 @@ components:
         CouponUsage:
             type: object
             properties:
-                id:
+                couponUsageId:
                     type: string
                 couponCode:
                     type: string
                 userId:
                     type: string
-                orderId:
+                paymentOrderId:
                     type: string
                 paymentId:
                     type: string
@@ -539,7 +539,7 @@ components:
                     type: string
                 userId:
                     type: string
-                orderId:
+                paymentOrderId:
                     type: string
                 paymentId:
                     type: string

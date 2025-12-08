@@ -45,9 +45,9 @@ CREATE TABLE `coupon` (
 CREATE TABLE `coupon_usage` (
   `coupon_usage_id` varchar(32) NOT NULL COMMENT '使用记录ID（唯一标识）',
   `coupon_code` varchar(50) NOT NULL COMMENT '优惠券码',
-  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
-  `order_id` varchar(64) NOT NULL COMMENT '订单ID',
-  `payment_id` varchar(64) NOT NULL COMMENT '支付ID',
+  `uid` bigint(20) NOT NULL COMMENT '用户ID',
+  `payment_order_id` varchar(64) NOT NULL COMMENT '支付订单ID（payment-service的业务订单号orderId）',
+  `payment_id` varchar(64) NOT NULL COMMENT '支付流水号（payment-service返回的payment_id）',
   `original_amount` bigint(20) NOT NULL COMMENT '原价(分)',
   `discount_amount` bigint(20) NOT NULL COMMENT '折扣金额(分)',
   `final_amount` bigint(20) NOT NULL COMMENT '实付金额(分)',
@@ -55,8 +55,8 @@ CREATE TABLE `coupon_usage` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`coupon_usage_id`),
   KEY `idx_coupon_code` (`coupon_code`),
-  KEY `idx_user_id` (`user_id`),
-  KEY `idx_order_id` (`order_id`),
+  KEY `idx_uid` (`uid`),
+  KEY `idx_payment_order_id` (`payment_order_id`),
   KEY `idx_payment_id` (`payment_id`),
   KEY `idx_used_at` (`used_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='优惠券使用记录表';
