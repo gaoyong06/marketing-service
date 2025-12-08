@@ -8,6 +8,7 @@ import (
 
 // Coupon 优惠券表
 type Coupon struct {
+	CouponID      int64          `gorm:"column:coupon_id;primaryKey;autoIncrement;comment:优惠券ID（自增主键）"`
 	CouponCode    string         `gorm:"column:coupon_code;primaryKey;type:varchar(50);comment:优惠码（唯一标识）"`
 	AppID         string         `gorm:"column:app_id;type:varchar(64);not null;index:idx_app_id;comment:应用ID"`
 	DiscountType  string         `gorm:"column:discount_type;type:varchar(16);not null;comment:折扣类型: percent(百分比)/fixed(固定金额)"`

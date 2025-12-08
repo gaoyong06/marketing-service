@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -47,7 +48,7 @@ type MarketingClient interface {
 	// UpdateCoupon 更新优惠券
 	UpdateCoupon(ctx context.Context, in *UpdateCouponRequest, opts ...grpc.CallOption) (*UpdateCouponReply, error)
 	// DeleteCoupon 删除优惠券
-	DeleteCoupon(ctx context.Context, in *DeleteCouponRequest, opts ...grpc.CallOption) (*DeleteCouponReply, error)
+	DeleteCoupon(ctx context.Context, in *DeleteCouponRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// ValidateCoupon 验证优惠券 (供 Payment Service 调用)
 	ValidateCoupon(ctx context.Context, in *ValidateCouponRequest, opts ...grpc.CallOption) (*ValidateCouponReply, error)
 	// UseCoupon 使用优惠券 (供 Payment Service 调用)
@@ -108,9 +109,9 @@ func (c *marketingClient) UpdateCoupon(ctx context.Context, in *UpdateCouponRequ
 	return out, nil
 }
 
-func (c *marketingClient) DeleteCoupon(ctx context.Context, in *DeleteCouponRequest, opts ...grpc.CallOption) (*DeleteCouponReply, error) {
+func (c *marketingClient) DeleteCoupon(ctx context.Context, in *DeleteCouponRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteCouponReply)
+	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, Marketing_DeleteCoupon_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -184,7 +185,7 @@ type MarketingServer interface {
 	// UpdateCoupon 更新优惠券
 	UpdateCoupon(context.Context, *UpdateCouponRequest) (*UpdateCouponReply, error)
 	// DeleteCoupon 删除优惠券
-	DeleteCoupon(context.Context, *DeleteCouponRequest) (*DeleteCouponReply, error)
+	DeleteCoupon(context.Context, *DeleteCouponRequest) (*emptypb.Empty, error)
 	// ValidateCoupon 验证优惠券 (供 Payment Service 调用)
 	ValidateCoupon(context.Context, *ValidateCouponRequest) (*ValidateCouponReply, error)
 	// UseCoupon 使用优惠券 (供 Payment Service 调用)
@@ -217,7 +218,7 @@ func (UnimplementedMarketingServer) ListCoupons(context.Context, *ListCouponsReq
 func (UnimplementedMarketingServer) UpdateCoupon(context.Context, *UpdateCouponRequest) (*UpdateCouponReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateCoupon not implemented")
 }
-func (UnimplementedMarketingServer) DeleteCoupon(context.Context, *DeleteCouponRequest) (*DeleteCouponReply, error) {
+func (UnimplementedMarketingServer) DeleteCoupon(context.Context, *DeleteCouponRequest) (*emptypb.Empty, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteCoupon not implemented")
 }
 func (UnimplementedMarketingServer) ValidateCoupon(context.Context, *ValidateCouponRequest) (*ValidateCouponReply, error) {

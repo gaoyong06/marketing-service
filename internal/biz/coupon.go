@@ -13,17 +13,18 @@ import (
 
 // Coupon 优惠券领域对象
 type Coupon struct {
-	Code          string
-	AppID         string
-	DiscountType  string
-	DiscountValue int64
+	CouponID      int64     // 优惠券ID（自增主键）
+	CouponCode    string    // 优惠码（业务唯一标识）
+	AppID         string    // 应用ID
+	DiscountType  string    // 折扣类型
+	DiscountValue int64     // 折扣值
 	Currency      string    // 货币单位: CNY, USD, EUR 等，仅固定金额类型需要
 	ValidFrom     time.Time // 生效时间
 	ValidUntil    time.Time // 过期时间
-	MaxUses       int32
-	UsedCount     int32
-	MinAmount     int64
-	Status        string
+	MaxUses       int32     // 最大使用次数
+	UsedCount     int32     // 已使用次数
+	MinAmount     int64     // 最低消费金额
+	Status        string    // 状态
 	CreatedAt     time.Time // 创建时间
 	UpdatedAt     time.Time // 更新时间
 }
@@ -59,12 +60,12 @@ type CouponRepo interface {
 
 // CouponStats 优惠券统计信息
 type CouponStats struct {
-	Code           string
-	TotalUses      int32
-	TotalOrders    int32
-	TotalRevenue   int64
-	TotalDiscount  int64
-	ConversionRate float32
+	CouponCode     string  // 优惠码
+	TotalUses      int32   // 总使用次数
+	TotalOrders    int32   // 总订单数
+	TotalRevenue   int64   // 总营收
+	TotalDiscount  int64   // 总折扣
+	ConversionRate float32 // 转化率
 }
 
 // SummaryStats 汇总统计信息

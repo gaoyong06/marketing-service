@@ -145,14 +145,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/{code}:
+    /v1/coupons/{couponCode}:
         get:
             tags:
                 - Marketing
             description: GetCoupon 获取优惠券
             operationId: Marketing_GetCoupon
             parameters:
-                - name: code
+                - name: couponCode
                   in: path
                   required: true
                   schema:
@@ -176,7 +176,7 @@ paths:
             description: UpdateCoupon 更新优惠券
             operationId: Marketing_UpdateCoupon
             parameters:
-                - name: code
+                - name: couponCode
                   in: path
                   required: true
                   schema:
@@ -206,7 +206,7 @@ paths:
             description: DeleteCoupon 删除优惠券
             operationId: Marketing_DeleteCoupon
             parameters:
-                - name: code
+                - name: couponCode
                   in: path
                   required: true
                   schema:
@@ -214,24 +214,21 @@ paths:
             responses:
                 "200":
                     description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/DeleteCouponReply'
+                    content: {}
                 default:
                     description: Default error response
                     content:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/{code}/stats:
+    /v1/coupons/{couponCode}/stats:
         get:
             tags:
                 - Marketing
             description: GetCouponStats 获取优惠券统计
             operationId: Marketing_GetCouponStats
             parameters:
-                - name: code
+                - name: couponCode
                   in: path
                   required: true
                   schema:
@@ -249,14 +246,14 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/{code}/usages:
+    /v1/coupons/{couponCode}/usages:
         get:
             tags:
                 - Marketing
             description: ListCouponUsages 列出优惠券使用记录
             operationId: Marketing_ListCouponUsages
             parameters:
-                - name: code
+                - name: couponCode
                   in: path
                   required: true
                   schema:
@@ -289,9 +286,7 @@ components:
         Coupon:
             type: object
             properties:
-                couponId:
-                    type: string
-                code:
+                couponCode:
                     type: string
                 appId:
                     type: string
@@ -323,7 +318,7 @@ components:
         CouponStats:
             type: object
             properties:
-                code:
+                couponCode:
                     type: string
                 totalUses:
                     type: integer
@@ -370,7 +365,7 @@ components:
         CreateCouponRequest:
             type: object
             properties:
-                code:
+                couponCode:
                     type: string
                 appId:
                     type: string
@@ -390,12 +385,6 @@ components:
                 minAmount:
                     type: string
             description: CreateCouponRequest 创建优惠券请求
-        DeleteCouponReply:
-            type: object
-            properties:
-                success:
-                    type: boolean
-            description: DeleteCouponReply 删除优惠券响应
         GetCouponReply:
             type: object
             properties:
@@ -405,7 +394,7 @@ components:
         GetCouponStatsReply:
             type: object
             properties:
-                code:
+                couponCode:
                     type: string
                 totalUses:
                     type: integer
@@ -515,7 +504,7 @@ components:
         UpdateCouponRequest:
             type: object
             properties:
-                code:
+                couponCode:
                     type: string
                 discountType:
                     type: string
@@ -546,7 +535,7 @@ components:
         UseCouponRequest:
             type: object
             properties:
-                code:
+                couponCode:
                     type: string
                 userId:
                     type: string
@@ -578,7 +567,7 @@ components:
         ValidateCouponRequest:
             type: object
             properties:
-                code:
+                couponCode:
                     type: string
                 appId:
                     type: string

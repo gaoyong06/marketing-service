@@ -34,6 +34,7 @@ func (r *couponRepo) toBizModel(m *model.Coupon) *biz.Coupon {
 		return nil
 	}
 	return &biz.Coupon{
+		CouponID:      m.CouponID,
 		CouponCode:    m.CouponCode,
 		AppID:         m.AppID,
 		DiscountType:  m.DiscountType,
@@ -61,6 +62,7 @@ func (r *couponRepo) toDataModel(b *biz.Coupon) *model.Coupon {
 		currency = "CNY"
 	}
 	return &model.Coupon{
+		CouponID:      b.CouponID,
 		CouponCode:    b.CouponCode,
 		AppID:         b.AppID,
 		DiscountType:  b.DiscountType,

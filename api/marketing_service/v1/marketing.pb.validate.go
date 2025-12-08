@@ -56,9 +56,7 @@ func (m *Coupon) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for CouponId
-
-	// no validation rules for Code
+	// no validation rules for CouponCode
 
 	// no validation rules for AppId
 
@@ -183,9 +181,9 @@ func (m *CreateCouponRequest) validate(all bool) error {
 
 	var errors []error
 
-	if l := utf8.RuneCountInString(m.GetCode()); l < 1 || l > 50 {
+	if l := utf8.RuneCountInString(m.GetCouponCode()); l < 1 || l > 50 {
 		err := CreateCouponRequestValidationError{
-			field:  "Code",
+			field:  "CouponCode",
 			reason: "value length must be between 1 and 50 runes, inclusive",
 		}
 		if !all {
@@ -484,9 +482,9 @@ func (m *GetCouponRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCode()) < 1 {
+	if utf8.RuneCountInString(m.GetCouponCode()) < 1 {
 		err := GetCouponRequestValidationError{
-			field:  "Code",
+			field:  "CouponCode",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -974,9 +972,9 @@ func (m *UpdateCouponRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCode()) < 1 {
+	if utf8.RuneCountInString(m.GetCouponCode()) < 1 {
 		err := UpdateCouponRequestValidationError{
-			field:  "Code",
+			field:  "CouponCode",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -1234,9 +1232,9 @@ func (m *DeleteCouponRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCode()) < 1 {
+	if utf8.RuneCountInString(m.GetCouponCode()) < 1 {
 		err := DeleteCouponRequestValidationError{
-			field:  "Code",
+			field:  "CouponCode",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -1325,110 +1323,6 @@ var _ interface {
 	ErrorName() string
 } = DeleteCouponRequestValidationError{}
 
-// Validate checks the field values on DeleteCouponReply with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *DeleteCouponReply) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on DeleteCouponReply with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// DeleteCouponReplyMultiError, or nil if none found.
-func (m *DeleteCouponReply) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *DeleteCouponReply) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Success
-
-	if len(errors) > 0 {
-		return DeleteCouponReplyMultiError(errors)
-	}
-
-	return nil
-}
-
-// DeleteCouponReplyMultiError is an error wrapping multiple validation errors
-// returned by DeleteCouponReply.ValidateAll() if the designated constraints
-// aren't met.
-type DeleteCouponReplyMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m DeleteCouponReplyMultiError) Error() string {
-	msgs := make([]string, 0, len(m))
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m DeleteCouponReplyMultiError) AllErrors() []error { return m }
-
-// DeleteCouponReplyValidationError is the validation error returned by
-// DeleteCouponReply.Validate if the designated constraints aren't met.
-type DeleteCouponReplyValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e DeleteCouponReplyValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e DeleteCouponReplyValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e DeleteCouponReplyValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e DeleteCouponReplyValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e DeleteCouponReplyValidationError) ErrorName() string {
-	return "DeleteCouponReplyValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e DeleteCouponReplyValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sDeleteCouponReply.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = DeleteCouponReplyValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = DeleteCouponReplyValidationError{}
-
 // Validate checks the field values on ValidateCouponRequest with the rules
 // defined in the proto definition for this message. If any rules are
 // violated, the first error encountered is returned, or nil if there are no violations.
@@ -1451,9 +1345,9 @@ func (m *ValidateCouponRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCode()) < 1 {
+	if utf8.RuneCountInString(m.GetCouponCode()) < 1 {
 		err := ValidateCouponRequestValidationError{
-			field:  "Code",
+			field:  "CouponCode",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -1725,9 +1619,9 @@ func (m *UseCouponRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCode()) < 1 {
+	if utf8.RuneCountInString(m.GetCouponCode()) < 1 {
 		err := UseCouponRequestValidationError{
-			field:  "Code",
+			field:  "CouponCode",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -2006,9 +1900,9 @@ func (m *GetCouponStatsRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCode()) < 1 {
+	if utf8.RuneCountInString(m.GetCouponCode()) < 1 {
 		err := GetCouponStatsRequestValidationError{
-			field:  "Code",
+			field:  "CouponCode",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -2119,7 +2013,7 @@ func (m *GetCouponStatsReply) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Code
+	// no validation rules for CouponCode
 
 	// no validation rules for TotalUses
 
@@ -2350,9 +2244,9 @@ func (m *ListCouponUsagesRequest) validate(all bool) error {
 
 	var errors []error
 
-	if utf8.RuneCountInString(m.GetCode()) < 1 {
+	if utf8.RuneCountInString(m.GetCouponCode()) < 1 {
 		err := ListCouponUsagesRequestValidationError{
-			field:  "Code",
+			field:  "CouponCode",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -2865,7 +2759,7 @@ func (m *CouponStats) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Code
+	// no validation rules for CouponCode
 
 	// no validation rules for TotalUses
 

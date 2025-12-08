@@ -9,6 +9,7 @@ import (
 
 	pkgErrors "github.com/gaoyong06/go-pkg/errors"
 	"github.com/go-kratos/kratos/v2/log"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // MarketingService 营销服务（极简重构版：仅保留优惠券功能）
@@ -35,7 +36,7 @@ func NewMarketingService(
 // CreateCoupon 创建优惠券
 func (s *MarketingService) CreateCoupon(ctx context.Context, req *v1.CreateCouponRequest) (*v1.CreateCouponReply, error) {
 	coupon := &biz.Coupon{
-		Code:          req.Code,
+		CouponCode:    req.CouponCode,
 		AppID:         req.AppId,
 		DiscountType:  req.DiscountType,
 		DiscountValue: req.DiscountValue,
@@ -59,7 +60,7 @@ func (s *MarketingService) CreateCoupon(ctx context.Context, req *v1.CreateCoupo
 
 // GetCoupon 获取优惠券
 func (s *MarketingService) GetCoupon(ctx context.Context, req *v1.GetCouponRequest) (*v1.GetCouponReply, error) {
-	coupon, err := s.cuc.Get(ctx, req.Code)
+	coupon, err := s.cuc.Get(ctx, req.CouponCode)
 	if err != nil {
 		s.log.Errorf("failed to get coupon: %v", err)
 		return nil, err
@@ -105,7 +106,7 @@ func (s *MarketingService) ListCoupons(ctx context.Context, req *v1.ListCouponsR
 
 // UpdateCoupon 更新优惠券
 func (s *MarketingService) UpdateCoupon(ctx context.Context, req *v1.UpdateCouponRequest) (*v1.UpdateCouponReply, error) {
-	coupon, err := s.cuc.Get(ctx, req.Code)
+	coupon, err := s.cuc.Get(ctx, req.CouponCode)
 	if err != nil {
 		s.log.Errorf("failed to get coupon: %v", err)
 		return nil, err
@@ -152,21 +153,20 @@ func (s *MarketingService) UpdateCoupon(ctx context.Context, req *v1.UpdateCoupo
 }
 
 // DeleteCoupon 删除优惠券
-func (s *MarketingService) DeleteCoupon(ctx context.Context, req *v1.DeleteCouponRequest) (*v1.DeleteCouponReply, error) {
-	err := s.cuc.Delete(ctx, req.Code)
+func (s *MarketingService) DeleteCoupon(ctx context.Context, req *v1.DeleteCouponRequest) (*emptypb.Empty, error) {
+	err := s.cuc.Delete(ctx, req.CouponCode)
 	if err != nil {
 		s.log.Errorf("failed to delete coupon: %v", err)
 		return nil, err
 	}
 
-	return &v1.DeleteCouponReply{
-		Success: true,
-	}, nil
+	// 成功时返回 Empty，统一响应格式中的 success 字段会表示操作成功
+	return &emptypb.Empty{}, nil
 }
 
 // ValidateCoupon 验证优惠券（供 Payment Service 调用）
 func (s *MarketingService) ValidateCoupon(ctx context.Context, req *v1.ValidateCouponRequest) (*v1.ValidateCouponReply, error) {
-	coupon, discountAmount, err := s.cuc.Validate(ctx, req.Code, req.AppId, req.Amount)
+	coupon, discountAmount, err := s.cuc.Validate(ctx, req.CouponCode, req.AppId, req.Amount)
 	if err != nil {
 		s.log.Errorf("failed to validate coupon: %v", err)
 		return nil, err
@@ -195,7 +195,7 @@ func (s *MarketingService) ValidateCoupon(ctx context.Context, req *v1.ValidateC
 
 // UseCoupon 使用优惠券（供 Payment Service 调用）
 func (s *MarketingService) UseCoupon(ctx context.Context, req *v1.UseCouponRequest) (*v1.UseCouponReply, error) {
-	err := s.cuc.Use(ctx, req.Code, req.UserId, req.OrderId, req.PaymentId, req.OriginalAmount, req.DiscountAmount, req.FinalAmount)
+	err := s.cuc.Use(ctx, req.CouponCode, req.UserId, req.OrderId, req.PaymentId, req.OriginalAmount, req.DiscountAmount, req.FinalAmount)
 	if err != nil {
 		s.log.Errorf("failed to use coupon: %v", err)
 		return &v1.UseCouponReply{
@@ -212,14 +212,14 @@ func (s *MarketingService) UseCoupon(ctx context.Context, req *v1.UseCouponReque
 
 // GetCouponStats 获取优惠券统计
 func (s *MarketingService) GetCouponStats(ctx context.Context, req *v1.GetCouponStatsRequest) (*v1.GetCouponStatsReply, error) {
-	stats, err := s.cuc.GetStats(ctx, req.Code)
+	stats, err := s.cuc.GetStats(ctx, req.CouponCode)
 	if err != nil {
 		s.log.Errorf("failed to get coupon stats: %v", err)
 		return nil, err
 	}
 
 	return &v1.GetCouponStatsReply{
-		Code:           stats.Code,
+		CouponCode:     stats.CouponCode,
 		TotalUses:      stats.TotalUses,
 		TotalOrders:    stats.TotalOrders,
 		TotalRevenue:   stats.TotalRevenue,
@@ -239,7 +239,7 @@ func (s *MarketingService) ListCouponUsages(ctx context.Context, req *v1.ListCou
 		pageSize = 20
 	}
 
-	usages, total, err := s.cuc.ListUsages(ctx, req.Code, page, pageSize)
+	usages, total, err := s.cuc.ListUsages(ctx, req.CouponCode, page, pageSize)
 	if err != nil {
 		s.log.Errorf("failed to list coupon usages: %v", err)
 		return nil, err
@@ -269,7 +269,7 @@ func (s *MarketingService) GetCouponsSummaryStats(ctx context.Context, req *v1.G
 	protoTopCoupons := make([]*v1.CouponStats, 0, len(stats.TopCoupons))
 	for _, cs := range stats.TopCoupons {
 		protoTopCoupons = append(protoTopCoupons, &v1.CouponStats{
-			Code:           cs.Code,
+			CouponCode:     cs.CouponCode,
 			TotalUses:      cs.TotalUses,
 			TotalOrders:    cs.TotalOrders,
 			TotalRevenue:   cs.TotalRevenue,
@@ -306,7 +306,7 @@ func (s *MarketingService) toProtoCoupon(c *biz.Coupon) *v1.Coupon {
 		updatedAt = c.UpdatedAt.Unix()
 	}
 	return &v1.Coupon{
-		Code:          c.Code,
+		CouponCode:    c.CouponCode,
 		AppId:         c.AppID,
 		DiscountType:  c.DiscountType,
 		DiscountValue: c.DiscountValue,
