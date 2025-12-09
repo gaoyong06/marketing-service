@@ -14,10 +14,6 @@ paths:
             description: ListCoupons 列出优惠券
             operationId: Marketing_ListCoupons
             parameters:
-                - name: appId
-                  in: query
-                  schema:
-                    type: string
                 - name: status
                   in: query
                   schema:
@@ -77,11 +73,6 @@ paths:
                 - Marketing
             description: GetCouponsSummaryStats 获取所有优惠券汇总统计（供营销效果仪表板使用）
             operationId: Marketing_GetCouponsSummaryStats
-            parameters:
-                - name: appId
-                  in: query
-                  schema:
-                    type: string
             responses:
                 "200":
                     description: OK
@@ -367,8 +358,6 @@ components:
             properties:
                 couponCode:
                     type: string
-                appId:
-                    type: string
                 discountType:
                     type: string
                 discountValue:
@@ -568,8 +557,6 @@ components:
             type: object
             properties:
                 couponCode:
-                    type: string
-                appId:
                     type: string
                 amount:
                     type: string

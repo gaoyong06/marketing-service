@@ -192,17 +192,6 @@ func (m *CreateCouponRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if utf8.RuneCountInString(m.GetAppId()) < 1 {
-		err := CreateCouponRequestValidationError{
-			field:  "AppId",
-			reason: "value length must be at least 1 runes",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
 	if _, ok := _CreateCouponRequest_DiscountType_InLookup[m.GetDiscountType()]; !ok {
 		err := CreateCouponRequestValidationError{
 			field:  "DiscountType",
@@ -721,8 +710,6 @@ func (m *ListCouponsRequest) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for AppId
 
 	// no validation rules for Status
 
@@ -1348,17 +1335,6 @@ func (m *ValidateCouponRequest) validate(all bool) error {
 	if utf8.RuneCountInString(m.GetCouponCode()) < 1 {
 		err := ValidateCouponRequestValidationError{
 			field:  "CouponCode",
-			reason: "value length must be at least 1 runes",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
-	}
-
-	if utf8.RuneCountInString(m.GetAppId()) < 1 {
-		err := ValidateCouponRequestValidationError{
-			field:  "AppId",
 			reason: "value length must be at least 1 runes",
 		}
 		if !all {
@@ -2502,8 +2478,6 @@ func (m *GetCouponsSummaryStatsRequest) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for AppId
 
 	if len(errors) > 0 {
 		return GetCouponsSummaryStatsRequestMultiError(errors)
