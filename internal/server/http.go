@@ -4,6 +4,7 @@ import (
 	"marketing-service/internal/conf"
 
 	"github.com/gaoyong06/go-pkg/health"
+	"github.com/gaoyong06/go-pkg/middleware/app_id"
 	"github.com/gaoyong06/go-pkg/middleware/i18n"
 	"github.com/gaoyong06/go-pkg/middleware/response"
 
@@ -32,11 +33,12 @@ func NewHTTPServer(s *conf.Server, marketing *service.MarketingService, logger l
 
 	var opts []kratoshttp.ServerOption
 
-	// 添加中间件：recovery、validate、i18n
+	// 添加中间件：recovery、app_id、validate、i18n
 	opts = append(opts, kratoshttp.Middleware(
 		recovery.Recovery(),
-		validate.Validator(),                   // 自动验证 proto validate 规则
-		i18n.Middleware(),                      // 国际化中间件
+		app_id.Middleware(),  // 添加 app_id 中间件（优先于其他中间件，确保 app_id 在 Context 中可用）
+		validate.Validator(), // 自动验证 proto validate 规则
+		i18n.Middleware(),    // 国际化中间件
 	))
 
 	// 使用自定义响应编码器统一响应格式

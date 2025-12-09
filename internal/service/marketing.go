@@ -8,6 +8,7 @@ import (
 	"marketing-service/internal/biz"
 
 	pkgErrors "github.com/gaoyong06/go-pkg/errors"
+	"github.com/gaoyong06/go-pkg/middleware/app_id"
 	"github.com/go-kratos/kratos/v2/log"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
@@ -35,9 +36,15 @@ func NewMarketingService(
 
 // CreateCoupon 创建优惠券
 func (s *MarketingService) CreateCoupon(ctx context.Context, req *v1.CreateCouponRequest) (*v1.CreateCouponReply, error) {
+	// 获取 appId（只从 Context，由中间件从 Header 提取）
+	appID := app_id.GetAppIDFromContext(ctx)
+	if appID == "" {
+		return nil, pkgErrors.NewBizErrorWithLang(ctx, pkgErrors.ErrCodeInvalidArgument)
+	}
+
 	coupon := &biz.Coupon{
 		CouponCode:    req.CouponCode,
-		AppID:         req.AppId,
+		AppID:         appID,
 		DiscountType:  req.DiscountType,
 		DiscountValue: req.DiscountValue,
 		Currency:      req.Currency, // 货币单位，如果为空则 biz 层会设置默认值 CNY
@@ -76,6 +83,12 @@ func (s *MarketingService) GetCoupon(ctx context.Context, req *v1.GetCouponReque
 
 // ListCoupons 列出优惠券
 func (s *MarketingService) ListCoupons(ctx context.Context, req *v1.ListCouponsRequest) (*v1.ListCouponsReply, error) {
+	// 获取 appId（只从 Context，由中间件从 Header 提取）
+	appID := app_id.GetAppIDFromContext(ctx)
+	if appID == "" {
+		return nil, pkgErrors.NewBizErrorWithLang(ctx, pkgErrors.ErrCodeInvalidArgument)
+	}
+
 	page := int(req.Page)
 	if page <= 0 {
 		page = 1
@@ -85,7 +98,7 @@ func (s *MarketingService) ListCoupons(ctx context.Context, req *v1.ListCouponsR
 		pageSize = 20
 	}
 
-	coupons, total, err := s.cuc.List(ctx, req.AppId, req.Status, page, pageSize)
+	coupons, total, err := s.cuc.List(ctx, appID, req.Status, page, pageSize)
 	if err != nil {
 		s.log.Errorf("failed to list coupons: %v", err)
 		return nil, err
@@ -166,7 +179,13 @@ func (s *MarketingService) DeleteCoupon(ctx context.Context, req *v1.DeleteCoupo
 
 // ValidateCoupon 验证优惠券（供 Payment Service 调用）
 func (s *MarketingService) ValidateCoupon(ctx context.Context, req *v1.ValidateCouponRequest) (*v1.ValidateCouponReply, error) {
-	coupon, discountAmount, err := s.cuc.Validate(ctx, req.CouponCode, req.AppId, req.Amount)
+	// 获取 appId（只从 Context，由中间件从 Header 提取）
+	appID := app_id.GetAppIDFromContext(ctx)
+	if appID == "" {
+		return nil, pkgErrors.NewBizErrorWithLang(ctx, pkgErrors.ErrCodeInvalidArgument)
+	}
+
+	coupon, discountAmount, err := s.cuc.Validate(ctx, req.CouponCode, appID, req.Amount)
 	if err != nil {
 		s.log.Errorf("failed to validate coupon: %v", err)
 		return nil, err
@@ -260,7 +279,13 @@ func (s *MarketingService) ListCouponUsages(ctx context.Context, req *v1.ListCou
 
 // GetCouponsSummaryStats 获取所有优惠券汇总统计
 func (s *MarketingService) GetCouponsSummaryStats(ctx context.Context, req *v1.GetCouponsSummaryStatsRequest) (*v1.GetCouponsSummaryStatsReply, error) {
-	stats, err := s.cuc.GetSummaryStats(ctx, req.AppId)
+	// 获取 appId（只从 Context，由中间件从 Header 提取）
+	appID := app_id.GetAppIDFromContext(ctx)
+	if appID == "" {
+		return nil, pkgErrors.NewBizErrorWithLang(ctx, pkgErrors.ErrCodeInvalidArgument)
+	}
+
+	stats, err := s.cuc.GetSummaryStats(ctx, appID)
 	if err != nil {
 		s.log.Errorf("failed to get coupons summary stats: %v", err)
 		return nil, err

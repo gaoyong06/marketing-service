@@ -108,10 +108,9 @@ message Coupon {
 // CreateCouponRequest 创建优惠券请求
 message CreateCouponRequest {
   string couponCode = 1 [(validate.rules).string = {min_len: 1, max_len: 50}];
-  string appId = 2 [(validate.rules).string.min_len = 1];
-  string discountType = 3 [(validate.rules).string = {in: ["percent", "fixed"]}];
-  int64 discountValue = 4 [(validate.rules).int64.gt = 0];
-  string currency = 9;                 // 货币单位: CNY/USD/EUR 等，仅固定金额类型需要，默认 CNY
+  string discountType = 2 [(validate.rules).string = {in: ["percent", "fixed"]}];
+  int64 discountValue = 3 [(validate.rules).int64.gt = 0];
+  string currency = 4;                 // 货币单位: CNY/USD/EUR 等，仅固定金额类型需要，默认 CNY
   int64 validFrom = 5;
   int64 validUntil = 6;
   int32 maxUses = 7 [(validate.rules).int32.gt = 0];
@@ -135,10 +134,9 @@ message GetCouponReply {
 
 // ListCouponsRequest 列出优惠券请求
 message ListCouponsRequest {
-  string appId = 1;
-  string status = 2;
-  int32 page = 3;
-  int32 pageSize = 4;
+  string status = 1;
+  int32 page = 2;
+  int32 pageSize = 3;
 }
 
 // ListCouponsReply 列出优惠券响应
@@ -175,8 +173,7 @@ message DeleteCouponRequest {
 // ValidateCouponRequest 验证优惠券请求 (供 Payment Service 调用)
 message ValidateCouponRequest {
   string couponCode = 1 [(validate.rules).string.min_len = 1];
-  string appId = 2 [(validate.rules).string.min_len = 1];
-  int64 amount = 3 [(validate.rules).int64.gt = 0];  // 订单金额(分)
+  int64 amount = 2 [(validate.rules).int64.gt = 0];  // 订单金额(分)
 }
 
 // ValidateCouponReply 验证优惠券响应
@@ -250,7 +247,6 @@ message ListCouponUsagesReply {
 
 // GetCouponsSummaryStatsRequest 获取所有优惠券汇总统计请求
 message GetCouponsSummaryStatsRequest {
-  string appId = 1;  // 应用ID（可选，如果提供则只统计该应用的优惠券）
 }
 
 // GetCouponsSummaryStatsReply 获取所有优惠券汇总统计响应
