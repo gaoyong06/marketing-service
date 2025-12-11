@@ -134,9 +134,10 @@ message GetCouponReply {
 
 // ListCouponsRequest 列出优惠券请求
 message ListCouponsRequest {
-  string status = 1;
-  int32 page = 2;
-  int32 pageSize = 3;
+  string appId = 1;  // 应用ID（查询参数，必填）
+  string status = 2;
+  int32 page = 3;
+  int32 pageSize = 4;
 }
 
 // ListCouponsReply 列出优惠券响应
@@ -188,12 +189,13 @@ message ValidateCouponReply {
 // UseCouponRequest 使用优惠券请求 (供 Payment Service 调用)
 message UseCouponRequest {
   string couponCode = 1 [(validate.rules).string.min_len = 1];
-  uint64 userId = 2 [(validate.rules).uint64.gt = 0];
-  string paymentOrderId = 3 [(validate.rules).string.min_len = 1]; // 支付订单ID（payment-service的业务订单号orderId）
-  string paymentId = 4 [(validate.rules).string.min_len = 1];
-  int64 originalAmount = 5 [(validate.rules).int64.gt = 0];
-  int64 discountAmount = 6 [(validate.rules).int64.gt = 0];
-  int64 finalAmount = 7 [(validate.rules).int64.gt = 0];
+  string appId = 2 [(validate.rules).string.min_len = 1];     // 应用ID
+  uint64 userId = 3 [(validate.rules).uint64.gt = 0];
+  string paymentOrderId = 4 [(validate.rules).string.min_len = 1]; // 支付订单ID（payment-service的业务订单号orderId）
+  string paymentId = 5 [(validate.rules).string.min_len = 1];
+  int64 originalAmount = 6 [(validate.rules).int64.gt = 0];
+  int64 discountAmount = 7 [(validate.rules).int64.gte = 0];
+  int64 finalAmount = 8 [(validate.rules).int64.gt = 0];
 }
 
 // UseCouponReply 使用优惠券响应
@@ -221,13 +223,14 @@ message GetCouponStatsReply {
 message CouponUsage {
   string couponUsageId = 1;
   string couponCode = 2;
-  uint64 userId = 3;
-  string paymentOrderId = 4; // 支付订单ID（payment-service的业务订单号orderId）
-  string paymentId = 5;
-  int64 originalAmount = 6;          // 原价(分)
-  int64 discountAmount = 7;          // 折扣金额(分)
-  int64 finalAmount = 8;             // 实付金额(分)
-  int64 usedAt = 9;                  // 使用时间(timestamp)
+  string appId = 3;                  // 应用ID
+  uint64 userId = 4;
+  string paymentOrderId = 5; // 支付订单ID（payment-service的业务订单号orderId）
+  string paymentId = 6;
+  int64 originalAmount = 7;          // 原价(分)
+  int64 discountAmount = 8;          // 折扣金额(分)
+  int64 finalAmount = 9;             // 实付金额(分)
+  int64 usedAt = 10;                  // 使用时间(timestamp)
 }
 
 // ListCouponUsagesRequest 列出优惠券使用记录请求
@@ -247,6 +250,7 @@ message ListCouponUsagesReply {
 
 // GetCouponsSummaryStatsRequest 获取所有优惠券汇总统计请求
 message GetCouponsSummaryStatsRequest {
+  string appId = 1;  // 应用ID（查询参数，必填）
 }
 
 // GetCouponsSummaryStatsReply 获取所有优惠券汇总统计响应

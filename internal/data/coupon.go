@@ -87,6 +87,7 @@ func (r *couponRepo) toBizUsageModel(m *model.CouponUsage) *biz.CouponUsage {
 	return &biz.CouponUsage{
 		CouponUsageID:  m.CouponUsageID,
 		CouponCode:     m.CouponCode,
+		AppID:          m.AppID,
 		UID:            m.UID,
 		PaymentOrderID: m.PaymentOrderID,
 		PaymentID:      m.PaymentID,
@@ -106,6 +107,7 @@ func (r *couponRepo) toDataUsageModel(b *biz.CouponUsage) *model.CouponUsage {
 	return &model.CouponUsage{
 		CouponUsageID:  b.CouponUsageID,
 		CouponCode:     b.CouponCode,
+		AppID:          b.AppID,
 		UID:            b.UID,
 		PaymentOrderID: b.PaymentOrderID,
 		PaymentID:      b.PaymentID,
@@ -285,7 +287,7 @@ func (r *couponRepo) CreateUsage(ctx context.Context, usage *biz.CouponUsage) er
 }
 
 // UseCoupon 使用优惠券（事务操作：原子性增加使用次数 + 创建使用记录）
-func (r *couponRepo) UseCoupon(ctx context.Context, code string, userID uint64, paymentOrderID, paymentID string, originalAmount, discountAmount, finalAmount int64) error {
+func (r *couponRepo) UseCoupon(ctx context.Context, code, appID string, userID uint64, paymentOrderID, paymentID string, originalAmount, discountAmount, finalAmount int64) error {
 	// 使用事务确保原子性
 	return r.data.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// 1. 原子性增加使用次数
@@ -307,6 +309,7 @@ func (r *couponRepo) UseCoupon(ctx context.Context, code string, userID uint64, 
 		usage := &model.CouponUsage{
 			CouponUsageID:  biz.GenerateShortID(),
 			CouponCode:     code,
+			AppID:          appID,
 			UID:            userID,
 			PaymentOrderID: paymentOrderID,
 			PaymentID:      paymentID,
@@ -416,7 +419,7 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 
 	if appID != "" {
 		couponQuery = couponQuery.Where("app_id = ?", appID)
-		usageQuery = usageQuery.Where("coupon_code IN (SELECT coupon_code FROM coupon WHERE app_id = ? AND deleted_at IS NULL)", appID)
+		usageQuery = usageQuery.Where("app_id = ?", appID)
 	}
 
 	// 统计优惠券总数和激活数
@@ -432,10 +435,10 @@ func (r *couponRepo) GetSummaryStats(ctx context.Context, appID string) (*biz.Su
 	stats.TotalCoupons = int32(couponCounts.Total)
 	stats.ActiveCoupons = int32(couponCounts.Active)
 
-	// 统计总使用次数和订单数（需要重新构建查询）
+	// 统计总使用次数和订单数（使用 app_id 字段直接查询，避免 JOIN）
 	usageCountsQuery := r.data.db.WithContext(ctx).Model(&model.CouponUsage{})
 	if appID != "" {
-		usageCountsQuery = usageCountsQuery.Where("coupon_code IN (SELECT coupon_code FROM coupon WHERE app_id = ? AND deleted_at IS NULL)", appID)
+		usageCountsQuery = usageCountsQuery.Where("app_id = ?", appID)
 	}
 	var usageCounts struct {
 		TotalUses   int32

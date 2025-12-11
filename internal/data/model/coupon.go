@@ -34,13 +34,14 @@ func (Coupon) TableName() string {
 type CouponUsage struct {
 	CouponUsageID  string    `gorm:"column:coupon_usage_id;primaryKey;type:varchar(32);comment:使用记录ID（唯一标识）"`
 	CouponCode     string    `gorm:"column:coupon_code;type:varchar(50);not null;index:idx_coupon_code;comment:优惠券码"`
+	AppID          string    `gorm:"column:app_id;type:varchar(64);not null;index:idx_app_id;index:idx_app_id_used_at;comment:应用ID"`
 	UID            uint64    `gorm:"column:uid;type:bigint(20);not null;index:idx_uid;comment:用户ID"`
 	PaymentOrderID string    `gorm:"column:payment_order_id;type:varchar(64);not null;index:idx_payment_order_id;comment:支付订单ID（payment-service的业务订单号orderId）"`
 	PaymentID      string    `gorm:"column:payment_id;type:varchar(64);not null;index:idx_payment_id;comment:支付ID"`
 	OriginalAmount int64     `gorm:"column:original_amount;type:bigint(20);not null;comment:原价(分)"`
 	DiscountAmount int64     `gorm:"column:discount_amount;type:bigint(20);not null;comment:折扣金额(分)"`
 	FinalAmount    int64     `gorm:"column:final_amount;type:bigint(20);not null;comment:实付金额(分)"`
-	UsedAt         time.Time `gorm:"column:used_at;type:datetime;not null;default:CURRENT_TIMESTAMP;index:idx_used_at;comment:使用时间"`
+	UsedAt         time.Time `gorm:"column:used_at;type:datetime;not null;default:CURRENT_TIMESTAMP;index:idx_used_at;index:idx_app_id_used_at;comment:使用时间"`
 	CreatedAt      time.Time `gorm:"column:created_at;type:datetime;not null;default:CURRENT_TIMESTAMP;comment:创建时间"`
 }
 
