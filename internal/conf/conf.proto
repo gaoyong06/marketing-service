@@ -49,17 +49,8 @@ message Data {
     int32 pool_size = 8;
     int32 min_idle_conns = 9;
   }
-  message RocketMQ {
-    repeated string name_servers = 1;  // NameServer 地址列表
-    string group_name = 2;              // Producer Group 名称
-    string topic = 3;                   // Topic 名称（任务完成事件主题）
-    int32 retry_times = 4;              // 重试次数
-    google.protobuf.Duration send_timeout = 5;  // 发送超时时间
-    bool enabled = 6;                   // 是否启用
-  }
   Database database = 1;
   Redis redis = 2;
-  RocketMQ rocketmq = 3;
 }
 
 // 客户端配置

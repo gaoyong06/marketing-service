@@ -711,6 +711,8 @@ func (m *ListCouponsRequest) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for AppId
+
 	// no validation rules for Status
 
 	// no validation rules for Page
@@ -1606,6 +1608,17 @@ func (m *UseCouponRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
+	if utf8.RuneCountInString(m.GetAppId()) < 1 {
+		err := UseCouponRequestValidationError{
+			field:  "AppId",
+			reason: "value length must be at least 1 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if m.GetUserId() <= 0 {
 		err := UseCouponRequestValidationError{
 			field:  "UserId",
@@ -1650,10 +1663,10 @@ func (m *UseCouponRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if m.GetDiscountAmount() <= 0 {
+	if m.GetDiscountAmount() < 0 {
 		err := UseCouponRequestValidationError{
 			field:  "DiscountAmount",
-			reason: "value must be greater than 0",
+			reason: "value must be greater than or equal to 0",
 		}
 		if !all {
 			return err
@@ -2107,6 +2120,8 @@ func (m *CouponUsage) validate(all bool) error {
 
 	// no validation rules for CouponCode
 
+	// no validation rules for AppId
+
 	// no validation rules for UserId
 
 	// no validation rules for PaymentOrderId
@@ -2478,6 +2493,8 @@ func (m *GetCouponsSummaryStatsRequest) validate(all bool) error {
 	}
 
 	var errors []error
+
+	// no validation rules for AppId
 
 	if len(errors) > 0 {
 		return GetCouponsSummaryStatsRequestMultiError(errors)

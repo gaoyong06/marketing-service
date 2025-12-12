@@ -170,10 +170,3 @@ var ValidCouponCurrencies = []string{
 	CouponCurrencyUSD,
 	CouponCurrencyEUR,
 }
-
-// ========== RocketMQ 相关常量 ==========
-
-// RocketMQTopic RocketMQ Topic 名称
-const (
-	RocketMQTopicTaskCompleted = "marketing.task.completed" // 任务完成事件 Topic（默认值）
-)

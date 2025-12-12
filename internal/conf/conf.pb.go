@@ -141,7 +141,6 @@ type Data struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Database      *Data_Database         `protobuf:"bytes,1,opt,name=database,proto3" json:"database,omitempty"`
 	Redis         *Data_Redis            `protobuf:"bytes,2,opt,name=redis,proto3" json:"redis,omitempty"`
-	Rocketmq      *Data_RocketMQ         `protobuf:"bytes,3,opt,name=rocketmq,proto3" json:"rocketmq,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -186,13 +185,6 @@ func (x *Data) GetDatabase() *Data_Database {
 func (x *Data) GetRedis() *Data_Redis {
 	if x != nil {
 		return x.Redis
-	}
-	return nil
-}
-
-func (x *Data) GetRocketmq() *Data_RocketMQ {
-	if x != nil {
-		return x.Rocketmq
 	}
 	return nil
 }
@@ -546,90 +538,6 @@ func (x *Data_Redis) GetMinIdleConns() int32 {
 	return 0
 }
 
-type Data_RocketMQ struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	NameServers   []string               `protobuf:"bytes,1,rep,name=name_servers,json=nameServers,proto3" json:"name_servers,omitempty"` // NameServer 地址列表
-	GroupName     string                 `protobuf:"bytes,2,opt,name=group_name,json=groupName,proto3" json:"group_name,omitempty"`       // Producer Group 名称
-	Topic         string                 `protobuf:"bytes,3,opt,name=topic,proto3" json:"topic,omitempty"`                                // Topic 名称（任务完成事件主题）
-	RetryTimes    int32                  `protobuf:"varint,4,opt,name=retry_times,json=retryTimes,proto3" json:"retry_times,omitempty"`   // 重试次数
-	SendTimeout   *durationpb.Duration   `protobuf:"bytes,5,opt,name=send_timeout,json=sendTimeout,proto3" json:"send_timeout,omitempty"` // 发送超时时间
-	Enabled       bool                   `protobuf:"varint,6,opt,name=enabled,proto3" json:"enabled,omitempty"`                           // 是否启用
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *Data_RocketMQ) Reset() {
-	*x = Data_RocketMQ{}
-	mi := &file_conf_proto_msgTypes[8]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *Data_RocketMQ) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Data_RocketMQ) ProtoMessage() {}
-
-func (x *Data_RocketMQ) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_proto_msgTypes[8]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Data_RocketMQ.ProtoReflect.Descriptor instead.
-func (*Data_RocketMQ) Descriptor() ([]byte, []int) {
-	return file_conf_proto_rawDescGZIP(), []int{2, 2}
-}
-
-func (x *Data_RocketMQ) GetNameServers() []string {
-	if x != nil {
-		return x.NameServers
-	}
-	return nil
-}
-
-func (x *Data_RocketMQ) GetGroupName() string {
-	if x != nil {
-		return x.GroupName
-	}
-	return ""
-}
-
-func (x *Data_RocketMQ) GetTopic() string {
-	if x != nil {
-		return x.Topic
-	}
-	return ""
-}
-
-func (x *Data_RocketMQ) GetRetryTimes() int32 {
-	if x != nil {
-		return x.RetryTimes
-	}
-	return 0
-}
-
-func (x *Data_RocketMQ) GetSendTimeout() *durationpb.Duration {
-	if x != nil {
-		return x.SendTimeout
-	}
-	return nil
-}
-
-func (x *Data_RocketMQ) GetEnabled() bool {
-	if x != nil {
-		return x.Enabled
-	}
-	return false
-}
-
 type Client_GRPC struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Target        string                 `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
@@ -640,7 +548,7 @@ type Client_GRPC struct {
 
 func (x *Client_GRPC) Reset() {
 	*x = Client_GRPC{}
-	mi := &file_conf_proto_msgTypes[9]
+	mi := &file_conf_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -652,7 +560,7 @@ func (x *Client_GRPC) String() string {
 func (*Client_GRPC) ProtoMessage() {}
 
 func (x *Client_GRPC) ProtoReflect() protoreflect.Message {
-	mi := &file_conf_proto_msgTypes[9]
+	mi := &file_conf_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -702,11 +610,10 @@ const file_conf_proto_rawDesc = "" +
 	"\x04GRPC\x12\x18\n" +
 	"\anetwork\x18\x01 \x01(\tR\anetwork\x12\x12\n" +
 	"\x04addr\x18\x02 \x01(\tR\x04addr\x123\n" +
-	"\atimeout\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\atimeout\"\xbf\a\n" +
+	"\atimeout\x18\x03 \x01(\v2\x19.google.protobuf.DurationR\atimeout\"\xa6\x05\n" +
 	"\x04Data\x129\n" +
 	"\bdatabase\x18\x01 \x01(\v2\x1d.marketing.conf.Data.DatabaseR\bdatabase\x120\n" +
-	"\x05redis\x18\x02 \x01(\v2\x1a.marketing.conf.Data.RedisR\x05redis\x129\n" +
-	"\brocketmq\x18\x03 \x01(\v2\x1d.marketing.conf.Data.RocketMQR\brocketmq\x1a\xcd\x01\n" +
+	"\x05redis\x18\x02 \x01(\v2\x1a.marketing.conf.Data.RedisR\x05redis\x1a\xcd\x01\n" +
 	"\bDatabase\x12\x16\n" +
 	"\x06driver\x18\x01 \x01(\tR\x06driver\x12\x16\n" +
 	"\x06source\x18\x02 \x01(\tR\x06source\x12$\n" +
@@ -722,16 +629,7 @@ const file_conf_proto_rawDesc = "" +
 	"\fread_timeout\x18\x06 \x01(\v2\x19.google.protobuf.DurationR\vreadTimeout\x12>\n" +
 	"\rwrite_timeout\x18\a \x01(\v2\x19.google.protobuf.DurationR\fwriteTimeout\x12\x1b\n" +
 	"\tpool_size\x18\b \x01(\x05R\bpoolSize\x12$\n" +
-	"\x0emin_idle_conns\x18\t \x01(\x05R\fminIdleConns\x1a\xdb\x01\n" +
-	"\bRocketMQ\x12!\n" +
-	"\fname_servers\x18\x01 \x03(\tR\vnameServers\x12\x1d\n" +
-	"\n" +
-	"group_name\x18\x02 \x01(\tR\tgroupName\x12\x14\n" +
-	"\x05topic\x18\x03 \x01(\tR\x05topic\x12\x1f\n" +
-	"\vretry_times\x18\x04 \x01(\x05R\n" +
-	"retryTimes\x12<\n" +
-	"\fsend_timeout\x18\x05 \x01(\v2\x19.google.protobuf.DurationR\vsendTimeout\x12\x18\n" +
-	"\aenabled\x18\x06 \x01(\bR\aenabled\"\x9e\x01\n" +
+	"\x0emin_idle_conns\x18\t \x01(\x05R\fminIdleConns\"\x9e\x01\n" +
 	"\x06Client\x12?\n" +
 	"\fnotification\x18\x01 \x01(\v2\x1b.marketing.conf.Client.GRPCR\fnotification\x1aS\n" +
 	"\x04GRPC\x12\x16\n" +
@@ -750,7 +648,7 @@ func file_conf_proto_rawDescGZIP() []byte {
 	return file_conf_proto_rawDescData
 }
 
-var file_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_conf_proto_goTypes = []any{
 	(*Bootstrap)(nil),           // 0: marketing.conf.Bootstrap
 	(*Server)(nil),              // 1: marketing.conf.Server
@@ -760,9 +658,8 @@ var file_conf_proto_goTypes = []any{
 	(*Server_GRPC)(nil),         // 5: marketing.conf.Server.GRPC
 	(*Data_Database)(nil),       // 6: marketing.conf.Data.Database
 	(*Data_Redis)(nil),          // 7: marketing.conf.Data.Redis
-	(*Data_RocketMQ)(nil),       // 8: marketing.conf.Data.RocketMQ
-	(*Client_GRPC)(nil),         // 9: marketing.conf.Client.GRPC
-	(*durationpb.Duration)(nil), // 10: google.protobuf.Duration
+	(*Client_GRPC)(nil),         // 8: marketing.conf.Client.GRPC
+	(*durationpb.Duration)(nil), // 9: google.protobuf.Duration
 }
 var file_conf_proto_depIdxs = []int32{
 	1,  // 0: marketing.conf.Bootstrap.server:type_name -> marketing.conf.Server
@@ -772,21 +669,19 @@ var file_conf_proto_depIdxs = []int32{
 	5,  // 4: marketing.conf.Server.grpc:type_name -> marketing.conf.Server.GRPC
 	6,  // 5: marketing.conf.Data.database:type_name -> marketing.conf.Data.Database
 	7,  // 6: marketing.conf.Data.redis:type_name -> marketing.conf.Data.Redis
-	8,  // 7: marketing.conf.Data.rocketmq:type_name -> marketing.conf.Data.RocketMQ
-	9,  // 8: marketing.conf.Client.notification:type_name -> marketing.conf.Client.GRPC
-	10, // 9: marketing.conf.Server.HTTP.timeout:type_name -> google.protobuf.Duration
-	10, // 10: marketing.conf.Server.GRPC.timeout:type_name -> google.protobuf.Duration
-	10, // 11: marketing.conf.Data.Database.conn_max_lifetime:type_name -> google.protobuf.Duration
-	10, // 12: marketing.conf.Data.Redis.dial_timeout:type_name -> google.protobuf.Duration
-	10, // 13: marketing.conf.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
-	10, // 14: marketing.conf.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
-	10, // 15: marketing.conf.Data.RocketMQ.send_timeout:type_name -> google.protobuf.Duration
-	10, // 16: marketing.conf.Client.GRPC.timeout:type_name -> google.protobuf.Duration
-	17, // [17:17] is the sub-list for method output_type
-	17, // [17:17] is the sub-list for method input_type
-	17, // [17:17] is the sub-list for extension type_name
-	17, // [17:17] is the sub-list for extension extendee
-	0,  // [0:17] is the sub-list for field type_name
+	8,  // 7: marketing.conf.Client.notification:type_name -> marketing.conf.Client.GRPC
+	9,  // 8: marketing.conf.Server.HTTP.timeout:type_name -> google.protobuf.Duration
+	9,  // 9: marketing.conf.Server.GRPC.timeout:type_name -> google.protobuf.Duration
+	9,  // 10: marketing.conf.Data.Database.conn_max_lifetime:type_name -> google.protobuf.Duration
+	9,  // 11: marketing.conf.Data.Redis.dial_timeout:type_name -> google.protobuf.Duration
+	9,  // 12: marketing.conf.Data.Redis.read_timeout:type_name -> google.protobuf.Duration
+	9,  // 13: marketing.conf.Data.Redis.write_timeout:type_name -> google.protobuf.Duration
+	9,  // 14: marketing.conf.Client.GRPC.timeout:type_name -> google.protobuf.Duration
+	15, // [15:15] is the sub-list for method output_type
+	15, // [15:15] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_conf_proto_init() }
@@ -800,7 +695,7 @@ func file_conf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_conf_proto_rawDesc), len(file_conf_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
