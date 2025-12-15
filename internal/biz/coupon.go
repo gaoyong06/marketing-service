@@ -34,7 +34,7 @@ type CouponUsage struct {
 	CouponUsageID  string
 	CouponCode     string
 	AppID          string // 应用ID
-	UID            uint64
+	UserID         uint64
 	PaymentOrderID string // 支付订单ID（payment-service的业务订单号orderId）
 	PaymentID      string
 	OriginalAmount int64
@@ -54,7 +54,7 @@ type CouponRepo interface {
 	IncrementUsedCount(context.Context, string) error // 原子性增加使用次数
 	CreateUsage(context.Context, *CouponUsage) error
 	UseCoupon(context.Context, string, string, uint64, string, string, int64, int64, int64) error // 使用优惠券（事务操作）：code, appID, userID, paymentOrderID, paymentID, originalAmount, discountAmount, finalAmount
-	ListUsages(context.Context, string, int, int) ([]*CouponUsage, int64, error)          // couponCode, page, pageSize
+	ListUsages(context.Context, string, int, int) ([]*CouponUsage, int64, error)                  // couponCode, page, pageSize
 	GetStats(context.Context, string) (*CouponStats, error)
 	GetSummaryStats(context.Context, string) (*SummaryStats, error) // appID（可选），获取汇总统计
 }

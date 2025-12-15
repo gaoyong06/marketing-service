@@ -362,7 +362,7 @@ func (s *MarketingService) toProtoCouponUsage(u *biz.CouponUsage) *v1.CouponUsag
 	return &v1.CouponUsage{
 		CouponUsageId:  u.CouponUsageID,
 		CouponCode:     u.CouponCode,
-		UserId:         u.UID,
+		UserId:         u.UserID,
 		PaymentOrderId: u.PaymentOrderID,
 		PaymentId:      u.PaymentID,
 		OriginalAmount: u.OriginalAmount,
