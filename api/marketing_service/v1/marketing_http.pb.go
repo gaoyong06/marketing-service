@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.9.0
 // - protoc             v6.33.1
-// source: api/marketing_service/v1/marketing.proto
+// source: marketing.proto
 
 package v1
 
