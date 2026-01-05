@@ -1,0 +1,41 @@
+# Marketing Service 配置文件 - 线上环境
+server:
+  # HTTP 服务器配置
+  http:
+    addr: 0.0.0.0:8105      # HTTP 监听地址和端口
+    timeout: 1s             # HTTP 请求超时时间
+  
+  # gRPC 服务器配置
+  grpc:
+    addr: 0.0.0.0:9105      # gRPC 监听地址和端口
+    timeout: 1s             # gRPC 请求超时时间
+
+# 数据层配置
+data:
+  # MySQL 数据库配置
+  database:
+    driver: mysql            # 数据库驱动类型（mysql/postgres/sqlite）
+    source: root:xinyuan2025$@tcp(127.0.0.1:3306)/marketing_service?charset=utf8mb4&parseTime=True&loc=Local  # 数据库连接字符串
+    max_idle_conns: 10       # 最大空闲连接数
+    max_open_conns: 100      # 最大打开连接数
+    conn_max_lifetime: "3600s"  # 连接最大生存时间（需用引号包裹）
+  
+  # Redis 缓存配置
+  redis:
+    addr: 127.0.0.1:6379    # Redis 服务器地址
+    password: ""             # Redis 密码（无密码留空）
+    db: 0                    # Redis 数据库编号（0-15）
+    dial_timeout: 1s         # 连接超时时间
+    read_timeout: 0.2s       # 读取超时时间
+    write_timeout: 0.2s      # 写入超时时间
+    pool_size: 100           # 连接池大小
+    min_idle_conns: 10       # 最小空闲连接数
+
+# 客户端配置
+client:
+  # 通知服务客户端配置
+  notification_service:
+    target: notification-service:9103   # 通知服务 gRPC 地址（使用服务名）
+    timeout: 5s               # 请求超时时间
+
+

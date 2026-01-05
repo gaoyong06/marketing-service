@@ -25,12 +25,15 @@ var (
 	Version string
 	// flagconf is the config flag.
 	flagconf string
+	// runMode is the run mode (debug, release).
+	runMode string
 
 	id, _ = os.Hostname()
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "../../configs/config.yaml", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "conf", "", "config path, eg: -conf config.yaml (deprecated, use -mode instead)")
+	flag.StringVar(&runMode, "mode", "debug", "Run mode (debug, release)")
 }
 
 func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
@@ -50,9 +53,19 @@ func newApp(logger log.Logger, hs *http.Server, gs *grpc.Server) *kratos.App {
 func main() {
 	flag.Parse()
 
+	// 根据 mode 自动选择配置文件
+	configPath := flagconf
+	if configPath == "" {
+		if runMode == "release" {
+			configPath = "../../configs/config_release.yaml"
+		} else {
+			configPath = "../../configs/config_debug.yaml"
+		}
+	}
+
 	c := config.New(
 		config.WithSource(
-			file.NewSource(flagconf),
+			file.NewSource(configPath),
 		),
 	)
 	defer c.Close()

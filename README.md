@@ -59,18 +59,14 @@
 ┌─────────────────────────────────────────┐
 │      Business Layer (UseCase)           │
 │  internal/biz/                          │
-│  - campaign.go, reward.go, task.go     │
-│  - task_trigger.go (事件触发服务)        │
-│  - validator.go, generator.go          │
-│  - distributor.go                       │
+│  - coupon.go (优惠券业务逻辑)            │
 └─────────────────────────────────────────┘
                     ↓
 ┌─────────────────────────────────────────┐
 │      Data Layer (Repository)             │
 │  internal/data/                          │
-│  - campaign.go, reward.go, task.go     │
-│  - cache.go (Redis 缓存)                 │
-│  - migration.go (数据库迁移)              │
+│  - coupon.go (优惠券 Repository)         │
+│  - model/coupon.go (数据模型)             │
 └─────────────────────────────────────────┘
                     ↓
 ┌─────────────────────────────────────────┐
@@ -81,10 +77,9 @@
 
 ### 设计原则
 
-- **积木式设计**: 四个核心实体（Campaign、Audience、Task、Reward）可以自由组合
 - **极简主义**: 遵循"至繁归于至简"的设计哲学
-- **配置化**: 轻量级逻辑通过 JSON 配置实现，避免过度设计
-- **多租户**: 支持 `tenant_id` + `app_id` 双维度资源隔离
+- **业务导向**: 专注于支付场景的优惠券管理和使用
+- **克制设计**: 避免过度设计，保持简单易用
 
 ---
 
@@ -114,12 +109,12 @@ go mod download
 # 初始化数据库
 mysql -u root -p < docs/sql/marketing_service.sql
 
-# 数据库会自动创建所有表和索引（包括性能优化索引）
+# 数据库会自动创建所有表和索引
 ```
 
 ### 配置服务
 
-编辑 `configs/config.yaml`：
+编辑 `configs/config_debug.yaml`（开发环境）或 `configs/config_release.yaml`（生产环境）：
 
 ```yaml
 server:
@@ -130,7 +125,7 @@ server:
 
 data:
   database:
-    source: root:password@tcp(127.0.0.1:3306)/marketing_service?charset=utf8mb4&parseTime=True&loc=Local
+    source: root:@tcp(127.0.0.1:3306)/marketing_service?charset=utf8mb4&parseTime=True&loc=Local
   redis:
     addr: 127.0.0.1:6379
 ```
@@ -144,8 +139,11 @@ make api
 # 生成 Wire 代码
 make wire
 
-# 启动服务
+# 启动服务（开发模式，默认使用 config_debug.yaml）
 make run
+
+# 或启动生产模式（使用 config_release.yaml）
+./bin/server -mode release
 ```
 
 ### 验证服务
@@ -169,103 +167,75 @@ curl http://localhost:8105/metrics
 
 ### 核心 API
 
-#### 活动管理 (Campaign)
+#### 优惠券管理 (Coupon)
 
-- `POST /v1/campaigns` - 创建活动
-- `GET /v1/campaigns/{campaign_id}` - 获取活动
-- `GET /v1/campaigns` - 列出活动
-- `PUT /v1/campaigns/{campaign_id}` - 更新活动
-- `DELETE /v1/campaigns/{campaign_id}` - 删除活动
+- `POST /v1/coupons` - 创建优惠券
+- `GET /v1/coupons/{couponCode}` - 获取优惠券
+- `GET /v1/coupons` - 列出优惠券（支持按 appId 和 status 筛选）
+- `PUT /v1/coupons/{couponCode}` - 更新优惠券
+- `DELETE /v1/coupons/{couponCode}` - 删除优惠券
 
-#### 奖励管理 (Reward)
+#### 优惠券验证和使用（供 Payment Service 调用）
 
-- `POST /v1/rewards` - 创建奖励
-- `GET /v1/rewards/{reward_id}` - 获取奖励
-- `GET /v1/rewards` - 列出奖励
-- `PUT /v1/rewards/{reward_id}` - 更新奖励
-- `DELETE /v1/rewards/{reward_id}` - 删除奖励
+- `POST /v1/coupons/validate` - 验证优惠券有效性
+- `POST /v1/coupons/use` - 使用优惠券（记录使用情况）
 
-#### 任务管理 (Task)
+#### 统计分析
 
-- `POST /v1/tasks` - 创建任务
-- `GET /v1/tasks/{task_id}` - 获取任务
-- `GET /v1/tasks` - 列出任务
-- `PUT /v1/tasks/{task_id}` - 更新任务
-- `DELETE /v1/tasks/{task_id}` - 删除任务
-- `GET /v1/campaigns/{campaign_id}/tasks` - 列出活动的任务
-- `POST /v1/tasks/trigger` - 触发任务事件
-
-#### 受众管理 (Audience)
-
-- `POST /v1/audiences` - 创建受众
-- `GET /v1/audiences/{audience_id}` - 获取受众
-- `GET /v1/audiences` - 列出受众
-- `PUT /v1/audiences/{audience_id}` - 更新受众
-- `DELETE /v1/audiences/{audience_id}` - 删除受众
-
-#### 兑换码管理 (RedeemCode)
-
-- `POST /v1/campaigns/{campaign_id}/redeem-codes` - 生成兑换码
-- `POST /v1/redeem` - 兑换码核销
-- `POST /v1/redeem-codes/{code}/assign` - 分配兑换码
-- `GET /v1/redeem-codes` - 列出兑换码
-- `GET /v1/redeem-codes/{code}` - 获取兑换码
-
-#### 奖励发放 (RewardGrant)
-
-- `GET /v1/reward-grants` - 列出奖励发放记录
-- `GET /v1/reward-grants/{grant_id}` - 获取奖励发放记录
-- `PUT /v1/reward-grants/{grant_id}/status` - 更新发放状态
-
-#### 库存管理 (Inventory)
-
-- `POST /v1/inventory/reserve` - 预占库存
-- `POST /v1/inventory/{reservation_id}/confirm` - 确认库存
-- `POST /v1/inventory/{reservation_id}/cancel` - 取消库存
-- `GET /v1/inventory/reservations` - 列出库存预占记录
-
-#### 任务完成日志 (TaskCompletionLog)
-
-- `GET /v1/task-completion-logs` - 列出任务完成日志
-- `GET /v1/tasks/{task_id}/completion-stats` - 获取任务完成统计
-
-#### 活动-任务关联 (CampaignTask)
-
-- `POST /v1/campaigns/{campaign_id}/tasks` - 将任务添加到活动
-- `DELETE /v1/campaigns/{campaign_id}/tasks/{task_id}` - 从活动中移除任务
-- `GET /v1/campaigns/{campaign_id}/tasks` - 列出活动的所有任务
+- `GET /v1/coupons/{couponCode}/stats` - 获取单个优惠券统计
+- `GET /v1/coupons/{couponCode}/usages` - 列出优惠券使用记录
+- `GET /v1/coupons/summary-stats` - 获取所有优惠券汇总统计（按 appId 筛选）
 
 ### API 示例
 
-#### 创建活动
+#### 创建优惠券
 
 ```bash
-curl -X POST http://localhost:8105/v1/campaigns \
+curl -X POST http://localhost:8105/v1/coupons \
   -H "Content-Type: application/json" \
   -d '{
-    "tenant_id": "tenant1",
-    "product_code": "app1",
-    "campaign_name": "双十一促销",
-    "campaign_type": "PROMOTION",
-    "start_time": "2024-11-01T00:00:00Z",
-    "end_time": "2024-11-11T23:59:59Z"
+    "couponCode": "WELCOME10",
+    "discountType": "percent",
+    "discountValue": 10,
+    "validFrom": 1733011200,
+    "validUntil": 1735689599,
+    "maxUses": 1000,
+    "minAmount": 10000
   }'
 ```
 
-#### 触发任务事件
+#### 验证优惠券
 
 ```bash
-curl -X POST http://localhost:8105/v1/tasks/trigger \
+curl -X POST http://localhost:8105/v1/coupons/validate \
   -H "Content-Type: application/json" \
   -d '{
-    "event_type": "USER_REGISTER",
-    "user_id": 123,
-    "tenant_id": "tenant1",
-    "product_code": "app1",
-    "event_data": {
-      "count": 1
-    }
+    "couponCode": "WELCOME10",
+    "amount": 20000
   }'
+```
+
+#### 使用优惠券
+
+```bash
+curl -X POST http://localhost:8105/v1/coupons/use \
+  -H "Content-Type: application/json" \
+  -d '{
+    "couponCode": "WELCOME10",
+    "appId": "app123",
+    "userId": 123,
+    "paymentOrderId": "order123",
+    "paymentId": "payment123",
+    "originalAmount": 20000,
+    "discountAmount": 2000,
+    "finalAmount": 18000
+  }'
+```
+
+#### 获取优惠券统计
+
+```bash
+curl http://localhost:8105/v1/coupons/WELCOME10/stats
 ```
 
 ---
@@ -274,20 +244,9 @@ curl -X POST http://localhost:8105/v1/tasks/trigger \
 
 ### 数据库表结构
 
-**核心实体表（4张）**:
-- `campaign` - 活动表
-- `audience` - 受众表
-- `task` - 任务表
-- `reward` - 奖励表
-
-**关系表（1张）**:
-- `campaign_task` - 活动-任务关联表
-
-**业务数据表（4张）**:
-- `reward_grant` - 奖励发放表
-- `redeem_code` - 兑换码表
-- `task_completion_log` - 任务完成日志表
-- `inventory_reservation` - 库存预占表
+**核心表（2张）**:
+- `coupon` - 优惠券表
+- `coupon_usage` - 优惠券使用记录表
 
 ### 数据库初始化
 
@@ -300,10 +259,11 @@ mysql -u root -p < docs/sql/marketing_service.sql
 
 数据库已包含以下性能优化索引：
 
-- **复合索引**: 租户+应用+状态（用于列表查询）
-- **时间范围索引**: 用于查询活跃任务和活动
-- **用户索引**: 用于用户维度的查询
-- **统计索引**: 用于各种统计查询
+- **唯一索引**: `coupon_code` + `deleted_at`（软删除支持）
+- **应用索引**: `app_id`（用于按应用查询）
+- **状态索引**: `status`（用于状态筛选）
+- **时间范围索引**: `valid_from`, `valid_until`（用于有效期查询）
+- **使用记录索引**: `coupon_code`, `app_id`, `user_id`, `payment_order_id`, `payment_id`, `used_at`（用于各种查询场景）
 
 详细索引定义请参考 `docs/sql/marketing_service.sql`。
 
@@ -314,51 +274,55 @@ mysql -u root -p < docs/sql/marketing_service.sql
 ```
 marketing-service/
 ├── api/                          # API 定义
-│   ├── base/                     # 基础类型（错误、分页）
 │   └── marketing_service/v1/     # 营销服务 API
-│       └── marketing.proto      # API 定义文件
+│       ├── marketing.proto       # API 定义文件
+│       ├── marketing.pb.go       # 生成的 Go 代码
+│       ├── marketing_grpc.pb.go  # gRPC 代码
+│       └── marketing_http.pb.go  # HTTP 代码
 ├── cmd/                          # 服务入口
-│   └── marketing-service/        # 主程序
+│   └── server/                   # 主程序
 │       ├── main.go              # 启动入口
 │       ├── wire.go              # Wire 配置
 │       └── wire_gen.go          # Wire 生成代码
 ├── configs/                      # 配置文件
-│   └── config.yaml              # 服务配置
+│   ├── config_debug.yaml        # 开发环境配置
+│   └── config_release.yaml      # 生产环境配置
 ├── docs/                         # 文档
 │   ├── product_design.md        # 产品设计文档
 │   ├── logic_design.md          # 业务逻辑设计
-│   ├── IMPLEMENTATION_PLAN.md   # 实施计划
-│   ├── IMPLEMENTATION_PROGRESS.md # 实施进度
-│   ├── MISSING_FEATURES.md      # 功能清单
 │   └── sql/                     # SQL 脚本
 │       └── marketing_service.sql # 数据库脚本（包含索引优化）
 ├── internal/                     # 内部代码
 │   ├── biz/                     # 业务逻辑层
-│   │   ├── campaign.go          # 活动业务逻辑
-│   │   ├── reward.go            # 奖励业务逻辑
-│   │   ├── task.go              # 任务业务逻辑
-│   │   ├── task_trigger.go      # 任务触发服务
-│   │   ├── validator.go         # 校验器
-│   │   ├── generator.go         # 生成器
-│   │   ├── distributor.go       # 发放器
-│   │   └── ...
+│   │   ├── coupon.go           # 优惠券业务逻辑
+│   │   └── utils.go            # 工具函数
 │   ├── data/                    # 数据访问层
-│   │   ├── campaign.go          # 活动 Repository
-│   │   ├── reward.go            # 奖励 Repository
-│   │   ├── task.go              # 任务 Repository
-│   │   ├── cache.go             # 缓存服务
-│   │   ├── migration.go         # 数据库迁移
-│   │   └── model/               # 数据模型
+│   │   ├── coupon.go           # 优惠券 Repository
+│   │   ├── data.go             # 数据层初始化
+│   │   └── model/              # 数据模型
+│   │       └── coupon.go       # 优惠券模型
 │   ├── service/                 # 服务层
 │   │   └── marketing.go        # 营销服务实现
 │   ├── server/                  # 服务器配置
 │   │   ├── http.go              # HTTP 服务器
 │   │   └── grpc.go              # gRPC 服务器
-│   └── metrics/                 # 监控指标
-│       └── metrics.go           # Prometheus 指标定义
+│   ├── metrics/                 # 监控指标
+│   │   └── metrics.go           # Prometheus 指标定义
+│   ├── errors/                  # 错误定义
+│   │   └── code.go              # 错误码
+│   ├── constants/               # 常量定义
+│   │   └── constants.go         # 业务常量
+│   └── conf/                     # 配置定义
+│       ├── conf.proto           # 配置 Proto
+│       └── conf.pb.go           # 配置 Go 代码
+├── i18n/                         # 国际化
+│   ├── zh-CN/                   # 中文错误信息
+│   │   └── errors.json
+│   └── en-US/                    # 英文错误信息
+│       └── errors.json
 ├── test/                         # 测试
 │   └── api/                     # API 测试
-│       └── api-test-config.yaml # api-tester 测试配置（20个场景）
+│       └── api-test-config.yaml # api-tester 测试配置
 ├── Makefile                      # 构建脚本
 ├── go.mod                        # Go 模块定义
 └── README.md                     # 项目说明（本文件）
@@ -380,8 +344,11 @@ make wire
 # 运行测试
 make test
 
-# 启动服务
+# 启动服务（开发模式）
 make run
+
+# 启动服务（生产模式）
+./bin/server -mode release
 
 # 构建二进制文件
 make build
@@ -401,9 +368,9 @@ make wire
 
 1. **修改 Proto 定义** (`api/marketing_service/v1/marketing.proto`)
 2. **生成代码**: `make api`
-3. **实现业务逻辑** (`internal/biz/`)
-4. **实现数据层** (`internal/data/`)
-5. **实现服务层** (`internal/service/`)
+3. **实现业务逻辑** (`internal/biz/coupon.go`)
+4. **实现数据层** (`internal/data/coupon.go`)
+5. **实现服务层** (`internal/service/marketing.go`)
 6. **更新 Wire 配置**: `make wire`
 7. **运行测试**: `make test`
 
@@ -434,13 +401,11 @@ make test
 test/api/api-test-config.yaml
 ```
 
-**测试场景**（20个）:
+**测试场景**:
 - 基础功能测试（健康检查、Metrics）
-- Campaign/Reward/Task/Audience CRUD 测试
-- 任务触发和奖励发放流程测试
-- 兑换码功能测试
-- 库存管理测试
-- 任务完成日志查询测试
+- 优惠券 CRUD 测试
+- 优惠券验证和使用流程测试
+- 统计分析功能测试
 - 完整业务流程测试
 
 ---
@@ -452,22 +417,13 @@ test/api/api-test-config.yaml
 服务暴露 Prometheus 指标端点：`GET /metrics`
 
 **业务指标**:
-- `marketing_campaign_created_total` - 活动创建数量
-- `marketing_task_created_total` - 任务创建数量
-- `marketing_task_triggered_total` - 任务触发数量
-- `marketing_task_completed_total` - 任务完成数量
-- `marketing_reward_created_total` - 奖励创建数量
-- `marketing_reward_granted_total` - 奖励发放数量
-- `marketing_redeem_code_generated_total` - 兑换码生成数量
-- `marketing_redeem_code_redeemed_total` - 兑换码兑换数量
-- `marketing_inventory_reserved_total` - 库存预占数量
-- `marketing_inventory_confirmed_total` - 库存确认数量
-- `marketing_inventory_cancelled_total` - 库存取消数量
+- `marketing_coupon_created_total` - 优惠券创建数量
+- `marketing_coupon_validated_total` - 优惠券验证数量
+- `marketing_coupon_used_total` - 优惠券使用数量
 
 **性能指标**:
-- `marketing_task_trigger_duration_seconds` - 任务触发耗时
-- `marketing_reward_generation_duration_seconds` - 奖励生成耗时
-- `marketing_reward_distribution_duration_seconds` - 奖励发放耗时
+- `marketing_coupon_validate_duration_seconds` - 优惠券验证耗时
+- `marketing_coupon_use_duration_seconds` - 优惠券使用耗时
 
 ### 健康检查
 
@@ -496,10 +452,28 @@ curl http://localhost:8105/health
 可通过环境变量覆盖配置：
 
 ```bash
-export MARKETING_DB_SOURCE="root:password@tcp(127.0.0.1:3306)/marketing_service"
+export MARKETING_DB_SOURCE="root:@tcp(127.0.0.1:3306)/marketing_service"
 export MARKETING_REDIS_ADDR="127.0.0.1:6379"
 export MARKETING_HTTP_PORT="8105"
 export MARKETING_GRPC_PORT="9105"
+```
+
+### 运行模式
+
+服务支持两种运行模式：
+
+```bash
+# 开发模式（默认，使用 config_debug.yaml）
+./bin/server
+
+# 或显式指定
+./bin/server -mode debug
+
+# 生产模式（使用 config_release.yaml）
+./bin/server -mode release
+
+# 兼容旧方式（仍可使用，但不推荐）
+./bin/server -conf ../../configs/config_release.yaml
 ```
 
 ### Docker 部署
@@ -532,37 +506,31 @@ docker run -d \
 
 - [产品设计文档](docs/product_design.md) - 产品设计理念和功能说明
 - [业务逻辑设计](docs/logic_design.md) - 业务逻辑和流程设计
-- [实施计划](docs/IMPLEMENTATION_PLAN.md) - 代码实施计划
-- [实施进度](docs/IMPLEMENTATION_PROGRESS.md) - 实施进度跟踪
-- [功能清单](docs/MISSING_FEATURES.md) - 功能完成度清单
 
 ---
 
 ## 🎯 核心特性
 
-### 1. 积木式设计
+### 1. 极简设计
 
-四个核心实体（Campaign、Audience、Task、Reward）可以自由组合，构建复杂的营销场景。
+只保留核心优惠券功能，专注于支付场景的优惠券管理和使用。
 
-### 2. 配置化组件
+### 2. 完整的优惠券生命周期
 
-Generator、Validator、Distributor 通过 JSON 配置实现，无需独立表，灵活可扩展。
+- **创建**: 支持百分比折扣和固定金额折扣
+- **验证**: 供 Payment Service 调用，验证优惠券有效性
+- **使用**: 记录使用情况，更新使用次数
+- **统计**: 使用统计、转化率分析、汇总统计
 
-### 3. 完整的奖励发放流程
+### 3. 性能优化
 
-- **校验阶段**: 时间、用户、频次、库存校验
-- **生成阶段**: 兑换码、优惠券、积分生成
-- **发放阶段**: 自动、Webhook、邮件、短信发放
-
-### 4. 性能优化
-
-- **缓存层**: Campaign、Reward、Task 缓存（Redis）
-- **批量操作**: 批量生成兑换码、批量发放奖励
+- **缓存层**: 优惠券信息缓存（Redis）
 - **数据库优化**: 复合索引、分页查询优化
+- **事务支持**: 确保使用记录和计数更新的原子性
 
-### 5. 多租户支持
+### 4. 多应用支持
 
-所有 API 和数据库操作都支持 `tenant_id` + `app_id` 双维度资源隔离。
+所有 API 和数据库操作都支持 `app_id` 维度资源隔离。
 
 ---
 
@@ -570,20 +538,17 @@ Generator、Validator、Distributor 通过 JSON 配置实现，无需独立表�
 
 ### ✅ 已完成功能
 
-- ✅ 所有核心实体 CRUD API
-- ✅ 任务触发和奖励发放完整流程
-- ✅ 兑换码管理
-- ✅ 库存管理
-- ✅ 活动-任务关联管理
-- ✅ 缓存层（Redis）
+- ✅ 优惠券 CRUD API
+- ✅ 优惠券验证和使用完整流程
+- ✅ 使用记录查询
+- ✅ 统计分析功能
 - ✅ Prometheus 监控指标
-- ✅ API 集成测试（20个测试场景）
+- ✅ API 集成测试
 
 ### 📊 功能完成度
 
 - **P0（核心功能）**: 100% ✅
 - **P1（扩展功能）**: 100% ✅
-- **P2（高级功能）**: 100% ✅
 
 **总体完成度**: 100% ✅
 
@@ -618,4 +583,4 @@ Generator、Validator、Distributor 通过 JSON 配置实现，无需独立表�
 ---
 
 **最后更新**: 2024-12-XX
-**版本**: v1.0.0
+**版本**: v2.0.0 (极简重构版)
