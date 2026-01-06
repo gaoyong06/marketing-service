@@ -8,6 +8,7 @@ import (
 	_ "marketing-service/internal/errors" // 初始化错误管理器
 
 	"github.com/gaoyong06/go-pkg/logger"
+	pkgutils "github.com/gaoyong06/go-pkg/utils"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"
@@ -56,11 +57,13 @@ func main() {
 	// 根据 mode 自动选择配置文件
 	configPath := flagconf
 	if configPath == "" {
-		if runMode == "release" {
-			configPath = "../../configs/config_release.yaml"
-		} else {
-			configPath = "../../configs/config_debug.yaml"
-		}
+		// 使用 go-pkg/utils 中的通用配置文件路径解析函数
+		// 支持从不同目录运行（项目根目录、cmd/server 目录等）
+		configPath = pkgutils.FindConfigFileWithMode(runMode, []string{
+			"configs",       // 从项目根目录运行
+			"../../configs", // 从 cmd/server 目录运行
+			"../configs",    // 从 cmd 目录运行
+		})
 	}
 
 	c := config.New(
