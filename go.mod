@@ -1,8 +1,8 @@
 module marketing-service
 
-go 1.24.0
+go 1.25.1
 
-toolchain go1.24.10
+toolchain go1.25.1
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v1.2.1
