@@ -7,7 +7,7 @@ info:
     description: MarketingService 营销服务API（极简重构版：仅保留优惠券功能）
     version: 0.0.1
 paths:
-    /v1/coupons:
+    /marketing/v1/coupons:
         get:
             tags:
                 - Marketing
@@ -71,7 +71,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/summary-stats:
+    /marketing/v1/coupons/summary-stats:
         get:
             tags:
                 - Marketing
@@ -95,7 +95,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/use:
+    /marketing/v1/coupons/use:
         post:
             tags:
                 - Marketing
@@ -120,7 +120,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/validate:
+    /marketing/v1/coupons/validate:
         post:
             tags:
                 - Marketing
@@ -145,7 +145,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/{couponCode}:
+    /marketing/v1/coupons/{couponCode}:
         get:
             tags:
                 - Marketing
@@ -221,7 +221,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/{couponCode}/stats:
+    /marketing/v1/coupons/{couponCode}/stats:
         get:
             tags:
                 - Marketing
@@ -246,7 +246,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /v1/coupons/{couponCode}/usages:
+    /marketing/v1/coupons/{couponCode}/usages:
         get:
             tags:
                 - Marketing

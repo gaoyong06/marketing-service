@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-http v2.9.0
 // - protoc             v6.33.1
-// source: marketing.proto
+// source: marketing_service/v1/marketing.proto
 
 package v1
 
@@ -57,16 +57,16 @@ type MarketingHTTPServer interface {
 
 func RegisterMarketingHTTPServer(s *http.Server, srv MarketingHTTPServer) {
 	r := s.Route("/")
-	r.POST("/v1/coupons", _Marketing_CreateCoupon0_HTTP_Handler(srv))
-	r.GET("/v1/coupons/{couponCode}", _Marketing_GetCoupon0_HTTP_Handler(srv))
-	r.GET("/v1/coupons", _Marketing_ListCoupons0_HTTP_Handler(srv))
-	r.PUT("/v1/coupons/{couponCode}", _Marketing_UpdateCoupon0_HTTP_Handler(srv))
-	r.DELETE("/v1/coupons/{couponCode}", _Marketing_DeleteCoupon0_HTTP_Handler(srv))
-	r.POST("/v1/coupons/validate", _Marketing_ValidateCoupon0_HTTP_Handler(srv))
-	r.POST("/v1/coupons/use", _Marketing_UseCoupon0_HTTP_Handler(srv))
-	r.GET("/v1/coupons/{couponCode}/stats", _Marketing_GetCouponStats0_HTTP_Handler(srv))
-	r.GET("/v1/coupons/{couponCode}/usages", _Marketing_ListCouponUsages0_HTTP_Handler(srv))
-	r.GET("/v1/coupons/summary-stats", _Marketing_GetCouponsSummaryStats0_HTTP_Handler(srv))
+	r.POST("/marketing/v1/coupons", _Marketing_CreateCoupon0_HTTP_Handler(srv))
+	r.GET("/marketing/v1/coupons/{couponCode}", _Marketing_GetCoupon0_HTTP_Handler(srv))
+	r.GET("/marketing/v1/coupons", _Marketing_ListCoupons0_HTTP_Handler(srv))
+	r.PUT("/marketing/v1/coupons/{couponCode}", _Marketing_UpdateCoupon0_HTTP_Handler(srv))
+	r.DELETE("/marketing/v1/coupons/{couponCode}", _Marketing_DeleteCoupon0_HTTP_Handler(srv))
+	r.POST("/marketing/v1/coupons/validate", _Marketing_ValidateCoupon0_HTTP_Handler(srv))
+	r.POST("/marketing/v1/coupons/use", _Marketing_UseCoupon0_HTTP_Handler(srv))
+	r.GET("/marketing/v1/coupons/{couponCode}/stats", _Marketing_GetCouponStats0_HTTP_Handler(srv))
+	r.GET("/marketing/v1/coupons/{couponCode}/usages", _Marketing_ListCouponUsages0_HTTP_Handler(srv))
+	r.GET("/marketing/v1/coupons/summary-stats", _Marketing_GetCouponsSummaryStats0_HTTP_Handler(srv))
 }
 
 func _Marketing_CreateCoupon0_HTTP_Handler(srv MarketingHTTPServer) func(ctx http.Context) error {
@@ -322,7 +322,7 @@ func NewMarketingHTTPClient(client *http.Client) MarketingHTTPClient {
 // CreateCoupon 创建优惠券
 func (c *MarketingHTTPClientImpl) CreateCoupon(ctx context.Context, in *CreateCouponRequest, opts ...http.CallOption) (*CreateCouponReply, error) {
 	var out CreateCouponReply
-	pattern := "/v1/coupons"
+	pattern := "/marketing/v1/coupons"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationMarketingCreateCoupon))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -336,7 +336,7 @@ func (c *MarketingHTTPClientImpl) CreateCoupon(ctx context.Context, in *CreateCo
 // DeleteCoupon DeleteCoupon 删除优惠券
 func (c *MarketingHTTPClientImpl) DeleteCoupon(ctx context.Context, in *DeleteCouponRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/v1/coupons/{couponCode}"
+	pattern := "/marketing/v1/coupons/{couponCode}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingDeleteCoupon))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -350,7 +350,7 @@ func (c *MarketingHTTPClientImpl) DeleteCoupon(ctx context.Context, in *DeleteCo
 // GetCoupon GetCoupon 获取优惠券
 func (c *MarketingHTTPClientImpl) GetCoupon(ctx context.Context, in *GetCouponRequest, opts ...http.CallOption) (*GetCouponReply, error) {
 	var out GetCouponReply
-	pattern := "/v1/coupons/{couponCode}"
+	pattern := "/marketing/v1/coupons/{couponCode}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingGetCoupon))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -364,7 +364,7 @@ func (c *MarketingHTTPClientImpl) GetCoupon(ctx context.Context, in *GetCouponRe
 // GetCouponStats GetCouponStats 获取优惠券统计
 func (c *MarketingHTTPClientImpl) GetCouponStats(ctx context.Context, in *GetCouponStatsRequest, opts ...http.CallOption) (*GetCouponStatsReply, error) {
 	var out GetCouponStatsReply
-	pattern := "/v1/coupons/{couponCode}/stats"
+	pattern := "/marketing/v1/coupons/{couponCode}/stats"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingGetCouponStats))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -378,7 +378,7 @@ func (c *MarketingHTTPClientImpl) GetCouponStats(ctx context.Context, in *GetCou
 // GetCouponsSummaryStats GetCouponsSummaryStats 获取所有优惠券汇总统计（供营销效果仪表板使用）
 func (c *MarketingHTTPClientImpl) GetCouponsSummaryStats(ctx context.Context, in *GetCouponsSummaryStatsRequest, opts ...http.CallOption) (*GetCouponsSummaryStatsReply, error) {
 	var out GetCouponsSummaryStatsReply
-	pattern := "/v1/coupons/summary-stats"
+	pattern := "/marketing/v1/coupons/summary-stats"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingGetCouponsSummaryStats))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -392,7 +392,7 @@ func (c *MarketingHTTPClientImpl) GetCouponsSummaryStats(ctx context.Context, in
 // ListCouponUsages ListCouponUsages 列出优惠券使用记录
 func (c *MarketingHTTPClientImpl) ListCouponUsages(ctx context.Context, in *ListCouponUsagesRequest, opts ...http.CallOption) (*ListCouponUsagesReply, error) {
 	var out ListCouponUsagesReply
-	pattern := "/v1/coupons/{couponCode}/usages"
+	pattern := "/marketing/v1/coupons/{couponCode}/usages"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingListCouponUsages))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -406,7 +406,7 @@ func (c *MarketingHTTPClientImpl) ListCouponUsages(ctx context.Context, in *List
 // ListCoupons ListCoupons 列出优惠券
 func (c *MarketingHTTPClientImpl) ListCoupons(ctx context.Context, in *ListCouponsRequest, opts ...http.CallOption) (*ListCouponsReply, error) {
 	var out ListCouponsReply
-	pattern := "/v1/coupons"
+	pattern := "/marketing/v1/coupons"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationMarketingListCoupons))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -420,7 +420,7 @@ func (c *MarketingHTTPClientImpl) ListCoupons(ctx context.Context, in *ListCoupo
 // UpdateCoupon UpdateCoupon 更新优惠券
 func (c *MarketingHTTPClientImpl) UpdateCoupon(ctx context.Context, in *UpdateCouponRequest, opts ...http.CallOption) (*UpdateCouponReply, error) {
 	var out UpdateCouponReply
-	pattern := "/v1/coupons/{couponCode}"
+	pattern := "/marketing/v1/coupons/{couponCode}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationMarketingUpdateCoupon))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -434,7 +434,7 @@ func (c *MarketingHTTPClientImpl) UpdateCoupon(ctx context.Context, in *UpdateCo
 // UseCoupon UseCoupon 使用优惠券 (供 Payment Service 调用)
 func (c *MarketingHTTPClientImpl) UseCoupon(ctx context.Context, in *UseCouponRequest, opts ...http.CallOption) (*UseCouponReply, error) {
 	var out UseCouponReply
-	pattern := "/v1/coupons/use"
+	pattern := "/marketing/v1/coupons/use"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationMarketingUseCoupon))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -448,7 +448,7 @@ func (c *MarketingHTTPClientImpl) UseCoupon(ctx context.Context, in *UseCouponRe
 // ValidateCoupon ValidateCoupon 验证优惠券 (供 Payment Service 调用)
 func (c *MarketingHTTPClientImpl) ValidateCoupon(ctx context.Context, in *ValidateCouponRequest, opts ...http.CallOption) (*ValidateCouponReply, error) {
 	var out ValidateCouponReply
-	pattern := "/v1/coupons/validate"
+	pattern := "/marketing/v1/coupons/validate"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationMarketingValidateCoupon))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -34,7 +34,7 @@ type CouponUsage struct {
 	CouponUsageID  string
 	CouponCode     string
 	AppID          string // 应用ID
-	UserID         uint64
+	UserID         string
 	PaymentOrderID string // 支付订单ID（payment-service的业务订单号orderId）
 	PaymentID      string
 	OriginalAmount int64
@@ -53,7 +53,7 @@ type CouponRepo interface {
 	Delete(context.Context, string) error
 	IncrementUsedCount(context.Context, string) error // 原子性增加使用次数
 	CreateUsage(context.Context, *CouponUsage) error
-	UseCoupon(context.Context, string, string, uint64, string, string, int64, int64, int64) error // 使用优惠券（事务操作）：code, appID, userID, paymentOrderID, paymentID, originalAmount, discountAmount, finalAmount
+	UseCoupon(context.Context, string, string, string, string, string, int64, int64, int64) error // 使用优惠券（事务操作）：code, appID, userID, paymentOrderID, paymentID, originalAmount, discountAmount, finalAmount
 	ListUsages(context.Context, string, int, int) ([]*CouponUsage, int64, error)                  // couponCode, page, pageSize
 	GetStats(context.Context, string) (*CouponStats, error)
 	GetSummaryStats(context.Context, string) (*SummaryStats, error) // appID（可选），获取汇总统计
@@ -222,7 +222,7 @@ func (uc *CouponUseCase) Validate(ctx context.Context, code, appID string, amoun
 // Use 使用优惠券（供 Payment Service 调用）
 // 注意：需要在事务中执行，确保数据一致性
 // paymentOrderID: payment-service的业务订单号orderId
-func (uc *CouponUseCase) Use(ctx context.Context, code, appID string, userID uint64, paymentOrderID, paymentID string, originalAmount, discountAmount, finalAmount int64) error {
+func (uc *CouponUseCase) Use(ctx context.Context, code, appID string, userID string, paymentOrderID, paymentID string, originalAmount, discountAmount, finalAmount int64) error {
 	// 使用事务确保原子性：先增加使用次数，再创建使用记录
 	// 如果创建使用记录失败，需要回滚使用次数的增加
 	// 注意：这里依赖 Repository 层的事务支持，如果 Repository 不支持事务，需要在 UseCase 层实现

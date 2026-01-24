@@ -223,7 +223,7 @@ curl -X POST http://localhost:8105/v1/coupons/use \
   -d '{
     "couponCode": "WELCOME10",
     "appId": "app123",
-    "userId": 123,
+    "userId": "user123",
     "paymentOrderId": "order123",
     "paymentId": "payment123",
     "originalAmount": 20000,
@@ -259,7 +259,7 @@ mysql -u root -p < docs/sql/marketing_service.sql
 
 数据库已包含以下性能优化索引：
 
-- **唯一索引**: `coupon_code` + `deleted_at`（软删除支持）
+- **唯一索引**: `coupon_code`（全局唯一，严格限制重复，即使软删除的记录也不允许 code 重复）
 - **应用索引**: `app_id`（用于按应用查询）
 - **状态索引**: `status`（用于状态筛选）
 - **时间范围索引**: `valid_from`, `valid_until`（用于有效期查询）

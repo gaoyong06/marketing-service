@@ -287,7 +287,7 @@ func (r *couponRepo) CreateUsage(ctx context.Context, usage *biz.CouponUsage) er
 }
 
 // UseCoupon 使用优惠券（事务操作：原子性增加使用次数 + 创建使用记录）
-func (r *couponRepo) UseCoupon(ctx context.Context, code, appID string, userID uint64, paymentOrderID, paymentID string, originalAmount, discountAmount, finalAmount int64) error {
+func (r *couponRepo) UseCoupon(ctx context.Context, code, appID string, userID string, paymentOrderID, paymentID string, originalAmount, discountAmount, finalAmount int64) error {
 	// 使用事务确保原子性
 	return r.data.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// 1. 原子性增加使用次数
