@@ -53,7 +53,7 @@ CREATE TABLE `coupon_usage` (
   `coupon_usage_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '使用记录ID（唯一标识）',
   `coupon_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '优惠券码',
   `app_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '应用ID',
-  `user_id` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户ID',
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户ID',
   `payment_order_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '支付订单ID（payment-service的业务订单号orderId）',
   `payment_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '支付流水号（payment-service返回的payment_id）',
   `original_amount` bigint NOT NULL COMMENT '原价(分)',
