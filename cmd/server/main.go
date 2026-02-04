@@ -88,22 +88,31 @@ func main() {
 		panic(fmt.Sprintf("config validation failed: %v", err))
 	}
 
-	logCfg := &logger.Config{
-		Level:    "info",
-		Format:   "json",
-		Output:   "stdout",
-		FilePath: "",
+	// 初始化日志 (使用 go-pkg/logger)
+	var logConf *logger.Config
+	if bc.Log != nil {
+		logConf = &logger.Config{
+			Level:      bc.Log.Level,
+			Format:     bc.Log.Format,
+			Output:     bc.Log.Output,
+			FilePath:   bc.Log.FilePath,
+			MaxSize:    int(bc.Log.MaxSize),
+			MaxAge:     int(bc.Log.MaxAge),
+			MaxBackups: int(bc.Log.MaxBackups),
+			Compress:   bc.Log.Compress,
+		}
+	} else {
+		// 默认配置
+		logConf = &logger.Config{
+			Level:  "info",
+			Format: "json",
+			Output: "stdout",
+		}
 	}
-	appLogger := logger.NewLogger(logCfg)
-	appLogger = log.With(appLogger,
-		"ts", log.DefaultTimestamp,
-		"caller", log.DefaultCaller,
-		"service.id", id,
-		"service.name", Name,
-		"service.version", Version,
-	)
 
-	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Client, appLogger)
+	loggerInstance, _ := logger.InitLogger(logConf, id, Name, Version)
+
+	app, cleanup, err := wireApp(bc.Server, bc.Data, bc.Client, loggerInstance)
 	if err != nil {
 		panic(err)
 	}
