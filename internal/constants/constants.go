@@ -2,6 +2,10 @@ package constants
 
 // ========== 通用状态常量 ==========
 
+const (
+	ServiceName = "marketing-service"
+)
+
 // Status 通用状态
 const (
 	StatusActive  = "ACTIVE"  // 激活/活动中

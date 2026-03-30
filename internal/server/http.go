@@ -2,8 +2,10 @@ package server
 
 import (
 	"marketing-service/internal/conf"
+	"marketing-service/internal/constants"
 
 	"github.com/gaoyong06/go-pkg/health"
+	pkgmetrics "github.com/gaoyong06/go-pkg/metrics"
 	"github.com/gaoyong06/go-pkg/middleware/app_id"
 	"github.com/gaoyong06/go-pkg/middleware/i18n"
 	"github.com/gaoyong06/go-pkg/middleware/response"
@@ -12,7 +14,6 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/validate"
 	kratoshttp "github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	v1 "marketing-service/api/marketing_service/v1"
 	"marketing-service/internal/service"
@@ -28,14 +29,19 @@ func NewHTTPServer(s *conf.Server, marketing *service.MarketingService, logger l
 		IncludeTraceId:        true,
 	}
 
-	// 使用默认错误处理器（已支持 Kratos errors 的 HTTP 状态码映射）
-	errorHandler := response.NewDefaultErrorHandler()
+	// 使用默认错误处理器（加载服务级 HTTP 状态码映射）
+	errorHandler := response.NewDefaultErrorHandler(
+		response.WithServiceHTTPStatusMapping(constants.ServiceName),
+	)
+
+	prom := pkgmetrics.NewPrometheusDefaultRegistry("marketing-service", pkgmetrics.NewDefaultHTTPStatusCodeGetter("marketing-service"))
 
 	var opts []kratoshttp.ServerOption
 
 	// 添加中间件：recovery、app_id、validate、i18n
 	opts = append(opts, kratoshttp.Middleware(
 		recovery.Recovery(),
+		prom.HTTPMiddleware(),
 		app_id.Middleware(),  // 添加 app_id 中间件（优先于其他中间件，确保 app_id 在 Context 中可用）
 		validate.Validator(), // 自动验证 proto validate 规则
 		i18n.Middleware(),    // 国际化中间件
@@ -56,14 +62,9 @@ func NewHTTPServer(s *conf.Server, marketing *service.MarketingService, logger l
 	}
 
 	srv := kratoshttp.NewServer(opts...)
+	prom.RegisterHTTPMetricsEndpoint(srv)
 
 	v1.RegisterMarketingHTTPServer(srv, marketing)
-
-	// 注册 Prometheus metrics 端点
-	srv.Route("/").GET("/metrics", func(ctx kratoshttp.Context) error {
-		promhttp.Handler().ServeHTTP(ctx.Response(), ctx.Request())
-		return nil
-	})
 
 	// 注册健康检查端点（使用 go-pkg/health）
 	srv.Route("/").GET("/health", func(ctx kratoshttp.Context) error {
