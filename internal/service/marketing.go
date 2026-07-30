@@ -67,13 +67,9 @@ func (s *MarketingService) CreateCoupon(ctx context.Context, req *v1.CreateCoupo
 
 // GetCoupon 获取优惠券
 func (s *MarketingService) GetCoupon(ctx context.Context, req *v1.GetCouponRequest) (*v1.GetCouponReply, error) {
-	coupon, err := s.cuc.Get(ctx, req.CouponCode)
+	coupon, err := s.requireCouponForApp(ctx, req.CouponCode)
 	if err != nil {
-		s.log.Errorf("failed to get coupon: %v", err)
 		return nil, err
-	}
-	if coupon == nil {
-		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeNotFound, "zh-CN")
 	}
 
 	return &v1.GetCouponReply{
@@ -119,13 +115,9 @@ func (s *MarketingService) ListCoupons(ctx context.Context, req *v1.ListCouponsR
 
 // UpdateCoupon 更新优惠券
 func (s *MarketingService) UpdateCoupon(ctx context.Context, req *v1.UpdateCouponRequest) (*v1.UpdateCouponReply, error) {
-	coupon, err := s.cuc.Get(ctx, req.CouponCode)
+	coupon, err := s.requireCouponForApp(ctx, req.CouponCode)
 	if err != nil {
-		s.log.Errorf("failed to get coupon: %v", err)
 		return nil, err
-	}
-	if coupon == nil {
-		return nil, pkgErrors.NewBizError(pkgErrors.ErrCodeNotFound, "zh-CN")
 	}
 
 	// 更新字段
@@ -167,6 +159,9 @@ func (s *MarketingService) UpdateCoupon(ctx context.Context, req *v1.UpdateCoupo
 
 // DeleteCoupon 删除优惠券
 func (s *MarketingService) DeleteCoupon(ctx context.Context, req *v1.DeleteCouponRequest) (*emptypb.Empty, error) {
+	if _, err := s.requireCouponForApp(ctx, req.CouponCode); err != nil {
+		return nil, err
+	}
 	err := s.cuc.Delete(ctx, req.CouponCode)
 	if err != nil {
 		s.log.Errorf("failed to delete coupon: %v", err)
@@ -219,6 +214,9 @@ func (s *MarketingService) UseCoupon(ctx context.Context, req *v1.UseCouponReque
 	if appID == "" {
 		return nil, pkgErrors.NewBizErrorWithLang(ctx, pkgErrors.ErrCodeInvalidArgument)
 	}
+	if _, err := s.requireCouponForApp(ctx, req.CouponCode); err != nil {
+		return nil, err
+	}
 
 	err := s.cuc.Use(ctx, req.CouponCode, appID, req.UserId, req.PaymentOrderId, req.PaymentId, req.OriginalAmount, req.DiscountAmount, req.FinalAmount)
 	if err != nil {
@@ -237,6 +235,9 @@ func (s *MarketingService) UseCoupon(ctx context.Context, req *v1.UseCouponReque
 
 // GetCouponStats 获取优惠券统计
 func (s *MarketingService) GetCouponStats(ctx context.Context, req *v1.GetCouponStatsRequest) (*v1.GetCouponStatsReply, error) {
+	if _, err := s.requireCouponForApp(ctx, req.CouponCode); err != nil {
+		return nil, err
+	}
 	stats, err := s.cuc.GetStats(ctx, req.CouponCode)
 	if err != nil {
 		s.log.Errorf("failed to get coupon stats: %v", err)
@@ -255,6 +256,9 @@ func (s *MarketingService) GetCouponStats(ctx context.Context, req *v1.GetCoupon
 
 // ListCouponUsages 列出优惠券使用记录
 func (s *MarketingService) ListCouponUsages(ctx context.Context, req *v1.ListCouponUsagesRequest) (*v1.ListCouponUsagesReply, error) {
+	if _, err := s.requireCouponForApp(ctx, req.CouponCode); err != nil {
+		return nil, err
+	}
 	page := int(req.Page)
 	if page <= 0 {
 		page = 1
@@ -353,6 +357,25 @@ func (s *MarketingService) toProtoCoupon(c *biz.Coupon) *v1.Coupon {
 	}
 }
 
+func (s *MarketingService) requireCouponForApp(ctx context.Context, couponCode string) (*biz.Coupon, error) {
+	appID := app_id.GetAppIDFromContext(ctx)
+	if appID == "" {
+		return nil, pkgErrors.NewBizErrorWithLang(ctx, pkgErrors.ErrCodeInvalidArgument)
+	}
+	coupon, err := s.cuc.Get(ctx, couponCode)
+	if err != nil {
+		s.log.Errorf("failed to get coupon: %v", err)
+		return nil, err
+	}
+	if coupon == nil {
+		return nil, pkgErrors.NewBizErrorWithLang(ctx, pkgErrors.ErrCodeNotFound)
+	}
+	if coupon.AppID != appID {
+		return nil, pkgErrors.NewBizErrorWithLang(ctx, pkgErrors.ErrCodeForbidden)
+	}
+	return coupon, nil
+}
+
 // toProtoCouponUsage 转换为 Proto CouponUsage
 func (s *MarketingService) toProtoCouponUsage(u *biz.CouponUsage) *v1.CouponUsage {
 	var usedAt int64
@@ -362,6 +385,7 @@ func (s *MarketingService) toProtoCouponUsage(u *biz.CouponUsage) *v1.CouponUsag
 	return &v1.CouponUsage{
 		CouponUsageId:  u.CouponUsageID,
 		CouponCode:     u.CouponCode,
+		AppId:          u.AppID,
 		UserId:         u.UserID,
 		PaymentOrderId: u.PaymentOrderID,
 		PaymentId:      u.PaymentID,

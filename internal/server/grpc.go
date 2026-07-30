@@ -3,6 +3,7 @@ package server
 import (
 	"marketing-service/internal/conf"
 
+	"github.com/gaoyong06/go-pkg/middleware/app_id"
 	"github.com/gaoyong06/go-pkg/middleware/i18n"
 
 	"github.com/go-kratos/kratos/v2/log"
@@ -20,6 +21,7 @@ func NewGRPCServer(s *conf.Server, marketing *service.MarketingService, logger l
 	// 添加中间件：recovery、i18n
 	opts = append(opts, grpc.Middleware(
 		recovery.Recovery(),
+		app_id.Middleware(),
 		i18n.Middleware(), // 国际化中间件
 	))
 
